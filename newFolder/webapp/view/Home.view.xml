@@ -1,174 +1,317 @@
 <mvc:View controllerName="com.bpcfn.jobscheduler.controller.Home"
     xmlns="sap.m"
     xmlns:f="sap.f"
-    xmlns:fb="sap.ui.comp.filterbar"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:t="sap.ui.table"
-    xmlns:core="sap.ui.core">
+    xmlns:mdc="sap.ui.mdc"
+    xmlns:mdct="sap.ui.mdc.table"
+    xmlns:mdcvh="sap.ui.mdc.valuehelp"
+    xmlns:mdcvc="sap.ui.mdc.valuehelp.content">
+
     <f:DynamicPage id="Home" class="sapUiNoContentPadding">
+
+        <!-- ─────────────────────────────────────────────────────────────
+             VALUE HELP ELEMENTS
+             sap.ui.mdc.ValueHelp extends sap.ui.core.Element (not Control).
+             dependents aggregation (type Element[]) is the correct home for
+             Element-typed controls that must stay in scope for the whole view.
+        ───────────────────────────────────────────────────────────────── -->
+        <f:dependents>
+
+            <!-- Job Name VH – replaces the original jobNameValueHelp fragment.
+                 Popover = typeahead suggestions; Dialog = full F4 list.
+                 Aggregation tags carry the same namespace prefix as their parent
+                 class (IDE rule: aggregation namespace must match parent class). -->
+            <mdc:ValueHelp id="jobNameVH"
+                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                <mdc:typeahead>
+                    <mdcvh:Popover>
+                        <mdcvc:MTable keyPath="Jobname" descriptionPath="Jobname">
+                            <Table items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
+                                <columns><Column><Label text="{i18n>JobName}"/></Column></columns>
+                                <items>
+                                    <ColumnListItem type="Active">
+                                        <cells><Text text="{custModel>Jobname}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Popover>
+                </mdc:typeahead>
+                <mdc:dialog>
+                    <mdcvh:Dialog title="{i18n>JobName}">
+                        <mdcvc:MTable keyPath="Jobname" descriptionPath="Jobname">
+                            <Table items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
+                                <columns><Column><Label text="{i18n>JobName}"/></Column></columns>
+                                <items>
+                                    <ColumnListItem type="Active">
+                                        <cells><Text text="{custModel>Jobname}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Dialog>
+                </mdc:dialog>
+            </mdc:ValueHelp>
+
+            <!-- Created By VH – replaces the original creatorValueHelp fragment. -->
+            <mdc:ValueHelp id="createdByVH"
+                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                <mdc:typeahead>
+                    <mdcvh:Popover>
+                        <mdcvc:MTable keyPath="Bname" descriptionPath="Bname">
+                            <Table items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
+                                <columns><Column><Label text="{i18n>CreatedBy}"/></Column></columns>
+                                <items>
+                                    <ColumnListItem type="Active">
+                                        <cells><Text text="{custModel>Bname}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Popover>
+                </mdc:typeahead>
+                <mdc:dialog>
+                    <mdcvh:Dialog title="{i18n>CreatedBy}">
+                        <mdcvc:MTable keyPath="Bname" descriptionPath="Bname">
+                            <Table items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
+                                <columns><Column><Label text="{i18n>CreatedBy}"/></Column></columns>
+                                <items>
+                                    <ColumnListItem type="Active">
+                                        <cells><Text text="{custModel>Bname}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Dialog>
+                </mdc:dialog>
+            </mdc:ValueHelp>
+
+            <!-- Status VH – statusFilterModel is built in _loadStatusFilter()
+                 exactly as before. Popover replaces the original MultiComboBox.
+                 Multi-select is enabled via maxConditions="-1" on the field. -->
+            <mdc:ValueHelp id="statusVH"
+                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                <mdc:typeahead>
+                    <mdcvh:Popover>
+                        <mdcvc:MTable keyPath="key" descriptionPath="text">
+                            <Table items="{path:'statusFilterModel>/items'}" mode="MultiSelect">
+                                <columns><Column><Label text="{i18n>Status}"/></Column></columns>
+                                <items>
+                                    <ColumnListItem type="Active">
+                                        <cells><Text text="{statusFilterModel>text}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Popover>
+                </mdc:typeahead>
+            </mdc:ValueHelp>
+
+        </f:dependents>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             FILTER BAR  (sap.ui.mdc.FilterBar)
+             delegate.name uses the AMD module path (slashes, no .js suffix).
+             liveMode="false" → the search fires on the Go button or Enter,
+             matching the original sap.ui.comp.filterbar.FilterBar behaviour.
+        ───────────────────────────────────────────────────────────────── -->
         <f:header>
             <f:DynamicPageHeader>
-                <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onRefreshData" clear=".onClear" afterVariantLoad=".onAfterVariantLoad" showClearOnFB="true" showFilterConfiguration="false">
-                    <fb:filterGroupItems>
-                        <fb:FilterGroupItem name="JobName" label="{i18n>JobName}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <Input id="idJobNameFilter" value="{filterModel>/JobNameText}" showValueHelp="true" valueHelpRequest="onValueHelpJobName" showSuggestion="true" suggestionItems="{path:'custModel>/VH_Job', length: 99999}">
-                                    <core:ListItem key="{custModel>Jobname}" text="{custModel>Jobname}"/>
-                                </Input>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <fb:FilterGroupItem name="DateRange" label="{i18n>Date}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <DynamicDateRange id="idDateFilter" required="true" placeholder="{i18n>DateRangePlaceholder}" change="onChangeDateRange"/>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <fb:FilterGroupItem name="CreatedBy" label="{i18n>CreatedBy}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <Input id="idCreatedByFilter" value="{filterModel>/CreatedBy}" showValueHelp="true" valueHelpRequest="onValueHelpCreatedBy" showSuggestion="true" suggestionItems="{path:'custModel>/VH_GenericUser', length: 99999}">
-                                    <core:ListItem key="{custModel>Bname}" text="{custModel>Bname}"/>
-                                </Input>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <fb:FilterGroupItem name="Status" label="{i18n>Status}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <!-- Fed from statusFilterModel, built in
-                                     _loadStatusFilter: "All" first, then the
-                                     domain values. Descriptions only - the
-                                     one-letter codes are internal. -->
-                                <MultiComboBox id="idStatusFilter" selectedKeys="{filterModel>/StatusKeys}" items="{statusFilterModel>/items}">
-                                    <core:Item key="{statusFilterModel>key}" text="{statusFilterModel>text}"/>
-                                </MultiComboBox>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <!-- Fiscal year / period filters. Used by the KPI
-                             drill-down (which scopes to the dashboard's FY/
-                             period) and available for manual filtering. -->
-                        <fb:FilterGroupItem name="FcYear" label="{i18n>FiscalYear}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <Input id="idFcYearFilter" value="{filterModel>/FcYear}" maxLength="4" placeholder="YYYY"/>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <fb:FilterGroupItem name="FcPeriod" label="{i18n>Period}" groupName="Group1" visibleInFilterBar="true">
-                            <fb:control>
-                                <Input id="idFcPeriodFilter" value="{filterModel>/FcPeriod}" maxLength="3" placeholder="PPP"/>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                    </fb:filterGroupItems>
-                </fb:FilterBar>
+                <mdc:FilterBar id="filterbar"
+                    delegate="{name:'com/bpcfn/jobscheduler/util/FilterBarDelegate', payload:{}}"
+                    search=".onRefreshData"
+                    showClearButton="true"
+                    liveMode="false">
+
+                    <mdc:filterItems>
+
+                        <!-- Job Name: valueHelp association (since 1.114)
+                             references the standalone mdc:ValueHelp by id. -->
+                        <mdc:FilterField
+                            id="idJobNameFilter"
+                            propertyKey="jobname"
+                            label="{i18n>JobName}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="1"
+                            conditions="{$filters>/conditions/jobname}"
+                            operators="Contains,EQ"
+                            valueHelp="jobNameVH"/>
+
+                        <!-- Date Range: BT=Between, GE=From, LE=To.
+                             createFilters() mirrors the original DynamicDateRange
+                             FROM/TO expansion for single-sided ranges. -->
+                        <mdc:FilterField
+                            id="idDateFilter"
+                            propertyKey="dateRange"
+                            label="{i18n>Date}"
+                            dataType="sap.ui.model.odata.type.DateTimeOffset"
+                            maxConditions="1"
+                            required="true"
+                            conditions="{$filters>/conditions/dateRange}"
+                            operators="BT,GE,LE"
+                            placeholder="{i18n>DateRangePlaceholder}"/>
+
+                        <!-- Created By: valueHelp backed by VH_GenericUser. -->
+                        <mdc:FilterField
+                            id="idCreatedByFilter"
+                            propertyKey="createdby"
+                            label="{i18n>CreatedBy}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="1"
+                            conditions="{$filters>/conditions/createdby}"
+                            operators="Contains,EQ"
+                            valueHelp="createdByVH"/>
+
+                        <!-- Status: maxConditions="-1" = unlimited multi-select,
+                             matching the original MultiComboBox behaviour. -->
+                        <mdc:FilterField
+                            id="idStatusFilter"
+                            propertyKey="status"
+                            label="{i18n>Status}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="-1"
+                            conditions="{$filters>/conditions/status}"
+                            operators="EQ"
+                            valueHelp="statusVH"/>
+
+                        <mdc:FilterField
+                            id="idFcYearFilter"
+                            propertyKey="fcYear"
+                            label="{i18n>FiscalYear}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="1"
+                            conditions="{$filters>/conditions/fcYear}"
+                            operators="EQ"
+                            placeholder="YYYY"/>
+
+                        <mdc:FilterField
+                            id="idFcPeriodFilter"
+                            propertyKey="fcPeriod"
+                            label="{i18n>Period}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="1"
+                            conditions="{$filters>/conditions/fcPeriod}"
+                            operators="EQ"
+                            placeholder="PPP"/>
+
+                    </mdc:filterItems>
+                </mdc:FilterBar>
             </f:DynamicPageHeader>
         </f:header>
-        <f:content>
-            
-<t:Table id="idJobDetTable" rows="{path: 'jobModel>/results', sorter: [{ path: 'sdl_startdt', descending: true },{ path: 'sdl_starttm', descending: true },{ path: 'jobname', descending: true },{ path: 'createdby', descending: true }]}" selectionBehavior="Row" selectionMode="Single" rowSelectionChange="onJobSelected" rowActionCount="1" ariaLabelledBy="title" class="sapUiSmallMarginTop">
-                <t:extension>
-                    <OverflowToolbar >
-                        <Title text="{jobModel>/JobDetailsTitle}"/>
-                        <ToolbarSpacer />
-                        <Button text="{i18n>Create}" type="Emphasized" press="onCreateJob" enabled="{jobModel>/CreateEnabled}"/>
-                        <Button text="{i18n>Copy}" type="Emphasized" press="onCopyJob" enabled="{jobModel>/CopyEnabled}"/>
-                        <MenuButton text="{i18n>Cancel}" type="Reject" enabled="{jobModel>/CancelEnabled}" visible="true">
-                            <menu>
-                                <Menu>
-                                    <MenuItem text="{i18n>SelectedOccur}" press="onCanSelJob"/>
-                                    <MenuItem text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
-                                </Menu>
-                            </menu>
-                        </MenuButton>
-                        <Button text="Manual Activity Completed" type="Accept" press="onManualActivityJob" enabled="{jobModel>/ManualActivityEnabled}" visible="false"/>
-                        <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Export to Excel"/>
-                    </OverflowToolbar>
-                </t:extension>
-                <t:columns>
-                    <t:Column width="7rem" visible="true" filterProperty="status" sortProperty="status">
-                        <Label text="{i18n>Status}" />
-                        <t:template>
-                            <ObjectStatus
-                                text="{path:'jobModel>status', formatter:'.formatter.statusText'}"
-                                state="{path:'jobModel>status', formatter:'.formatter.statusState'}"
-                                inverted="false" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column filterProperty="jobname" sortProperty="jobname">
-                        <Label text="{i18n>JobName}"/>
-                        <t:template>
-                            <Text text="{jobModel>jobname}" wrapping="false" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="7rem" filterProperty="version" sortProperty="version">
-                        <Label text="{i18n>Version}"/>
-                        <t:template>
-                            <Text text="{jobModel>version}" wrapping="false" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="7rem" filterProperty="task_type" sortProperty="task_type">
-                        <Label text="{i18n>TaskType}"/>
-                        <t:template>
-                            <Text text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false" />
-                        </t:template>
-                    </t:Column>
-                    <!-- fc_year and fc_period are separate fields on
-                         SchedulerTask; joined for display only. Sorting and
-                         filtering use fc_year, since a t:Column can carry
-                         one sortProperty. -->
-                    <t:Column width="9rem" filterProperty="fc_year" sortProperty="fc_year">
-                        <Label text="{i18n>FiscalYearPeriod}"/>
-                        <t:template>
-                            <Text text="{parts: [{path:'jobModel>fc_year'}, {path:'jobModel>fc_period'}], formatter: '.formatter.fiscalYearPeriod'}" wrapping="false" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="8rem" filterProperty="con_grp" sortProperty="con_grp">
-                        <Label text="{i18n>ConsGroup}"/>
-                        <t:template>
-                            <Text text="{jobModel>con_grp}" wrapping="false" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="12rem" sortProperty="sdl_startdt">
-                        <Label text="{i18n>PlannedStart}" />
-                        <t:template>
-                            <Text text="{parts: [{path:'jobModel>sdl_startdt'}, {path:'jobModel>sdl_starttm'}], formatter: '.formatter.formatDateTime'}" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="12rem" sortProperty="enddate">
-                        <Label text="{i18n>End}" />
-                        <t:template>
-                            <Text text="{parts: [{path:'jobModel>enddate'}, {path:'jobModel>endtime'}], formatter: '.formatter.formatDateTime'}" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="8rem" filterProperty="duration" sortProperty="duration">
-                        <Label text="{i18n>Duration}" />
-                        <t:template>
-                            <Text text="{jobModel>duration}" />
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="7rem" visible="true" filterProperty="generic_user_id" sortProperty="generic_user_id">
-                        <Label text="{i18n>CreatedBy}" />
-                        <t:template>
-                            <Text text="{=${jobModel>generic_user_id} === '' ? ${jobModel>createdby} : ${jobModel>generic_user_id}}" wrapping="false"/>
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="7rem" visible="false" filterProperty="createdby" sortProperty="createdby">
-                        <Label text="{i18n>CreatedBy}" />
-                        <t:template>
-                            <Text text="{jobModel>createdby}" wrapping="false"/>
-                        </t:template>
-                    </t:Column>
-                    <t:Column width="12rem" sortProperty="creation_date">
-                        <Label text="{i18n>CreatedOn}" />
-                        <t:template>
-                            <Text text="{parts: [{path:'jobModel>creation_date'}, {path:'jobModel>creation_time'}], formatter: '.formatter.formatDateTime'}" />
-                        </t:template>
-                    </t:Column>
-                </t:columns>
-                <t:rowActionTemplate>
-                    <t:RowAction>
-                        <t:items>
-                            <t:RowActionItem icon="sap-icon://slim-arrow-right" press="onJobDetails" />
-                        </t:items>
-                    </t:RowAction>
-                </t:rowActionTemplate>
-            </t:Table>
 
-      
+        <!-- ─────────────────────────────────────────────────────────────
+             MDC TABLE  (sap.ui.mdc.Table)
+             type="Table"          → inner sap.ui.table.Table (GridTable),
+                                     matching the original control type.
+             p13nMode="Sort,Column" → adds Sort and Column personalisation
+                                     panels (additive over original behaviour).
+             selectionMode="Single" + selectionChange → onJobSelected keeps
+             the same toolbar button enable/disable logic as before.
+             rowPress → onJobDetails replaces the original RowAction arrow.
+        ───────────────────────────────────────────────────────────────── -->
+        <f:content>
+            <mdc:Table id="idJobDetTable"
+                delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{}}"
+                type="Table"
+                selectionMode="Single"
+                selectionChange=".onJobSelected"
+                rowPress=".onJobDetails"
+                header="{jobModel>/JobDetailsTitle}"
+                p13nMode="Sort,Column"
+                class="sapUiSmallMarginTop">
+
+                <mdc:actions>
+                    <Button text="{i18n>Create}"
+                        type="Emphasized"
+                        press="onCreateJob"
+                        enabled="{jobModel>/CreateEnabled}"/>
+                    <Button text="{i18n>Copy}"
+                        type="Emphasized"
+                        press="onCopyJob"
+                        enabled="{jobModel>/CopyEnabled}"/>
+                    <MenuButton text="{i18n>Cancel}"
+                        type="Reject"
+                        enabled="{jobModel>/CancelEnabled}">
+                        <menu>
+                            <Menu>
+                                <MenuItem text="{i18n>SelectedOccur}"   press="onCanSelJob"/>
+                                <MenuItem text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
+                            </Menu>
+                        </menu>
+                    </MenuButton>
+                    <!-- Kept hidden, matching original visible="false" -->
+                    <Button text="Manual Activity Completed"
+                        type="Accept"
+                        press="onManualActivityJob"
+                        enabled="{jobModel>/ManualActivityEnabled}"
+                        visible="false"/>
+                    <Button icon="sap-icon://excel-attachment"
+                        press="onExport"
+                        tooltip="Export to Excel"/>
+                </mdc:actions>
+
+                <mdc:columns>
+
+                    <mdct:Column propertyKey="status" header="{i18n>Status}" width="7rem">
+                        <ObjectStatus
+                            text="{path:'jobModel>status',  formatter:'.formatter.statusText'}"
+                            state="{path:'jobModel>status', formatter:'.formatter.statusState'}"
+                            inverted="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="jobname" header="{i18n>JobName}">
+                        <Text text="{jobModel>jobname}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="version" header="{i18n>Version}" width="7rem">
+                        <Text text="{jobModel>version}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="task_type" header="{i18n>TaskType}" width="7rem">
+                        <Text text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <!-- fc_year and fc_period are separate SchedulerTask fields;
+                         joined for display only via formatter.fiscalYearPeriod. -->
+                    <mdct:Column propertyKey="fc_year" header="{i18n>FiscalYearPeriod}" width="9rem">
+                        <Text text="{parts:[{path:'jobModel>fc_year'},{path:'jobModel>fc_period'}], formatter:'.formatter.fiscalYearPeriod'}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="con_grp" header="{i18n>ConsGroup}" width="8rem">
+                        <Text text="{jobModel>con_grp}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="sdl_startdt" header="{i18n>PlannedStart}" width="12rem">
+                        <Text text="{parts:[{path:'jobModel>sdl_startdt'},{path:'jobModel>sdl_starttm'}], formatter:'.formatter.formatDateTime'}"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="enddate" header="{i18n>End}" width="12rem">
+                        <Text text="{parts:[{path:'jobModel>enddate'},{path:'jobModel>endtime'}], formatter:'.formatter.formatDateTime'}"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="duration" header="{i18n>Duration}" width="8rem">
+                        <Text text="{jobModel>duration}"/>
+                    </mdct:Column>
+
+                    <!-- Shows generic_user_id when set, falls back to createdby –
+                         matches the original expression binding in the old view. -->
+                    <mdct:Column propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
+                        <Text text="{=${jobModel>generic_user_id} === '' ? ${jobModel>createdby} : ${jobModel>generic_user_id}}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <!-- Hidden column kept for P13n / export; mirrors original visible="false". -->
+                    <mdct:Column propertyKey="createdby" header="{i18n>CreatedBy}" width="7rem">
+                        <Text text="{jobModel>createdby}" wrapping="false"/>
+                    </mdct:Column>
+
+                    <mdct:Column propertyKey="creation_date" header="{i18n>CreatedOn}" width="12rem">
+                        <Text text="{parts:[{path:'jobModel>creation_date'},{path:'jobModel>creation_time'}], formatter:'.formatter.formatDateTime'}"/>
+                    </mdct:Column>
+
+                </mdc:columns>
+
+            </mdc:Table>
         </f:content>
+
     </f:DynamicPage>
 </mvc:View>
