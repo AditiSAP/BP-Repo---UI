@@ -1,0 +1,231 @@
+<mvc:View controllerName="com.bpcfn.jobscheduler.controller.JobDetail"
+	xmlns:uxap="sap.uxap"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:t="sap.ui.table"
+    xmlns:form = "sap.ui.layout.form">
+	<uxap:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="true" upperCaseAnchorBar="false">
+		<uxap:headerTitle>
+			<uxap:ObjectPageDynamicHeaderTitle>
+				<uxap:expandedHeading>
+					<Title text="{JobDetailsModel>/jobname}" wrapping="true" />
+				</uxap:expandedHeading>
+			</uxap:ObjectPageDynamicHeaderTitle>
+		</uxap:headerTitle>
+		<uxap:sections>
+			<uxap:ObjectPageSection titleUppercase="false" title="Run Details">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection titleUppercase="false">
+						<VBox>
+							<Table id="idViewTasksTable" mode="SingleSelectMaster" items="{path: 'JobDetailsModel>/_Tasks'}" selectionChange="onTaskSelected" visible="true">
+								<headerToolbar>
+									<OverflowToolbar>
+										<content>
+											<Title text="{i18n>ScheduledTasks}" level="H2"/>
+											<ToolbarSpacer/>
+											<MenuButton id="idRestartBtn" text="{i18n>Restart}" type="Attention" enabled="{JobDetailsModel>/menuBtnEnbld}">
+												<menu>
+													<Menu>
+														<MenuItem text="{i18n>SelectedTask}" press="onRestartSelTask"/>
+														<MenuItem text="{i18n>FromTask}" press="onRestartFromTask"/>
+													</Menu>
+												</menu>
+											</MenuButton>
+											<Button icon="sap-icon://refresh" tooltip="{i18n>Refresh}" press="onRefreshDetails"/>
+										</content>
+									</OverflowToolbar>
+								</headerToolbar>
+								<columns>
+									<Column>
+										<Text text="{i18n>TaskSequence}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>TaskID}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>TaskDesc}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>JobStatus}" />
+									</Column>
+									<!-- Task status: the outcome of the consolidation task
+									     itself, which is independent of whether the
+									     background job finished. -->
+									<Column>
+										<Text text="{i18n>TaskStatus}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>TaskLogs}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>OnHold}" />
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem vAlign="Middle">
+										<cells>
+											<Text text="{JobDetailsModel>seqno}" />
+											<Text text="{JobDetailsModel>task_id}" />
+											<Text text="{JobDetailsModel>task_desc}" />
+											<ObjectStatus text="{path:'JobDetailsModel>j_status', formatter:'.formatter.statusText'}" state="{path:'JobDetailsModel>j_status', formatter:'.formatter.statusState'}" />
+											<ObjectStatus
+												text="{path:'JobDetailsModel>t_status', formatter:'.formatter.taskStatusText'}"
+												state="{path:'JobDetailsModel>t_status', formatter:'.formatter.taskStatusState'}" />
+											<Button icon="sap-icon://task" press="onNavToTaskLogs" enabled="{= ${JobDetailsModel>o_status}? true : false }"/>
+											<Button icon="sap-icon://information" press="onConsDetails" tooltip="{i18n>consUnitDet}" enabled="{= !!${JobDetailsModel>hasHoldUnits} }"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<t:TreeTable visible="false" rows="{path: 'JobDetailsModel>/_treeData', parameters: {arrayNames:['children']}, sorter: [{ path: 'seqno', descending: false }]}" selectionBehavior="Row" selectionMode="Single" rowSelectionChange="onTaskSelected" class="sapUiSmallMarginTop">
+								<t:extension>
+									<OverflowToolbar >
+										<Title text="{i18n>ScheduledTasks}" level="H2"/>
+										<ToolbarSpacer />
+									</OverflowToolbar>
+								</t:extension>
+								<t:columns>
+									<t:Column visible="true">
+										<Label text="{i18n>SeqNo}" />
+										<t:template>
+											<Text text="{JobDetailsModel>seqno}" wrapping="false" visible="{= ${JobDetailsModel>con_unit}? false : true }"/>
+										</t:template>
+									</t:Column>
+									<t:Column visible="true">
+										<Label text="{i18n>TaskID}"/>
+										<t:template>
+											<Text text="{JobDetailsModel>task_id}" wrapping="false" visible="{= ${JobDetailsModel>con_unit}? false : true }"/>
+										</t:template>
+									</t:Column>
+									<t:Column visible="true">
+										<Label text="{i18n>TaskDesc}" />
+										<t:template>
+											<Text text="{JobDetailsModel>task_desc}" wrapping="false" visible="{= ${JobDetailsModel>con_unit}? false : true }"/>
+										</t:template>
+									</t:Column>
+									<t:Column visible="true">
+										<Label text="{i18n>ConsUnit}" />
+										<t:template>
+											<Text text="{JobDetailsModel>con_unit}" wrapping="false" />
+										</t:template>
+									</t:Column>
+									<t:Column visible="true">
+										<Label text="{i18n>TaskStatus}" />
+										<t:template>
+											<Text text="{JobDetailsModel>t_status}" wrapping="false" />
+										</t:template>
+									</t:Column>
+									<t:Column visible="true">
+										<Label text="{i18n>TaskLogs}" />
+										<t:template>
+											<Button icon="sap-icon://task" press="onNavToTaskLogs" visible="{= ${JobDetailsModel>con_unit}? true : false }" enabled="{= ${JobDetailsModel>jobcount}? true : false }"/>
+										</t:template>
+									</t:Column>
+								</t:columns>
+							</t:TreeTable>
+						</VBox>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+			<uxap:ObjectPageSection titleUppercase="false" title="{i18n>BlockUnblock}">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection titleUppercase="false">
+						<form:SimpleForm editable="false" layout="ResponsiveGridLayout" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+							<Label text="{i18n>BlockMode}"/>
+							<Text text="{path: 'JobDetailsModel>/block_unblock' , formatter: '.formatter.blockUnblock'}"/>
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+			<uxap:ObjectPageSection titleUppercase="false" title="{i18n>SchOpt}">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection titleUppercase="false">
+						<form:SimpleForm editable="false" layout="ResponsiveGridLayout" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2">
+							<form:toolbar>
+								<Toolbar visible="true">
+									<ToolbarSpacer />
+									<Button text="{i18n>ShwTmZn}" press="onPressTimeZone"/>
+								</Toolbar>
+							</form:toolbar>
+							<core:Title text="{i18n>RunDet}"/>
+							<Label text="{i18n>stDateTime}"/>
+							<Text text="{parts: [{path:'JobDetailsModel>/sdl_startdt'}, {path:'JobDetailsModel>/sdl_starttm'}], formatter: '.formatter.formatDateTime'}" />
+							<Label/>
+							<Text text="({path:'JobDetailsModel>/runStart'})" visible="{path: 'JobDetailsModel>/convertedTime'}"/>
+							<Label text="{i18n>endDateTime}"/>
+							<Text text="{parts: [{path:'JobDetailsModel>/endDate'}, {path:'JobDetailsModel>/endTime'}], formatter: '.formatter.formatDateTime'}"/>
+							<Label/>
+							<Text text="({path:'JobDetailsModel>/runEnd'})" visible="{parts:[{path:'JobDetailsModel>/runEnd'},{path: 'JobDetailsModel>/convertedTime'}], formatter: '.formatter.runEndVisible'}"/>
+							<Label text="{i18n>TmZnJob}"/>
+							<Text text="{path:'JobDetailsModel>/scheduling_timezone'}"/>
+							<core:Title text="{i18n>SchOpt}"/>
+							<Label text="{i18n>serStDt}"/>
+							<Text text="{path:'JobDetailsModel>/start_date_time', formatter: '.formatter.formatUTCDateTime'}" />
+							<Label/>
+							<Text text="({path:'JobDetailsModel>/seriesStart'})" visible="{path: 'JobDetailsModel>/convertedTime'}"/>
+							<Label text="{i18n>RecurrPat}"/>
+							<Text text="{parts:[{path: 'JobDetailsModel>/periodic_granularity'}, {path:'JobDetailsModel>/periodic_value'}], formatter: '.formatter.recurrenceText'}"/>
+							<Label text="{i18n>serEndDt}"/>
+							<Text text="{parts:[{path: 'JobDetailsModel>/end_type_c'}, {path:'JobDetailsModel>/end_date_time', formatter: '.formatter.formatUTCDateTime'}, {path:'JobDetailsModel>/max_iterations'}], formatter: '.formatter.endByText'}" visible="{path: 'JobDetailsModel>/periodic_granularity', formatter: '.formatter.everyEndFieldVisible'}"/>
+							<Label/>
+							<Text text="({path:'JobDetailsModel>/seriesEnd'})" visible="{parts:[{path: 'JobDetailsModel>/periodic_granularity'}, {path: 'JobDetailsModel>/end_type_c'}, {path: 'JobDetailsModel>/convertedTime'}], formatter: '.formatter.byEndByVisibleConverted'}"/>
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+			<uxap:ObjectPageSection titleUppercase="false" title="{i18n>Parameters}">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection titleUppercase="false">
+						<form:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+							<Label text="{i18n>FiscalYear}"/>
+							<Text text="{JobDetailsModel>/fc_year}" />
+							<Label text="{i18n>Period}"/>
+							<Text text="{JobDetailsModel>/fc_period}" />
+							<Label text="{i18n>Version}"/>
+							<Text text="{JobDetailsModel>/version}" />
+							<Label text="{i18n>ConsCOA}"/>
+							<Text text="{JobDetailsModel>/coa}" />
+							<Label text="{i18n>ConsGrp}"/>
+							<Text text="{JobDetailsModel>/con_grp}" />
+							<Label text="{i18n>ConsUnit}"/>
+							<MultiInput id="idDispConsUnit" editable="false" width="50%" tokens="{JobDetailsModel>/ConsUnitTokens}">
+								<tokens>
+									<Token key="{JobDetailsModel>key}" text="{JobDetailsModel>text}" />
+								</tokens>
+								<!-- Suggestion template removed. This MultiInput is
+								     editable="false" and only displays the tokens
+								     already on the job, so it never showed
+								     suggestions - but the template kept a live
+								     reference to consUnitModel
+								     (API_CONSOLIDATIONUNIT). -->
+							</MultiInput>
+							<Label text="{i18n>GenericUser}"/>
+							<Text text="{JobDetailsModel>/generic_user_id}" />
+							<Label text="{i18n>RepType}"/>
+							<RadioButtonGroup id="idDispRepType" selectedIndex="{JobDetailsModel>/RepType}" columns="3" enabled="false" visible="{JobDetailsModel>/RepTypeVisible}">
+								<RadioButton text="{i18n>Automatic}"/>
+								<RadioButton text="{i18n>CP}"/>
+								<RadioButton text="{i18n>DP}"/>
+							</RadioButtonGroup>
+							<Label text="{i18n>GenericUser}"/>
+							<Text text="{JobDetailsModel>/generic_user_id}" visible="false"/>
+							<Label text="{i18n>TestRun}"/>
+							<CheckBox selected="{JobDetailsModel>/testmode}" enabled="false" visible="{=${JobDetailsModel>/block_unblock} === ''? true : false}"/>
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+			<uxap:ObjectPageSection titleUppercase="false" title="{i18n>Variants}" visible="{= !!${JobDetailsModel>/selected_variant} }">
+				<uxap:subSections>
+					<uxap:ObjectPageSubSection titleUppercase="false">
+						<form:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+							<Label text="{i18n>seltdVariant}"/>
+							<Text text="{JobDetailsModel>/selected_variant}" />
+						</form:SimpleForm>
+					</uxap:ObjectPageSubSection>
+				</uxap:subSections>
+			</uxap:ObjectPageSection>
+		</uxap:sections>
+	</uxap:ObjectPageLayout>
+</mvc:View>

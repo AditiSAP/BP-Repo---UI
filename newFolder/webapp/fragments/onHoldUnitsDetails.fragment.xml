@@ -1,0 +1,41 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:form = "sap.ui.layout.form">
+	<Dialog title="{i18n>ConsUnitOnHold}" contentWidth="50%">
+		<VBox>
+			<form:SimpleForm editable="false" layout="ResponsiveGridLayout" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2">
+				<Label text="{i18n>TaskID}" visible="{= !!${errorLogsModel>/}.length }"/>
+				<Text text="{= ${errorLogsModel>/}.length ? ${errorLogsModel>/}[0].TaskId : '' }" />
+			</form:SimpleForm>
+			<Table mode="None" items="{errorLogsModel>/}">
+				<columns>
+					<Column width="50%">
+						<Text text="{i18n>vhUnitTitle}" />
+					</Column>
+					<!-- Reason: 'E' = errored at this task, 'H' = held because a
+					     preceding task failed. Both are units a restart will
+					     reprocess, hence one dialog rather than two. -->
+					<Column width="50%">
+						<Text text="{i18n>reason}" />
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{errorLogsModel>ConUnit}" />
+							<ObjectStatus
+								text="{path:'errorLogsModel>HoldReason', formatter:'.formatter.holdReasonText'}"
+								state="{path:'errorLogsModel>HoldReason', formatter:'.formatter.holdReasonState'}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer />
+				<Button text="{i18n>Close}" press="onCloseValueHelp" />
+			</OverflowToolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,32 @@
+/* Enter your custom styles here */
+.customDate.sapMDTP.sapMDTPWithTimezone .sapMInputBaseContentWrapper>input{
+    min-width: 9rem;
+}
+
+/* ===== dashboard: uniform, scrollable panels ===== */
+/* both cards get the SAME fixed height, and scroll internally, so a long
+   on-hold list and a short timeline (or vice versa) never stretch the page
+   or leave one panel dwarfing the other. */
+.grsLeft  { padding-right:0.5rem; }
+.grsRight { padding-left:0.5rem; min-width:22rem; }
+
+/* KPI tiles: tight, evenly spaced row - no big gaps */
+.grsKpiRow { gap:0.5rem; margin:0 0 0.75rem 0; }
+.grsKpi    { width:8.5rem; margin:0 !important; }
+
+/* the two content cards share one fixed height */
+.grsScrollCard { height:26rem; }
+.grsScrollCard .sapFCardContent { height:100%; overflow:auto; }
+
+/* timeline internals */
+.grsTimeline { width:100%; }
+.grsRuler { color:#6a7889; font-size:0.66rem; border-bottom:1px dashed #e5e5e5; padding-bottom:4px; margin:0 6rem 8px 11rem; }
+.grsRunDate { margin:0 0 6px 11rem; }
+.grsLegend { margin:10px 0 0 11rem; }
+.grsLane { padding:3px 0; width:100%; }
+.grsLaneName { flex:0 0 11rem; }
+.grsLaneName .sapMText { font-size:0.75rem; }
+.grsLaneSub { color:#6a7889; font-size:0.66rem; }
+.grsTrack { position:relative; height:22px; background:#f2f4f6; border-radius:5px; flex:1 1 auto; min-width:0; }
+.grsBar { position:absolute; top:3px; height:16px; white-space:nowrap; overflow:hidden; font-size:0.62rem; }
+.grsStartLbl { flex:0 0 6rem; text-align:right; font-size:0.66rem; color:#6a7889; padding-left:6px; }

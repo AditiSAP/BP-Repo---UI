@@ -1,0 +1,18 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout">
+    <Dialog title="{i18n>timeZone}" contentWidth="50%">
+        <subHeader>
+            <OverflowToolbar>
+                <SearchField liveChange=".onSearchTimeZone"/>
+            </OverflowToolbar>
+        </subHeader>
+        <List items="{timeZoneModel>/}" selectionChange=".onSelectionChangeTimeZone" mode="SingleSelectMaster" includeItemInSelection="true">
+            <StandardListItem title="{timeZoneModel>Description}" description="{timeZoneModel>Code}" />
+        </List>
+        <endButton>
+            <Button text="{i18n>Cancel}" press="onPressCancel" visible="true"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

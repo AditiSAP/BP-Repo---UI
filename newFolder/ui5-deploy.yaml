@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: com.bpcfn.jobscheduler
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: ABAP_TO_ZSF100_PP
+          url: http://cfingrdcdev.pp.virt:9000
+          client: '100'
+        app:
+          name: /BPCFN/TIER3_GR_JOB_SH
+          description: GR Task Scheduler
+          package: /BPCFN/TIER3_GR_JOB_CNSL_TASK
+          transport: ZSFK913346
+        exclude:
+          - /test/
+          - /localService/

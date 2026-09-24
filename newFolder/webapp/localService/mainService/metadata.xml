@@ -1,0 +1,1443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="APJ_JOB_MANAGEMENT_SRV" xml:lang="en" sap:schema-version="4" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="JobTemplateProperties" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                </Key>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SupportsTestMode" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Supports Test Mode" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TestModeInd" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Test Mode Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="CheckJobScheduling" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ChangedInd"/>
+                    <PropertyRef Name="ValidInd"/>
+                </Key>
+                <Property Name="ChangedInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MonthDay" Type="Edm.Int32" sap:unicode="false" sap:label="Month Day" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValidInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Timestamp" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParameterSearchHelpsField" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamShlpName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                    <PropertyRef Name="JobTemplateParameterName"/>
+                    <PropertyRef Name="FieldName"/>
+                </Key>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamShlpName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Search Help Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FieldName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Search Help Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SelectionPos" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Selection Position" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResultPos" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="List position" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataType" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IntLength" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Internal Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="OutLength" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Output Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Decimals" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Decimal Places" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasValueHelp" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FieldText" Type="Edm.String" Nullable="false" MaxLength="55" sap:unicode="false" sap:label="Heading" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="FactoryCalendar" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="Id" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Factory Cal. ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Workdays" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Workdays" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobScheduleCheck" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SuccessfulInd"/>
+                </Key>
+                <Property Name="JobParameterValues" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="JOB_PARAMETER_VALUES" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SuccessfulInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ChangedInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DynamicProperties" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobCatalogEntry" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobCatalogEntryName"/>
+                </Key>
+                <Property Name="JobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog Entry Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCatalogEntryText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Catalog Entry Text" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreationUserName" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="LastChangeUserName" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="JobStatusCode" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="Value" sap:unicode="false" sap:label="Job status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Value" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="VALUE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParameterSearchHelpField" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                    <PropertyRef Name="JobTemplateParameterName"/>
+                    <PropertyRef Name="FieldName"/>
+                </Key>
+                <Property Name="FieldText" Type="Edm.String" Nullable="false" MaxLength="55" sap:unicode="false" sap:label="Heading" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FieldName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Search Help Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SelectionPos" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Selection Position" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ResultPos" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="List position" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DataType" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="OutLength" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="External Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IntLength" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Internal Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Decimals" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Decimal Places" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasValueHelp" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="VHPeriodicGranularity" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Recurrence Pattern" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobRunSequence" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobRunStep"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="14" sap:unicode="false" sap:label="Run ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStep" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Step Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceName" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Sequence Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Sequence Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceStatus" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceStatusText" Type="Edm.String" MaxLength="15" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceApplLogSeverity" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Log" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceApplLogHandle" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Appl. Log Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasResultsInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Spool Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Results" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunLogIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Log Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeLog" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I see log?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeOutput" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I see output?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunParameterSectionSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunSequenceToSection" FromRole="FromRole_JobRunSequenceToSection" ToRole="ToRole_JobRunSequenceToSection"/>
+            </EntityType>
+            <EntityType Name="JobRunTimeline" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobRunPlannedStartDatetime"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="14" sap:unicode="false" sap:label="Run ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunPlannedStartDatetime" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="Planned Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParameterSearchHelps" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                    <PropertyRef Name="JobTemplateParameterName"/>
+                    <PropertyRef Name="JobTemplateParamShlpName"/>
+                </Key>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamShlpName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Search Help Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamShlpText" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Short text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SchlpSupportsFuzzySearch" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Search Help Supports Fuzzy Search" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateParameterSearchHelpsFieldSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParamSearchHelpToFields" FromRole="FromRole_JobTemplateGroupParamSearchHelpToFields" ToRole="ToRole_JobTemplateGroupParamSearchHelpToFields"/>
+            </EntityType>
+            <EntityType Name="LogSeverity" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="Text" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="MessageDetailLevel" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="Text" sap:unicode="false" sap:label="Level of Detail" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobTemplate" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                </Key>
+                <Property Name="JobTemplateObjectLayerC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Layer Code" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="120" sap:unicode="false" sap:label="Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateSequence" Type="Edm.String" sap:unicode="false" sap:label="Template Sequence" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TextEn" Type="Edm.String" Nullable="false" MaxLength="120" sap:unicode="false" sap:label="Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateStepCount" Type="Edm.Int32" sap:unicode="false" sap:label="Steps" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateValues" Type="Edm.String" sap:unicode="false" sap:label="Template Values" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobPeriodicGranularity" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Recurrence Pattern" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCatalogEntryName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobPeriodicValue" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Periodic value" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobTemplateText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Template" sap:creatable="false"/>
+                <Property Name="JobCatalogEntryText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreationUserName" Type="Edm.String" MaxLength="80" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTime" Precision="7" ConcurrencyMode="Fixed" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="LastChangeUserName" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobTemplateHiddenInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Indicator for Hidden Job Template" sap:creatable="false" sap:sortable="false"/>
+                <Property Name="JobCatalogEntryTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Entry Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanChange" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I change template?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanDelete" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I delete template?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CreationUser" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Created By Intern" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateProperties" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateToProperties" FromRole="FromRole_JobTemplateToProperties" ToRole="ToRole_JobTemplateToProperties"/>
+                <NavigationProperty Name="JobTemplateParamGroupSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateToGroup" FromRole="FromRole_JobTemplateToGroup" ToRole="ToRole_JobTemplateToGroup"/>
+                <NavigationProperty Name="JobTemplateParamSectionSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateToSection" FromRole="FromRole_JobTemplateToSection" ToRole="ToRole_JobTemplateToSection"/>
+                <NavigationProperty Name="JobTemplateSequenceSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateToSequence" FromRole="FromRole_JobTemplateToSequence" ToRole="ToRole_JobTemplateToSequence"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParamGroup" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                </Key>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Parameter Group Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateParameterSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupToParameter" FromRole="FromRole_JobTemplateGroupToParameter" ToRole="ToRole_JobTemplateGroupToParameter"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParameter" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                    <PropertyRef Name="JobTemplateParameterName"/>
+                </Key>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateParamName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamCtrlByParam" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamIndentInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamVhTypeC" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Input Help Type Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamVhFuzzy" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Supports fuzzy search" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropCheRad" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="CHAR01 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterText" Type="Edm.String" sap:unicode="false" sap:label="JOB_TEMPLATE_PARAMETER_TEXT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamMandatoryInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Mandatory Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamHasVhInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamHasShInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Supports suggestion help" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropKind" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Selection Category" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropType" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Field type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropLength" Type="Edm.Int32" sap:unicode="false" sap:label="Field Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropSelGroupId" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="CHAR04 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropDisplayType" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="CHAR01 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamBECtrlInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Backend Call Req." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateReadOnlyParameterInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Read Only" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamTextAreaRows" Type="Edm.Byte" sap:unicode="false" sap:label="Text Area Rows" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempDynamicPropReadOnlyInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Dynamic Read Only Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempDynamicPropHiddenInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Dynamic Hidden UI Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamValueCtrldByParam" Type="Edm.String" MaxLength="38" sap:unicode="false" sap:label="Value Controlled by Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTempParamOnlyMSSupportedInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Multiple Single Val." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateParameterSearchHelpFieldSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParameterToSearchHelp" FromRole="FromRole_JobTemplateGroupParameterToSearchHelp" ToRole="ToRole_JobTemplateGroupParameterToSearchHelp"/>
+                <NavigationProperty Name="JobTemplateParameterSearchHelpsSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamToSearchHelps" FromRole="FromRole_JobTemplateParamToSearchHelps" ToRole="ToRole_JobTemplateParamToSearchHelps"/>
+                <NavigationProperty Name="JobTemplateValueSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParameterToValue" FromRole="FromRole_JobTemplateGroupParameterToValue" ToRole="ToRole_JobTemplateGroupParameterToValue"/>
+            </EntityType>
+            <EntityType Name="JobTemplateValue" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobTemplateParamGroupName"/>
+                    <PropertyRef Name="JobTemplateParameterName"/>
+                    <PropertyRef Name="Uuid"/>
+                </Key>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParamGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Uuid" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job Template Value Identifier" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Sign" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="SIGN" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Option" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Option" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Low" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Job Template Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="High" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Job Template Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="VhResult" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="VH Result" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobRunOverview" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job ID" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobTemplateStepCount" Type="Edm.Int32" sap:unicode="false" sap:label="Steps" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasErrorInd" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Log Error Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStatusText" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunDuration" Type="Edm.Int32" sap:unicode="false" sap:label="Duration" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasApplLogInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Application Log Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="14" sap:hierarchy-node-for="JobRunCount" sap:unicode="false" sap:label="Run ID" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunFormattedDuration" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Duration" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCatalogEntryName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Catalog Entry Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCreatedAt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Created At" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCreatedBy" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="Created By ID" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobCreatedByFormattedName" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Created By" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunStatus" Type="Edm.String" MaxLength="1" sap:filter-restriction="multi-value" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunLog" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunPlannedStartDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Planned Start" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunStartDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Start" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobRunEndDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="End" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobClass" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Job class" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="JobPeriodicInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Is Periodic Job" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SearchDatetime" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:filter-restriction="interval" sap:unicode="false" sap:label="Date From-To" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="PeriodicGranularity" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Recurrence Pattern" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PeriodicValue" Type="Edm.Int16" sap:unicode="false" sap:label="Periodic value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ScheduleTypeCode" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Schedule Type Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunApplLogHandle" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Appl. Log Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateTechnicalInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Technical Indicator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCatalogEntryTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Entry Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasResultsInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Spool Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Results" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunLogIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Log Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunRestartMode" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Job Frequency" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunRestartCount" Type="Edm.Int16" sap:unicode="false" sap:label="Restart Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunOrigJobName" Type="Edm.String" MaxLength="32" sap:unicode="false" sap:label="Predecessor Job ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunOrigJobCount" Type="Edm.String" MaxLength="8" sap:hierarchy-parent-node-for="JobRunCount" sap:unicode="false" sap:label="Predecessor Run ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHierarchyLevel" Type="Edm.Int16" sap:hierarchy-level-for="JobRunCount" sap:unicode="false" sap:label="Level" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunDrillState" Type="Edm.String" MaxLength="10" sap:hierarchy-drill-state-for="JobRunCount" sap:unicode="false" sap:label="Expandable" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunApplLogCount" Type="Edm.Int16" sap:unicode="false" sap:label="Number of Logs" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeOutput" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I see the job Output?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanCancelJob" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I cancel the job?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanRestartJob" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I restart the job?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeLog" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I see Log?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanCreateJob" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I create Job" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeDetails" Type="Edm.Boolean" sap:unicode="false" sap:label="Can I see details?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunDetails" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToDetails" FromRole="FromRole_JobRunToDetails" ToRole="ToRole_JobRunToDetails"/>
+                <NavigationProperty Name="JobRunApplicationLogDetails" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToApplicationLogs" FromRole="FromRole_JobRunToApplicationLogs" ToRole="ToRole_JobRunToApplicationLogs"/>
+            </EntityType>
+            <EntityType Name="JobRunLog" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobLogNumber"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobLogNumber" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="INT4" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Timestamp" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MsgType" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Message Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MsgText" Type="Edm.String" sap:unicode="false" sap:label="MSG_TEXT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="ApplicationLogMessage" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="LogHandle"/>
+                    <PropertyRef Name="MessageNumber"/>
+                </Key>
+                <Property Name="ContextField1" Type="Edm.String" MaxLength="256" sap:unicode="false" sap:label="Context Field 1" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ContextField2" Type="Edm.String" MaxLength="256" sap:unicode="false" sap:label="Context Field 2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ContextField3" Type="Edm.String" MaxLength="256" sap:unicode="false" sap:label="Context Field 3" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ContextField4" Type="Edm.String" MaxLength="256" sap:unicode="false" sap:label="Context Field 4" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ContextField5" Type="Edm.String" MaxLength="256" sap:unicode="false" sap:label="Context Field 5" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DetailLevel" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Level of Detail" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="HasDetailText" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasLongText" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogHandle" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageNumber" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Message No." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Message Type" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="TypeText" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Severity Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Timestamp" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="MessageLongText" Relationship="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessageToTexts" FromRole="FromRole_ApplicationLogMessageToTexts" ToRole="ToRole_ApplicationLogMessageToTexts"/>
+            </EntityType>
+            <EntityType Name="JobRunParameterGroup" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobParameterGroupName"/>
+                    <PropertyRef Name="JobRunStep"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterGroupText" Type="Edm.String" Nullable="false" MaxLength="120" sap:unicode="false" sap:label="Job Parameter Group Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStep" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Step Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunParameterSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunGroupToParameter" FromRole="FromRole_JobRunGroupToParameter" ToRole="ToRole_JobRunGroupToParameter"/>
+            </EntityType>
+            <EntityType Name="JobRunParameter" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobParameterGroupName"/>
+                    <PropertyRef Name="JobParameterName"/>
+                    <PropertyRef Name="JobRunStep"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateParamName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterIndentInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropLength" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Field Length" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterCtrlByParam" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterMandatoryInd" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Mandatory Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropSelGroupId" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="CHAR04 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropDisplayType" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="CHAR01 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropType" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Field type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ParamPropCheRad" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="CHAR01 Data Element for SYST" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterText" Type="Edm.String" sap:unicode="false" sap:label="JOB_PARAMETER_TEXT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParamPropKind" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Selection Category" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStep" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Step Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunValueSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunGroupParameterToValue" FromRole="FromRole_JobRunGroupParameterToValue" ToRole="ToRole_JobRunGroupParameterToValue"/>
+            </EntityType>
+            <EntityType Name="JobRunValue" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobRunStep"/>
+                    <PropertyRef Name="JobParameterName"/>
+                    <PropertyRef Name="JobParameterGroupName"/>
+                    <PropertyRef Name="Pos"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStep" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Step Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterName" Type="Edm.String" Nullable="false" MaxLength="38" sap:unicode="false" sap:label="Parameter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterGroupName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parameter Group Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Pos" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Sign" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="SIGN" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Option" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Option" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Low" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Job Template Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="High" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Job Template Value" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="VhResult" Type="Edm.String" sap:unicode="false" sap:label="VH Result" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="ApplicationLogMessageLongText" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="LongText"/>
+                </Key>
+                <Property Name="LongText" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Long Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobRunApplicationLogDetails" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="LogNumber"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Run ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogNumber" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Log number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogHandle" Type="Edm.String" Nullable="false" MaxLength="22" sap:unicode="false" sap:label="Log ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogSeverity" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Degree of Severity" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogDescription" Type="Edm.String" Nullable="false" MaxLength="80" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobRunDetails" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                </Key>
+                <Property Name="FactoryCalendarText" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Using Calendar" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunApplLogHandle" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Appl. Log Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SchedulingTimezoneUtcDiff" Type="Edm.Time" Nullable="false" Precision="0" sap:unicode="false" sap:label="Difference from UTC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SchedulingTimezoneUtcSign" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Sign of Difference" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunNextPlannedStartDt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Next Planned Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SchedulingTimezoneText" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Time Zone" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SchedulingTimezone" Type="Edm.String" MaxLength="6" sap:unicode="false" sap:label="Time Zone" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunLastPlannedStartDt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Last Planned Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskMonthShiftDirection" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Version Number Component" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RestrictionTypeCode" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="If Date Falls on Non-Working Day" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FactoryCalendarId" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Version Number Component" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCatalogEntryName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="14" sap:unicode="false" sap:label="Run ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCatalogEntryText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Catalog Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PeriodicGranularity" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Recurrence Pattern" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PeriodicValue" Type="Edm.Int16" sap:unicode="false" sap:label="Signed INT2 / int16" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ScheduleTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Schedule Type Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCreatedAt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Created At" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskEndTypeC" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Job end type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCreatedBy" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="Created By" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskEndDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Series End" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCreatedByFormattedName" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskEndMaxIterations" Type="Edm.Int32" sap:unicode="false" sap:label="Max. Iterations" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStatus" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskWeekdayInfo" Type="Edm.String" MaxLength="7" sap:unicode="false" sap:label="On" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunLog" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskWorkday" Type="Edm.Int16" sap:unicode="false" sap:label="INT2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStatusText" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskUseWorkdaysInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunPlannedStartDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Planned Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStartDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunEndDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="End" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobClass" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Job class" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunDuration" Type="Edm.Int32" sap:unicode="false" sap:label="Duration" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunFormattedDuration" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Duration" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasApplLogInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasErrorInd" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTaskStartDatetime" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Series Start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DefaultPeriodicGranularity" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Periodic Granularity Defined in Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DefaultPeriodicValue" Type="Edm.Int16" Nullable="false" sap:unicode="false" sap:label="Periodic Value Defined in Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FactoryCalendarWorkdays" Type="Edm.String" MaxLength="7" sap:unicode="false" sap:label="Factory Calendar Workdays" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobCatalogEntryTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Entry Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="WeekNumber" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Week Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunHasResultsInd" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Spool Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunResultsTypeC" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Results" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunLogIntent" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Log Intent" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunApplLogCount" Type="Edm.Int16" sap:unicode="false" sap:label="Number of Logs" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeLog" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I see log?" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CanSeeOutput" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Can I see output" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunParameterSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToParameters" FromRole="FromRole_JobRunToParameters" ToRole="ToRole_JobRunToParameters"/>
+                <NavigationProperty Name="JobRunParameterSectionSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToSection" FromRole="FromRole_JobRunToSection" ToRole="ToRole_JobRunToSection"/>
+                <NavigationProperty Name="JobRunApplicationLogDetails" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToApplicationLogDetails" FromRole="FromRole_JobRunToApplicationLogDetails" ToRole="ToRole_JobRunToApplicationLogDetails"/>
+                <NavigationProperty Name="JobRunLogSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToLog" FromRole="FromRole_JobRunToLog" ToRole="ToRole_JobRunToLog"/>
+                <NavigationProperty Name="JobRunParameterGroupSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToGroup" FromRole="FromRole_JobRunToGroup" ToRole="ToRole_JobRunToGroup"/>
+                <NavigationProperty Name="JobRunSequenceSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToSequence" FromRole="FromRole_JobRunToSequence" ToRole="ToRole_JobRunToSequence"/>
+                <NavigationProperty Name="JobRunTimelineSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunToTimeline" FromRole="FromRole_JobRunToTimeline" ToRole="ToRole_JobRunToTimeline"/>
+            </EntityType>
+            <EntityType Name="MessageLongText" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="LogHandle"/>
+                    <PropertyRef Name="MessageNumber"/>
+                </Key>
+                <Property Name="LogHandle" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Appl. Log Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageNumber" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LongText" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DetailText" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobTemplateParamSection" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobParameterSectionName"/>
+                </Key>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Sequence Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionPosition" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Position" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionText" Type="Edm.String" Nullable="false" MaxLength="120" sap:unicode="false" sap:label="Section" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateParamGroupSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSectionToGroup" FromRole="FromRole_JobTemplateParamSectionToGroup" ToRole="ToRole_JobTemplateParamSectionToGroup"/>
+            </EntityType>
+            <EntityType Name="JobRunParameterSection" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                    <PropertyRef Name="JobParameterSectionName"/>
+                    <PropertyRef Name="JobRunStep"/>
+                </Key>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BasicJobTemplateSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionText" Type="Edm.String" Nullable="false" MaxLength="120" sap:unicode="false" sap:label="Section" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobParameterSectionName" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Section Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunStep" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Step Number" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobRunParameterGroupSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobRunSectionToGroup" FromRole="FromRole_JobRunSectionToGroup" ToRole="ToRole_JobRunSectionToGroup"/>
+            </EntityType>
+            <EntityType Name="JobActionStatus" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Successful"/>
+                </Key>
+                <Property Name="Successful" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="JobScheduleStatus" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobName"/>
+                    <PropertyRef Name="JobRunCount"/>
+                </Key>
+                <Property Name="JobName" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Job name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobRunCount" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Job no." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="ValueHelpResult" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Result"/>
+                </Key>
+                <Property Name="Result" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="RESULT" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="TimeZone" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Time Zone" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SupportsDayLightSavingInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="IsDayLightSavingActiveInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="IsUserTimezoneInd" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Boolean Variable (X=True, -=False, Space=Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UtcCalcDifference" Type="Edm.Time" Nullable="false" Precision="0" sap:unicode="false" sap:label="Difference from UTC" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="UtcDifference" Type="Edm.Time" Nullable="false" Precision="0" sap:unicode="false" sap:label="Difference from UTC" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Time Zone Text" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="UtcSign" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Sign of Difference" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+            </EntityType>
+            <EntityType Name="ModifyTemplateActionStatus" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                </Key>
+                <Property Name="SuccessfulInd" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Job Template" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="ApplicationLogHeader" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="LogHandle"/>
+                </Key>
+                <Property Name="LogHandle" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Appl. Log Handle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField1Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasMessageContextField1" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField2Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasMessageContextField2" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField3Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasMessageContextField3" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField4Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasMessageContextField4" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField5Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="ABAP type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="HasMessageContextField5" Type="Edm.Boolean" sap:unicode="false" sap:label="Boolean Variable (X = True, - = False, Space = Unknown)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField1Label" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField2Label" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField3Label" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField4Label" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MessageContextField5Label" Type="Edm.String" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="ApplicationLogMessageSet" Relationship="APJ_JOB_MANAGEMENT_SRV.ApplicationLogHeaderToMessages" FromRole="FromRole_ApplicationLogHeaderToMessages" ToRole="ToRole_ApplicationLogHeaderToMessages"/>
+            </EntityType>
+            <EntityType Name="JobTemplateSequence" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="JobTemplateName"/>
+                    <PropertyRef Name="JobSequenceName"/>
+                </Key>
+                <Property Name="BasicJobCatalogEntryName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Job Catalog" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JceText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Basic Job Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobTemplateName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Job Template Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Sequence Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequencePosition" Type="Edm.Int32" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="JobSequenceText" Type="Edm.String" MaxLength="120" sap:unicode="false" sap:label="Sequence Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="JobTemplateParamSectionSet" Relationship="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSequenceToSection" FromRole="FromRole_JobTemplateParamSequenceToSection" ToRole="ToRole_JobTemplateParamSequenceToSection"/>
+            </EntityType>
+            <EntityType Name="TimeZoneDefinition" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Definition"/>
+                </Key>
+                <Property Name="Definition" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="VHStartRestriction" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Restriction" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Restriction" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="VHEndType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Job end type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Job end type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="VHJobUser" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Userid"/>
+                </Key>
+                <Property Name="Userid" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="User" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Fullname" Type="Edm.String" Nullable="false" MaxLength="80" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Email" Type="Edm.String" Nullable="false" MaxLength="241" sap:unicode="false" sap:label="E-Mail Address" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Validstatus" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="VALIDSTATUS" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="JobRunGroupParameterToValue" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameter" Multiplicity="0..1" Role="FromRole_JobRunGroupParameterToValue"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunValue" Multiplicity="*" Role="ToRole_JobRunGroupParameterToValue"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunGroupParameterToValue">
+                        <PropertyRef Name="JobParameterName"/>
+                        <PropertyRef Name="JobParameterGroupName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunGroupParameterToValue">
+                        <PropertyRef Name="JobParameterName"/>
+                        <PropertyRef Name="JobParameterGroupName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunSequenceToSection" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunSequence" Multiplicity="1" Role="FromRole_JobRunSequenceToSection"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterSection" Multiplicity="*" Role="ToRole_JobRunSequenceToSection"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunSequenceToSection">
+                        <PropertyRef Name="JobRunStep"/>
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunSequenceToSection">
+                        <PropertyRef Name="JobRunStep"/>
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateParamSectionToGroup" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSection" Multiplicity="1" Role="FromRole_JobTemplateParamSectionToGroup"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamGroup" Multiplicity="*" Role="ToRole_JobTemplateParamSectionToGroup"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateParamSectionToGroup">
+                        <PropertyRef Name="JobTemplateName"/>
+                        <PropertyRef Name="JobParameterSectionName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateParamSectionToGroup">
+                        <PropertyRef Name="JobTemplateName"/>
+                        <PropertyRef Name="JobParameterSectionName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToDetails" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunOverview" Multiplicity="0..1" Role="FromRole_JobRunToDetails"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="0..1" Role="ToRole_JobRunToDetails"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToDetails">
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToDetails">
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToApplicationLogs" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunOverview" Multiplicity="1" Role="FromRole_JobRunToApplicationLogs"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunApplicationLogDetails" Multiplicity="*" Role="ToRole_JobRunToApplicationLogs"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToApplicationLogs">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToApplicationLogs">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateGroupParameterToSearchHelp" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter" Multiplicity="1" Role="FromRole_JobTemplateGroupParameterToSearchHelp"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelpField" Multiplicity="*" Role="ToRole_JobTemplateGroupParameterToSearchHelp"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateGroupParameterToSearchHelp">
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateGroupParameterToSearchHelp">
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateParamToSearchHelps" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter" Multiplicity="0..1" Role="FromRole_JobTemplateParamToSearchHelps"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelps" Multiplicity="*" Role="ToRole_JobTemplateParamToSearchHelps"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateParamToSearchHelps">
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateParamToSearchHelps">
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateGroupParameterToValue" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter" Multiplicity="1" Role="FromRole_JobTemplateGroupParameterToValue"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateValue" Multiplicity="*" Role="ToRole_JobTemplateGroupParameterToValue"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateGroupParameterToValue">
+                        <PropertyRef Name="JobTemplateName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateGroupParameterToValue">
+                        <PropertyRef Name="JobTemplateName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunGroupToParameter" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterGroup" Multiplicity="0..1" Role="FromRole_JobRunGroupToParameter"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameter" Multiplicity="*" Role="ToRole_JobRunGroupToParameter"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunGroupToParameter">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobParameterGroupName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunGroupToParameter">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobParameterName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateParamSequenceToSection" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateSequence" Multiplicity="1" Role="FromRole_JobTemplateParamSequenceToSection"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSection" Multiplicity="*" Role="ToRole_JobTemplateParamSequenceToSection"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateParamSequenceToSection">
+                        <PropertyRef Name="JobSequenceName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateParamSequenceToSection">
+                        <PropertyRef Name="JobSequenceName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateToGroup" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplate" Multiplicity="0..1" Role="FromRole_JobTemplateToGroup"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamGroup" Multiplicity="*" Role="ToRole_JobTemplateToGroup"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateToGroup">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateToGroup">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateToSection" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplate" Multiplicity="1" Role="FromRole_JobTemplateToSection"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSection" Multiplicity="*" Role="ToRole_JobTemplateToSection"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateToSection">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateToSection">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateToSequence" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplate" Multiplicity="0..1" Role="FromRole_JobTemplateToSequence"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateSequence" Multiplicity="*" Role="ToRole_JobTemplateToSequence"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateToSequence">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateToSequence">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateToProperties" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplate" Multiplicity="1" Role="FromRole_JobTemplateToProperties"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateProperties" Multiplicity="1" Role="ToRole_JobTemplateToProperties"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateToProperties">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateToProperties">
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="ApplicationLogMessageToTexts" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage" Multiplicity="1" Role="FromRole_ApplicationLogMessageToTexts"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.MessageLongText" Multiplicity="0..1" Role="ToRole_ApplicationLogMessageToTexts"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_ApplicationLogMessageToTexts">
+                        <PropertyRef Name="LogHandle"/>
+                        <PropertyRef Name="MessageNumber"/>
+                    </Principal>
+                    <Dependent Role="ToRole_ApplicationLogMessageToTexts">
+                        <PropertyRef Name="LogHandle"/>
+                        <PropertyRef Name="MessageNumber"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToSequence" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToSequence"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunSequence" Multiplicity="*" Role="ToRole_JobRunToSequence"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToSequence">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToSequence">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToTimeline" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToTimeline"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunTimeline" Multiplicity="*" Role="ToRole_JobRunToTimeline"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToTimeline">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToTimeline">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToGroup" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToGroup"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterGroup" Multiplicity="*" Role="ToRole_JobRunToGroup"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToGroup">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToGroup">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToLog" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="0..1" Role="FromRole_JobRunToLog"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunLog" Multiplicity="*" Role="ToRole_JobRunToLog"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToLog">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToLog">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToApplicationLogDetails" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToApplicationLogDetails"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunApplicationLogDetails" Multiplicity="*" Role="ToRole_JobRunToApplicationLogDetails"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToApplicationLogDetails">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToApplicationLogDetails">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToSection" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToSection"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterSection" Multiplicity="*" Role="ToRole_JobRunToSection"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToSection">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToSection">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunCount"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunToParameters" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" Multiplicity="1" Role="FromRole_JobRunToParameters"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameter" Multiplicity="*" Role="ToRole_JobRunToParameters"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunToParameters">
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunToParameters">
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateGroupParamSearchHelpToFields" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelps" Multiplicity="0..1" Role="FromRole_JobTemplateGroupParamSearchHelpToFields"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelpsField" Multiplicity="*" Role="ToRole_JobTemplateGroupParamSearchHelpToFields"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateGroupParamSearchHelpToFields">
+                        <PropertyRef Name="JobTemplateParamShlpName"/>
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateGroupParamSearchHelpToFields">
+                        <PropertyRef Name="JobTemplateParamShlpName"/>
+                        <PropertyRef Name="JobTemplateParameterName"/>
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="ApplicationLogHeaderToMessages" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.ApplicationLogHeader" Multiplicity="1" Role="FromRole_ApplicationLogHeaderToMessages"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage" Multiplicity="*" Role="ToRole_ApplicationLogHeaderToMessages"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_ApplicationLogHeaderToMessages">
+                        <PropertyRef Name="LogHandle"/>
+                    </Principal>
+                    <Dependent Role="ToRole_ApplicationLogHeaderToMessages">
+                        <PropertyRef Name="LogHandle"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobTemplateGroupToParameter" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamGroup" Multiplicity="1" Role="FromRole_JobTemplateGroupToParameter"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter" Multiplicity="*" Role="ToRole_JobTemplateGroupToParameter"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobTemplateGroupToParameter">
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobTemplateGroupToParameter">
+                        <PropertyRef Name="JobTemplateParamGroupName"/>
+                        <PropertyRef Name="JobTemplateName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="JobRunSectionToGroup" sap:content-version="1">
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterSection" Multiplicity="1" Role="FromRole_JobRunSectionToGroup"/>
+                <End Type="APJ_JOB_MANAGEMENT_SRV.JobRunParameterGroup" Multiplicity="*" Role="ToRole_JobRunSectionToGroup"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_JobRunSectionToGroup">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobParameterSectionName"/>
+                    </Principal>
+                    <Dependent Role="ToRole_JobRunSectionToGroup">
+                        <PropertyRef Name="JobName"/>
+                        <PropertyRef Name="JobRunStep"/>
+                        <PropertyRef Name="JobRunCount"/>
+                        <PropertyRef Name="JobParameterSectionName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="APJ_JOB_MANAGEMENT_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="JobTemplatePropertiesSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateProperties" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="CheckJobSchedulingCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.CheckJobScheduling" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateParameterSearchHelpsFieldSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelpsField" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="FactoryCalendarSet" EntityType="APJ_JOB_MANAGEMENT_SRV.FactoryCalendar" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobScheduleCheckCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.JobScheduleCheck" sap:content-version="1"/>
+                <EntitySet Name="JobCatalogEntrySet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobCatalogEntry" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobStatusCodeSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobStatusCode" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1" sap:semantics="fixed-values"/>
+                <EntitySet Name="JobTemplateParameterSearchHelpFieldSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelpField" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="VHPeriodicGranularitySet" EntityType="APJ_JOB_MANAGEMENT_SRV.VHPeriodicGranularity" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunSequenceSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunSequence" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunTimelineSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunTimeline" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateParameterSearchHelpsSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameterSearchHelps" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="LogSeveritySet" EntityType="APJ_JOB_MANAGEMENT_SRV.LogSeverity" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1" sap:semantics="fixed-values"/>
+                <EntitySet Name="MessageDetailLevelSet" EntityType="APJ_JOB_MANAGEMENT_SRV.MessageDetailLevel" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1" sap:semantics="fixed-values"/>
+                <EntitySet Name="JobTemplateSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplate" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateParamGroupSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateParameterSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateValueSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateValue" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunOverviewSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunOverview" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="JobRunLogSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunLog" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ApplicationLogMessageSet" EntityType="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunParameterGroupSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunParameterGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunParameterSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunParameter" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunValueSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunValue" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ApplicationLogMessageLongTextCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessageLongText" sap:content-version="1"/>
+                <EntitySet Name="JobRunApplicationLogDetailsSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunApplicationLogDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunDetailsSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="MessageLongTextSet" EntityType="APJ_JOB_MANAGEMENT_SRV.MessageLongText" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateParamSectionSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="JobRunParameterSectionSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobRunParameterSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobActionStatusCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.JobActionStatus" sap:content-version="1"/>
+                <EntitySet Name="JobScheduleStatusCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.JobScheduleStatus" sap:content-version="1"/>
+                <EntitySet Name="ValueHelpResultCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.ValueHelpResult" sap:content-version="1"/>
+                <EntitySet Name="TimeZoneSet" EntityType="APJ_JOB_MANAGEMENT_SRV.TimeZone" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="ModifyTemplateActionStatusCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.ModifyTemplateActionStatus" sap:content-version="1"/>
+                <EntitySet Name="ApplicationLogHeaderSet" EntityType="APJ_JOB_MANAGEMENT_SRV.ApplicationLogHeader" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="JobTemplateSequenceSet" EntityType="APJ_JOB_MANAGEMENT_SRV.JobTemplateSequence" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="TimeZoneDefinitionCollection" EntityType="APJ_JOB_MANAGEMENT_SRV.TimeZoneDefinition" sap:content-version="1"/>
+                <EntitySet Name="VHStartRestrictionSet" EntityType="APJ_JOB_MANAGEMENT_SRV.VHStartRestriction" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="VHEndTypeSet" EntityType="APJ_JOB_MANAGEMENT_SRV.VHEndType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="VHJobUserSet" EntityType="APJ_JOB_MANAGEMENT_SRV.VHJobUser" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="JobRunToSectionSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToSection"/>
+                    <End EntitySet="JobRunParameterSectionSet" Role="ToRole_JobRunToSection"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToGroupSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToGroup"/>
+                    <End EntitySet="JobRunParameterGroupSet" Role="ToRole_JobRunToGroup"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateGroupParameterToSearchHelpSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParameterToSearchHelp" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParameterSet" Role="FromRole_JobTemplateGroupParameterToSearchHelp"/>
+                    <End EntitySet="JobTemplateParameterSearchHelpFieldSet" Role="ToRole_JobTemplateGroupParameterToSearchHelp"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunGroupParameterToValueSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunGroupParameterToValue" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunParameterSet" Role="FromRole_JobRunGroupParameterToValue"/>
+                    <End EntitySet="JobRunValueSet" Role="ToRole_JobRunGroupParameterToValue"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateGroupParameterToValueSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParameterToValue" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParameterSet" Role="FromRole_JobTemplateGroupParameterToValue"/>
+                    <End EntitySet="JobTemplateValueSet" Role="ToRole_JobTemplateGroupParameterToValue"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToApplicationLogDetailsSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToApplicationLogDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToApplicationLogDetails"/>
+                    <End EntitySet="JobRunApplicationLogDetailsSet" Role="ToRole_JobRunToApplicationLogDetails"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateParamSectionSetSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateToSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateSet" Role="FromRole_JobTemplateToSection"/>
+                    <End EntitySet="JobTemplateParamSectionSet" Role="ToRole_JobTemplateToSection"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToParameters_AssocSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToParameters" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToParameters"/>
+                    <End EntitySet="JobRunParameterSet" Role="ToRole_JobRunToParameters"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateParamSequenceToSection_AssocS" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSequenceToSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateSequenceSet" Role="FromRole_JobTemplateParamSequenceToSection"/>
+                    <End EntitySet="JobTemplateParamSectionSet" Role="ToRole_JobTemplateParamSequenceToSection"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateToGroupSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateToGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateSet" Role="FromRole_JobTemplateToGroup"/>
+                    <End EntitySet="JobTemplateParamGroupSet" Role="ToRole_JobTemplateToGroup"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateParamSectionToGroupSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamSectionToGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParamSectionSet" Role="FromRole_JobTemplateParamSectionToGroup"/>
+                    <End EntitySet="JobTemplateParamGroupSet" Role="ToRole_JobTemplateParamSectionToGroup"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToSequenceSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToSequence" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToSequence"/>
+                    <End EntitySet="JobRunSequenceSet" Role="ToRole_JobRunToSequence"/>
+                </AssociationSet>
+                <AssociationSet Name="ApplicationLogMessageToTextsSet" Association="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessageToTexts" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ApplicationLogMessageSet" Role="FromRole_ApplicationLogMessageToTexts"/>
+                    <End EntitySet="MessageLongTextSet" Role="ToRole_ApplicationLogMessageToTexts"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToLogSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToLog" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToLog"/>
+                    <End EntitySet="JobRunLogSet" Role="ToRole_JobRunToLog"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateGroupToParameterSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupToParameter" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParamGroupSet" Role="FromRole_JobTemplateGroupToParameter"/>
+                    <End EntitySet="JobTemplateParameterSet" Role="ToRole_JobTemplateGroupToParameter"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateToSequenceSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateToSequence" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateSet" Role="FromRole_JobTemplateToSequence"/>
+                    <End EntitySet="JobTemplateSequenceSet" Role="ToRole_JobTemplateToSequence"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToTimelineSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToTimeline" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunDetailsSet" Role="FromRole_JobRunToTimeline"/>
+                    <End EntitySet="JobRunTimelineSet" Role="ToRole_JobRunToTimeline"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateGroupParamSearchHelpToFielSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateGroupParamSearchHelpToFields" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParameterSearchHelpsSet" Role="FromRole_JobTemplateGroupParamSearchHelpToFields"/>
+                    <End EntitySet="JobTemplateParameterSearchHelpsFieldSet" Role="ToRole_JobTemplateGroupParamSearchHelpToFields"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunSequenceToSection_AssocSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunSequenceToSection" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunSequenceSet" Role="FromRole_JobRunSequenceToSection"/>
+                    <End EntitySet="JobRunParameterSectionSet" Role="ToRole_JobRunSequenceToSection"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateParamToSearchHelpsSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateParamToSearchHelps" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateParameterSet" Role="FromRole_JobTemplateParamToSearchHelps"/>
+                    <End EntitySet="JobTemplateParameterSearchHelpsSet" Role="ToRole_JobTemplateParamToSearchHelps"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToApplicationLogs_AssocSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToApplicationLogs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunOverviewSet" Role="FromRole_JobRunToApplicationLogs"/>
+                    <End EntitySet="JobRunApplicationLogDetailsSet" Role="ToRole_JobRunToApplicationLogs"/>
+                </AssociationSet>
+                <AssociationSet Name="ApplicationLogHeaderToMessagesSet" Association="APJ_JOB_MANAGEMENT_SRV.ApplicationLogHeaderToMessages" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ApplicationLogHeaderSet" Role="FromRole_ApplicationLogHeaderToMessages"/>
+                    <End EntitySet="ApplicationLogMessageSet" Role="ToRole_ApplicationLogHeaderToMessages"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunToDetailsSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunToDetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunOverviewSet" Role="FromRole_JobRunToDetails"/>
+                    <End EntitySet="JobRunDetailsSet" Role="ToRole_JobRunToDetails"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunSectionToGroupSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunSectionToGroup" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunParameterSectionSet" Role="FromRole_JobRunSectionToGroup"/>
+                    <End EntitySet="JobRunParameterGroupSet" Role="ToRole_JobRunSectionToGroup"/>
+                </AssociationSet>
+                <AssociationSet Name="JobRunGroupToParameterSet" Association="APJ_JOB_MANAGEMENT_SRV.JobRunGroupToParameter" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobRunParameterGroupSet" Role="FromRole_JobRunGroupToParameter"/>
+                    <End EntitySet="JobRunParameterSet" Role="ToRole_JobRunGroupToParameter"/>
+                </AssociationSet>
+                <AssociationSet Name="JobTemplateToPropertiesSet" Association="APJ_JOB_MANAGEMENT_SRV.JobTemplateToProperties" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="JobTemplateSet" Role="FromRole_JobTemplateToProperties"/>
+                    <End EntitySet="JobTemplatePropertiesSet" Role="ToRole_JobTemplateToProperties"/>
+                </AssociationSet>
+                <FunctionImport Name="CheckJobSchedulingOptions" ReturnType="APJ_JOB_MANAGEMENT_SRV.CheckJobScheduling" EntitySet="CheckJobSchedulingCollection" m:HttpMethod="POST">
+                    <Parameter Name="CalendarId" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="MonthDay" Type="Edm.Byte" Mode="In" sap:label="INT1"/>
+                    <Parameter Name="MonthDayShiftDirection" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="MonthOnlyWorkdaysInd" Type="Edm.Boolean" Mode="In" sap:label="Indicator"/>
+                    <Parameter Name="PeriodicGranularity" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="PeriodicValue" Type="Edm.Int16" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="ScheduleTypeCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="SchedulingTimezone" Type="Edm.String" Mode="In" MaxLength="6"/>
+                    <Parameter Name="StartDateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Time Stamp"/>
+                    <Parameter Name="StartRestrictionCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="WeekDayInfo" Type="Edm.String" Mode="In" MaxLength="7"/>
+                    <Parameter Name="EndDateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Time Stamp"/>
+                    <Parameter Name="EndTypeC" Type="Edm.String" Mode="In" MaxLength="4"/>
+                    <Parameter Name="Mode" Type="Edm.String" Mode="In" MaxLength="2" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="ModifyTemplate" ReturnType="APJ_JOB_MANAGEMENT_SRV.ModifyTemplateActionStatus" EntitySet="ModifyTemplateActionStatusCollection" m:HttpMethod="PUT" sap:action-for="APJ_JOB_MANAGEMENT_SRV.JobTemplate">
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40" sap:label="Job Template Name"/>
+                    <Parameter Name="JobTemplateText" Type="Edm.String" Mode="In" MaxLength="120" sap:label="Job Template"/>
+                    <Parameter Name="JobCatalogEntryName" Type="Edm.String" Mode="In" MaxLength="40" sap:label="Job Catalog"/>
+                    <Parameter Name="JobTemplateLayerC" Type="Edm.String" Mode="In" MaxLength="1" sap:label="Layer Code"/>
+                    <Parameter Name="JobPeriodicGranularity" Type="Edm.String" Mode="In" MaxLength="2" sap:label="Recurrence Pattern"/>
+                    <Parameter Name="JobPeriodicValue" Type="Edm.String" Mode="In" MaxLength="3" sap:label="Periodic value"/>
+                    <Parameter Name="JobTemplateValues" Type="Edm.String" Mode="In" sap:label="Job Template Values"/>
+                </FunctionImport>
+                <FunctionImport Name="CheckScheduleJob" ReturnType="APJ_JOB_MANAGEMENT_SRV.JobScheduleCheck" EntitySet="JobScheduleCheckCollection" m:HttpMethod="POST">
+                    <Parameter Name="JobParameterValues" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="ParameterKey" Type="Edm.String" Mode="In" Nullable="true"/>
+                    <Parameter Name="CheckPhase" Type="Edm.String" Mode="In" MaxLength="5"/>
+                </FunctionImport>
+                <FunctionImport Name="RestartJob" ReturnType="APJ_JOB_MANAGEMENT_SRV.JobActionStatus" EntitySet="JobActionStatusCollection" m:HttpMethod="POST">
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="14"/>
+                    <Parameter Name="JobRestartMode" Type="Edm.String" Mode="In" MaxLength="1" sap:label="Job Frequency"/>
+                </FunctionImport>
+                <FunctionImport Name="ScheduleJob" ReturnType="APJ_JOB_MANAGEMENT_SRV.JobScheduleStatus" EntitySet="JobScheduleStatusCollection" m:HttpMethod="PUT" sap:action-for="APJ_JOB_MANAGEMENT_SRV.JobTemplate">
+                    <Parameter Name="WeekDayInfo" Type="Edm.String" Mode="In" MaxLength="7"/>
+                    <Parameter Name="MonthDay" Type="Edm.SByte" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="EndTypeC" Type="Edm.String" Mode="In" MaxLength="4"/>
+                    <Parameter Name="EndDateTime" Type="Edm.DateTime" Mode="In" Precision="0" Nullable="true" sap:label="Time Stamp"/>
+                    <Parameter Name="EndMaxIterations" Type="Edm.Int16" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="CalendarId" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="StartRestrictionCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="SchedulingTimezone" Type="Edm.String" Mode="In" MaxLength="6"/>
+                    <Parameter Name="JobParameterValues" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="JobCatalogEntryName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="ScheduleTypeCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="StartDateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Time Stamp"/>
+                    <Parameter Name="PeriodicGranularity" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="PeriodicValue" Type="Edm.Int16" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="MonthOnlyWorkdaysInd" Type="Edm.Boolean" Mode="In" sap:label="Indicator"/>
+                    <Parameter Name="MonthDayShiftDirection" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="JobText" Type="Edm.String" Mode="In" MaxLength="120"/>
+                    <Parameter Name="SkipCheckAndAdjustInd" Type="Edm.Boolean" Mode="In" Nullable="true" sap:label="Indicator"/>
+                    <Parameter Name="JobUser" Type="Edm.String" Mode="In" MaxLength="12" Nullable="true"/>
+                    <Parameter Name="TestModeInd" Type="Edm.Boolean" Mode="In" Nullable="true"/>
+                    <Parameter Name="WeekNumber" Type="Edm.Byte" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="GetMessageLongText" ReturnType="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessageLongText" EntitySet="ApplicationLogMessageLongTextCollection" m:HttpMethod="GET">
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="8"/>
+                    <Parameter Name="MessageNumber" Type="Edm.String" Mode="In" MaxLength="6"/>
+                </FunctionImport>
+                <FunctionImport Name="CancelJob" ReturnType="APJ_JOB_MANAGEMENT_SRV.JobActionStatus" EntitySet="JobActionStatusCollection" m:HttpMethod="POST">
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="14"/>
+                </FunctionImport>
+                <FunctionImport Name="GetValueHelpResult" ReturnType="APJ_JOB_MANAGEMENT_SRV.ValueHelpResult" EntitySet="ValueHelpResultCollection" m:HttpMethod="GET" sap:action-for="APJ_JOB_MANAGEMENT_SRV.JobTemplateParameter">
+                    <Parameter Name="Filters" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="JobTemplateParameterName" Type="Edm.String" Mode="In" MaxLength="38"/>
+                    <Parameter Name="SearchHelpName" Type="Edm.String" Mode="In" MaxLength="30"/>
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32" Nullable="true"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="14" Nullable="true"/>
+                    <Parameter Name="Selection" Type="Edm.String" Mode="In" Nullable="true"/>
+                    <Parameter Name="IsInitial" Type="Edm.Boolean" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="GetTimeZoneDefinition" ReturnType="APJ_JOB_MANAGEMENT_SRV.TimeZoneDefinition" EntitySet="TimeZoneDefinitionCollection" m:HttpMethod="POST"/>
+                <FunctionImport Name="CopyJob" ReturnType="APJ_JOB_MANAGEMENT_SRV.JobScheduleStatus" EntitySet="JobScheduleStatusCollection" m:HttpMethod="POST">
+                    <Parameter Name="CalendarId" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="EndDateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Time Stamp"/>
+                    <Parameter Name="EndMaxIterations" Type="Edm.Int16" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="EndTypeC" Type="Edm.String" Mode="In" MaxLength="4"/>
+                    <Parameter Name="JobCatalogEntryName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40"/>
+                    <Parameter Name="JobText" Type="Edm.String" Mode="In" MaxLength="120"/>
+                    <Parameter Name="MonthDay" Type="Edm.SByte" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="MonthDayShiftDirection" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="MonthOnlyWorkdaysInd" Type="Edm.Boolean" Mode="In" sap:label="Indicator"/>
+                    <Parameter Name="PeriodicGranularity" Type="Edm.String" Mode="In" MaxLength="2"/>
+                    <Parameter Name="PeriodicValue" Type="Edm.Int16" Mode="In" sap:label="Signed INT2 / int16"/>
+                    <Parameter Name="ScheduleTypeCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="SchedulingTimezone" Type="Edm.String" Mode="In" MaxLength="6"/>
+                    <Parameter Name="StartDateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Time Stamp"/>
+                    <Parameter Name="StartRestrictionCode" Type="Edm.String" Mode="In" MaxLength="1"/>
+                    <Parameter Name="WeekDayInfo" Type="Edm.String" Mode="In" MaxLength="7"/>
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="14"/>
+                    <Parameter Name="SkipCheckAndAdjustInd" Type="Edm.Boolean" Mode="In" Nullable="true" sap:label="Indicator"/>
+                    <Parameter Name="JobUser" Type="Edm.String" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="GetJobTemplateUsers" ReturnType="Collection(APJ_JOB_MANAGEMENT_SRV.VHJobUser)" EntitySet="VHJobUserSet" m:HttpMethod="GET">
+                    <Parameter Name="JobTemplateName" Type="Edm.String" Mode="In" MaxLength="40" sap:label="Job Template"/>
+                </FunctionImport>
+                <FunctionImport Name="GetTimeZoneForDate" ReturnType="APJ_JOB_MANAGEMENT_SRV.TimeZone" EntitySet="TimeZoneSet" m:HttpMethod="GET">
+                    <Parameter Name="TzCode" Type="Edm.String" Mode="In" MaxLength="6" sap:label="Time Zone"/>
+                    <Parameter Name="DateTime" Type="Edm.DateTime" Mode="In" Precision="0" sap:label="Date"/>
+                </FunctionImport>
+                <FunctionImport Name="GetJobRunParameterValues" ReturnType="Collection(APJ_JOB_MANAGEMENT_SRV.JobRunValue)" EntitySet="JobRunValueSet" m:HttpMethod="GET">
+                    <Parameter Name="JobName" Type="Edm.String" Mode="In" MaxLength="32"/>
+                    <Parameter Name="JobRunCount" Type="Edm.String" Mode="In" MaxLength="14"/>
+                </FunctionImport>
+            </EntityContainer>
+            <Annotation Term="Core.SchemaVersion" String="4.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.JobRunOverview/JobRunStatus" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="JobStatusCodeSet"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="JobRunStatus"/>
+                                    <PropertyValue Property="ValueListProperty" String="Code"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Value"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.JobTemplate/JobPeriodicGranularity" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="VHPeriodicGranularitySet"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="JobPeriodicGranularity"/>
+                                    <PropertyValue Property="ValueListProperty" String="Code"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.JobTemplate/JobTemplateName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="JobTemplateSet"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="JobTemplateName"/>
+                                    <PropertyValue Property="ValueListProperty" String="JobTemplateName"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="JobTemplateText"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+                    <Collection>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="ContextField1"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="ContextField2"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="ContextField3"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="ContextField4"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="ContextField5"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="DetailLevel"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="HasDetailText"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="HasLongText"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="LogHandle"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="MessageNumber"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="Text"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="Type"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="TypeText"/>
+                        </Record>
+                        <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                            <PropertyValue Property="Value" Path="Timestamp"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage/Type" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="LogSeveritySet"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Type"/>
+                                    <PropertyValue Property="ValueListProperty" String="Code"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.ApplicationLogMessage/DetailLevel" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="MessageDetailLevelSet"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="DetailLevel"/>
+                                    <PropertyValue Property="ValueListProperty" String="Code"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.JobTemplate/JobTemplateName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="JobTemplateText"/>
+            </Annotations>
+            <Annotations Target="APJ_JOB_MANAGEMENT_SRV.JobRunDetails/JobTemplateName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="JobTemplateText"/>
+            </Annotations>
+            <atom:link rel="self" href="/sap/opu/odata/sap/APJ_JOB_MANAGEMENT_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="/sap/opu/odata/sap/APJ_JOB_MANAGEMENT_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

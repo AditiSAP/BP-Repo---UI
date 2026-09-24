@@ -1,0 +1,178 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.bpcfn.jobscheduler",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.18.1",
+      "toolsId": "bf60f70a-8c50-473b-80bd-57cbc9c03f99"
+    },
+    "dataSources": {
+      "custService": {
+        "uri": "/sap/opu/odata4/bpcfn/sb_xb_schd_task_ap/srvd/bpcfn/sd_xb_schd_task_api/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      },
+      "standardService": {
+        "uri": "/sap/opu/odata/sap/APJ_JOB_MANAGEMENT_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/standardService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "fullWidth": true,
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.136.2",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.bpcfn.jobscheduler.i18n.i18n",
+          "supportedLocales": [
+            ""
+          ],
+          "fallbackLocale": ""
+        }
+      },
+      "custModel": {
+        "dataSource": "custService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "standardModel": {
+        "dataSource": "standardService",
+        "preload": true,
+        "settings": {}
+      },
+      "jobModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/data.json"
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "com.bpcfn.jobscheduler.view",
+        "async": true
+      },
+      "routes": [
+        {
+          "name": "Dashboard",
+          "pattern": "",
+          "target": [
+            "Dashboard"
+          ]
+        },
+        {
+          "name": "Home",
+          "pattern": "schedules",
+          "target": [
+            "Home"
+          ]
+        },
+        {
+          "name": "JobDetail",
+          "pattern": "JobDetail/{jobId}/{jobRecCount}",
+          "target": [
+            "JobDetail"
+          ]
+        },
+        {
+          "name": "NewSchedule",
+          "pattern": "NewSchedule/{jobId}/{jobName}/{jobRecCount}",
+          "target": [
+            "NewSchedule"
+          ]
+        }
+      ],
+      "targets": {
+        "Home": {
+          "id": "Home",
+          "name": "Home",
+          "level": 0
+        },
+        "JobDetail": {
+          "id": "JobDetail",
+          "name": "JobDetail",
+          "level": 1
+        },
+        "NewSchedule": {
+          "id": "NewSchedule",
+          "name": "NewSchedule",
+          "level": 1
+        },
+        "Dashboard": {
+          "id": "Dashboard",
+          "name": "Dashboard",
+          "level": 0
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "com.bpcfn.jobscheduler.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

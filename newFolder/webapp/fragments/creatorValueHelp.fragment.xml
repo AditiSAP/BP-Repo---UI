@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<TableSelectDialog title="{i18n>CreatedBy}" items="{custModel>/VH_GenericUser}" search=".onVHCreatedBySearch" confirm="onCreatorSelectConfirm">
+		<columns>
+			<Column>
+				<header>
+					<Label text="{i18n>ID}" />
+				</header>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Text text="{custModel>Bname}" />
+				</cells>
+			</ColumnListItem>
+		</items>
+	</TableSelectDialog>
+</core:FragmentDefinition>

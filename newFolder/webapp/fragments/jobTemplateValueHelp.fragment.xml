@@ -1,0 +1,38 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified"
+	xmlns="sap.m">
+	<Dialog title="{i18n>vhTasksTitle}" contentWidth="50%">
+		<VBox>
+			<SearchField liveChange="onVHTaskSearch"/>
+			<!-- multiSelectMode="SelectAll" gives the standard header
+			     checkbox: tick it to select every listed task, untick to
+			     clear, then uncheck individual rows as needed. Same UX as the
+			     standard con-unit help. -->
+			<Table id="idTaskVHTable" mode="MultiSelect" multiSelectMode="SelectAll" items="{taskModel>/results}">
+				<columns>
+					<Column width="30%">
+						<Text text="{i18n>ID}" />
+					</Column>
+					<Column width="70%">
+						<Text text="{i18n>desc}" />
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Active">
+						<cells>
+							<Text text="{taskModel>Cacti}" />
+							<Text text="{taskModel>Text}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer />
+				<Button text="Select" press="onTaskSelected" type="Emphasized" />
+				<Button text="Close" press="onCloseValueHelp" />
+			</OverflowToolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

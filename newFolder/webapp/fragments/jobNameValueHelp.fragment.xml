@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<TableSelectDialog id="jobSelectDialog" title="{i18n>vhJobList}" items="{custModel>/VH_Job}" search=".onVHJobNameSearch" confirm="onJobSelectConfirm">
+		<columns>
+			<Column>
+				<header>
+					<Label text="{i18n>JobName}" />
+				</header>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Text text="{custModel>Jobname}" />
+				</cells>
+			</ColumnListItem>
+		</items>
+	</TableSelectDialog>
+</core:FragmentDefinition>

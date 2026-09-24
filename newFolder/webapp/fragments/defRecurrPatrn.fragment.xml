@@ -1,0 +1,55 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout">
+    <Dialog title="{i18n>SchInfo}" contentWidth="50%">
+        <form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" columnsXL="1" columnsL="1" columnsM="1">
+            <Label text="{i18n>StartImm}" required="{=${schdMod>/start_immed} === 'X' ? true : false}" />
+            <CheckBox selected="{=${schdMod>/start_immed} === 'X' ? true : false}" select="onStartImmSelctd"/>
+            <Label text="{i18n>Start}"/>
+            <DateTimePicker value="{schdMod>/SchDate}" valueFormat="dd.MM.yyyy, HH:mm:ss" displayFormat="dd.MM.yyyy, HH:mm:ss" visible="{=${schdMod>/start_immed} === 'X' ? false : true}" afterValueHelpClose="secondStepValidation" liveChange="onlvChangeSchDate" change="onChangeSchDate" valueState="{schdMod>/SchDateValueState}">
+                <layoutData>
+                    <l:GridData span="XL4 L4 M4 S4" />
+                </layoutData>
+            </DateTimePicker>
+            <Input value="{schdMod>/scheduling_timezone}" showValueHelp="true" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onTimeZoneValueHelp" suggestionItems="{timeZoneModel>/}" visible="{=${schdMod>/start_immed} === 'X' ? false : true}">
+                <suggestionItems>
+                    <core:Item key="{timeZoneModel>Code}" text="{timeZoneModel>Description}" />
+                </suggestionItems>
+            </Input>
+            <Label text="{i18n>StartDtTm}" required="{=${schdMod>/start_immed} === 'X' ? false : true}"/>
+            <DateTimePicker value="{
+							path:'schdMod>/start_date_time',
+							type:'sap.ui.model.odata.type.String'
+							}" showTimezone="true" timezone="{schdMod>/TimeZoneCode}" editable="false" class="customDate"/>
+            <Label text="{i18n>Recurrence}"/>
+            <Select selectedKey="{schdMod>/prd_days}" items="{jobModel>/recurrence}" change="onRecrSel">
+                <core:Item key="{jobModel>key}" text="{jobModel>text}" />
+            </Select>
+            <Label text="{i18n>Every}"/>
+            <Input value="{path:'schdMod>/periodic_value'}" description="{path: 'schdMod>/prd_days', formatter: '.formatter.everyLabel'}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}" liveChange="onDigit3LiveChange" change="onDigit3Change" valueState="{schdMod>/periodic_value_vs}" valueStateText="{schdMod>/periodic_value_vst}"/>
+            <Label text="{i18n>End}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}"/>
+            <Select selectedKey="{path: 'schdMod>/end_type_c'}" items="{path: 'jobModel>/end_type_c', sorter: { path: 'key' }}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}">
+                <core:Item key="{jobModel>key}" text="{jobModel>text}" />
+                <layoutData>
+                    <l:GridData span="XL4 L4 M4 S4" />
+                </layoutData>
+            </Select>
+            <HBox width="100%">
+                <DateTimePicker value="{schdMod>/SchEndDt}" valueFormat="dd.MM.yyyy, HH:mm:ss" displayFormat="dd.MM.yyyy, HH:mm:ss" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byEndByVisible'}" width="100%" liveChange="onChangeSchEndDate" change="onChangeSchEndDate"/>
+                <Input value="{schdMod>/max_iterations}" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byOccurenceVisible'}" description="{i18n>Occurr}" width="100%" liveChange="onDigit3LiveChange" change="onDigit3Change" valueState="{schdMod>/max_iterations_vs}" valueStateText="{schdMod>/max_iterations_vst}"/>
+            </HBox>
+            <Label text="{i18n>EndDtTmLocal}"/>
+            <DateTimePicker value="{
+							path:'schdMod>/end_date_time',
+							type:'sap.ui.model.odata.type.String'
+                            }" showTimezone="true" timezone="{schdMod>/TimeZoneCode}" editable="false" class="customDate" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byEndByVisible'}"/>
+        </form:SimpleForm>
+        <beginButton>
+            <Button text="{i18n>OK}" type="Emphasized" press="onPressOk"/>
+        </beginButton>
+        <endButton>
+            <Button text="{i18n>Cancel}" press="onPressCancel" visible="false"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

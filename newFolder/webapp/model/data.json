@@ -1,0 +1,63 @@
+{
+    "recurrence": [
+        {
+            "key": "",
+            "text": "Single Run"
+        },
+        {
+            "key": "MI",
+            "text": "Minute"
+        },
+        {
+            "key": "H",
+            "text": "Hour"
+        },
+
+        {
+            "key": "D",
+            "text": "Daily"
+        }
+    ],
+    "end_type_c": [
+        {
+            "key": "DATE",
+            "text": "By"
+        },
+        {
+            "key": "NUM",
+            "text": "After"
+        }
+    ],
+    "blockUnblock": [
+        {
+            "key": "",
+            "text": "None"
+        },
+        {
+            "key": "BLK",
+            "text": "Block"
+        },
+        {
+            "key": "BUR",
+            "text": "Block Upon User Request"
+        },
+        {
+            "key": "UBK",
+            "text": "Un Block"
+        }
+    ],
+    "genericUser": [
+        {
+            "key": "",
+            "text": ""
+        },
+        {
+            "key": "B_FUN_II",
+            "text": "B_FUN_II"
+        },
+        {
+            "key": "B_GC_II",
+            "text": "B_GC_II"
+        }
+    ]
+}

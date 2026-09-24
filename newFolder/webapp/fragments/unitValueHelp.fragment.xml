@@ -1,0 +1,35 @@
+<core:FragmentDefinition xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<!--
+	  Consolidation unit picker.
+
+	  Bound to conUnitVHModel, a JSONModel built in handleValueHelpUnit
+	  from /VH_ConUnit filtered on Dimen + Version + ConsolidationGroup
+	  and the effective period window.
+
+	  It is a JSONModel rather than a direct OData binding because the
+	  view can return a unit more than once (one row per
+	  method-assignment period); the duplicates are removed in the
+	  controller before display.
+	-->
+	<TableSelectDialog multiSelect="true" rememberSelections="true"
+		title="{i18n>vhUnitTitle}"
+		items="{conUnitVHModel>/units}"
+		search=".onVHConsUnitMultiSearch"
+		confirm=".onVHUnitSelect">
+		<columns>
+			<Column width="30%">
+				<Text text="{i18n>ID}" />
+			</Column>
+			<Column width="70%">
+				<Text text="{i18n>desc}" />
+			</Column>
+		</columns>
+		<ColumnListItem type="Active">
+			<cells>
+				<Text text="{conUnitVHModel>ConUnit}" />
+				<Text text="{conUnitVHModel>ConUnitText}" />
+			</cells>
+		</ColumnListItem>
+	</TableSelectDialog>
+</core:FragmentDefinition>

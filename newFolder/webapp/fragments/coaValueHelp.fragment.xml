@@ -1,0 +1,33 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core"
+	xmlns="sap.m">
+	<Dialog title="{i18n>vhCoaTitle}" contentWidth="50%">
+		<VBox>
+			<SearchField liveChange="onVHCOASearch" width="100%" />
+
+			<Table mode="SingleSelectMaster" items="{custModel>/VH_Coa}" itemPress="onVHItemSelect">
+				<columns>
+					<Column width="30%">
+						<Text text="{i18n>ID}" />
+					</Column>
+					<Column width="70%">
+						<Text text="{i18n>desc}" />
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Active">
+						<cells>
+							<Text text="{custModel>Coa}" />
+							<Text text="{custModel>CoaText}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer />
+				<Button text="Close" press="onCloseValueHelp" />
+			</OverflowToolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

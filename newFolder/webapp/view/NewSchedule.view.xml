@@ -1,0 +1,205 @@
+<mvc:View height="100%" controllerName="com.bpcfn.jobscheduler.controller.NewSchedule"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	<Page showHeader="true" title ="Schedule New Job">
+		<content>
+			<Wizard id="CreateJobWizard" enableBranching="true">
+				<WizardStep id="TaskSelStep" title="{i18n>TempSel}" nextStep="BlockStep" activate="onTaskStepActivate">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+						<Label text="{i18n>TaskType}"/>
+						<RadioButtonGroup id="idTaskType" selectedIndex="{path: 'schdMod>/task_type', formatter: '.formatter.taskType' }" columns="2" select="onTaskTypeSelected">
+							<RadioButton text="{i18n>DM}"/>
+							<RadioButton text="{i18n>CM}"/>
+						</RadioButtonGroup>
+						<Label text="{i18n>Version}" required="true"/>
+						<Input id="idVersion" value="{schdMod>/version}" showSuggestion="true" showValueHelp="true" valueHelpRequest="handleValueHelpVersion" suggestionItemSelected="onSuggItemSelConsVer" suggestionItems="{path:'custModel>/VH_Version', length: 99999}">
+							<core:ListItem key="{custModel>Version}" text="{custModel>Version}" additionalText="{custModel>VersionName}"/>
+						</Input>
+						<!-- Fiscal year / period moved to Step 1: the task SEQUENCE
+						     depends on the period category, which is derived from
+						     version+year+period. Tasks cannot be sequenced until
+						     these are known, so they precede task selection. -->
+						<Label text="{i18n>FiscalYear}" required="true"/>
+						<Input id="idFiscalYear" value="{schdMod>/fc_year}" change="onFiscalYearChange" maxLength="4"/>
+						<Label text="{i18n>Period}" required="true"/>
+						<Input id="idPeriod" value="{schdMod>/fc_period}" change="onPeriodChange" maxLength="3"/>
+						<Label text="{i18n>Tasks}" required="true"/>
+						<MultiInput id="idJobTasks" placeholder="{i18n>PhJobTask}" valueHelpOnly="true" valueHelpRequest="handleValueHelpTasks" tokens="{schdMod>/TaskTokens}" tokenUpdate="onTaskUpdated">
+							<tokens>
+								<Token key="{schdMod>key}" text="{schdMod>text}" />
+							</tokens>
+							<core:ListItem key="{custModel>Cacti}" text="{custModel>Cacti}" additionalText="{custModel>Text}"/>
+						</MultiInput>
+						<Label text="{i18n>JobName}" required="true"/>
+						<!-- DO NOT RAISE TO 32.
+					     jobname is Edm.String MaxLength=32, but each task row gets
+					       taskdata.jobname = <jobname> + "_" + task_id
+					     (NewSchedule.controller line ~990) and task_id is
+					     MaxLength=10, so the suffix costs up to 11 characters.
+					     32 - 11 = 21 is the true ceiling; 20 leaves one spare and
+					     matches the substring(0, 20) applied on the edit path.
+					     A longer name passes header validation and then fails the
+					     deep insert on the child rows. -->
+						<Input id="idJobName" value="{schdMod>/jobname}" placeholder="{i18n>PhJobName}" liveChange="onJobNameChange" maxLength="20"/>
+					</f:SimpleForm>
+					<Table id="idTasksTable" mode="SingleSelectMaster" items="{selTaskModel>/results}">
+						<headerToolbar>
+							<OverflowToolbar>
+								<content>
+									<Title text="{i18n>SelTasks}" level="H2"/>
+									<ToolbarSpacer />
+									<Button icon="sap-icon://navigation-up-arrow" press="onSequenceUp"/>
+									<Button icon="sap-icon://navigation-down-arrow" press="onSequenceDown"/>
+								</content>
+							</OverflowToolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="{i18n>TaskSequence}" />
+							</Column>
+							<Column>
+								<Text text="{i18n>TaskID}" />
+							</Column>
+							<Column>
+								<Text text="{i18n>TaskDesc}" />
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{selTaskModel>seqno}" />
+									<Text text="{selTaskModel>task_id}" />
+									<Text text="{selTaskModel>task_desc}" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</WizardStep>
+				<WizardStep id="BlockStep" title="{i18n>BlockUnblock}" nextStep="SchdOptionStep" validated="true">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+						<Label text="{i18n>BlockMode}"/>
+						<Select selectedKey="{path: 'schdMod>/block_unblock'}" items="{path: 'jobModel>/blockUnblock', sorter: { path: 'key' }}" change="onBlockChange">
+							<core:Item key="{jobModel>key}" text="{jobModel>text}" />
+						</Select>
+					</f:SimpleForm>
+				</WizardStep>
+				<WizardStep id="SchdOptionStep" title="{i18n>SchOpt}" nextStep="ParamSelStep" activate="secondStepValidation" complete="onSecondStepCompleted">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" columnsXL="2" columnsL="2" columnsM="2">
+						<f:toolbar>
+							<Toolbar visible="true">
+								<ToolbarSpacer />
+								<Button text="{i18n>defRecPatrn}" press="onPressRecurrPatrn"/>
+							</Toolbar>
+						</f:toolbar>
+						<core:Title id="idSchDate"/>
+						<Label text="{i18n>StartImm}" required="{=${schdMod>/start_immed} === 'X' ? true : false}" />
+						<!--Start Immediately should always be selected-->
+						<CheckBox id="idSrtImmCheckBx" selected="{=${schdMod>/start_immed} === 'X' ? true : false}" select="onStartImmSelctd"/>
+						<Label text="{i18n>Start}" required="{=${schdMod>/start_immed} === 'X' ? false : true}"/>
+						<DateTimePicker value="{schdMod>/SchDate}" valueFormat="dd.MM.yyyy, HH:mm:ss" displayFormat="dd.MM.yyyy, HH:mm:ss" visible="{=${schdMod>/start_immed} === 'X' ? false : true}" afterValueHelpClose="secondStepValidation" liveChange="onlvChangeSchDate" change="onChangeSchDate" valueState="{schdMod>/SchDateValueState}">
+							<layoutData>
+								<l:GridData span="XL4 L4 M4 S4" />
+							</layoutData>
+						</DateTimePicker>
+						<Input value="{schdMod>/scheduling_timezone}" showValueHelp="true" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onTimeZoneValueHelp" suggestionItems="{timeZoneModel>/}" visible="{=${schdMod>/start_immed} === 'X' ? false : true}">
+							<suggestionItems>
+								<core:Item key="{timeZoneModel>Code}" text="{timeZoneModel>Description}" />
+							</suggestionItems>
+						</Input>
+						<Label text="{i18n>StartDtTm}"/>
+						<DateTimePicker value="{
+							path:'schdMod>/start_date_time',
+							type:'sap.ui.model.odata.type.String',
+							formatOptions: {
+								'style': 'medium'
+							}}" showTimezone="true" timezone="{schdMod>/TimeZoneCode}" editable="false" visible="true" class="customDate"/>
+						<core:Title id="idSchRecc"/>
+						<Label text="{i18n>RecurrPat}"/>
+						<Text text="{parts:[{path: 'schdMod>/prd_days'}, {path:'schdMod>/periodic_value'}], formatter: '.formatter.recurrenceText'}"/>
+						<Label text="{i18n>End}"/>
+						<Text text="{parts:[{path: 'schdMod>/end_type_c'}, {path:'schdMod>/end_date_time'}, {path:'schdMod>/max_iterations'}], formatter: '.formatter.endByText'}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}"/>
+					</f:SimpleForm>
+				</WizardStep>
+				<WizardStep id="ParamSelStep" title="{i18n>ParamSel}" validated="false">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+						<Label text="{i18n>ConsCOA}" required="true"/>
+						<Input id="idCoa" value="{schdMod>/coa}" showSuggestion="true" showValueHelp="true" valueHelpRequest="handleValueHelpCoa" suggestionItems="{path:'custModel>/VH_Coa', length: 99999}">
+							<core:ListItem key="{custModel>Coa}" text="{custModel>Coa}" additionalText="{custModel>CoaText}"/>
+						</Input>
+						<Label text="{i18n>ConsGrp}" required="true"/>
+						<Input id="idGroup" value="{schdMod>/con_grp}" showSuggestion="true" showValueHelp="true" valueHelpRequest="handleValueHelpGroup" suggestionItems="{consGrpModel>/results}">
+							<core:ListItem key="{consGrpModel>ConsolGroup}" text="{consGrpModel>ConsolGroup}" additionalText="{consGrpModel>ConsolGroupText}"/>
+						</Input>
+						<Label text="{i18n>ConsUnit}"/>
+						<MultiInput id="idUnit" valueHelpRequest="handleValueHelpUnit" showSuggestion="true" suggestionItems="{conUnitVHModel>/units}" editable="{schdMod>/ConsUnitEditable}" tokens="{schdMod>/ConsUnitTokens}" tokenUpdate="onConsUnitUpdated">
+							<tokens>
+								<Token key="{schdMod>key}" text="{schdMod>text}" />
+							</tokens>
+							<!-- Suggestions come from conUnitVHModel, populated by
+							     handleValueHelpUnit from /VH_ConUnit scoped to the
+							     chosen version, group and period. The previous
+							     template read consUnitModel (API_CONSOLIDATIONUNIT),
+							     which listed every unit in the system regardless of
+							     group - the gap this change closes. -->
+							<core:ListItem key="{conUnitVHModel>ConUnit}" text="{conUnitVHModel>ConUnit}" additionalText="{conUnitVHModel>ConUnitText}"/>
+						</MultiInput>
+						<Label text="{i18n>RepType}"/>
+						<RadioButtonGroup id="idRepType" selectedIndex="{schdMod>/RepType}" columns="3" visible="{schdMod>/RepTypeVisible}">
+							<RadioButton text="{i18n>Automatic}"/>
+							<RadioButton text="{i18n>CP}"/>
+							<RadioButton text="{i18n>DP}"/>
+						</RadioButtonGroup>
+						<Label text="{i18n>GenericUser}"/>
+						<!-- Fed from genericUserModel (built in validateGenericUser) so the
+					     list carries a blank first entry. Bound straight to
+					     /VH_GenericUser there is no way to clear a chosen user. -->
+						<Select id="idGenericUser" selectedKey="{schdMod>/generic_user_id}" forceSelection="false" items="{genericUserModel>/items}" visible="true">
+							<core:Item key="{genericUserModel>key}" text="{genericUserModel>text}"/>
+						</Select>
+						<Label text="{i18n>TestRun}"/>
+						<CheckBox selected="{schdMod>/testmode}" visible="{=${schdMod>/block_unblock} === '' ? true : false}"/>
+					</f:SimpleForm>
+				</WizardStep>
+				<WizardStep id="VariantSelStep" title="{i18n>varSel}" validated="false">
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+						<Label text="{i18n>SelTheVar}" required="true"/>
+						<!--
+						  F4VariantCopy is not exposed on the /bpcfn/ service, so the
+						  dropdown is replaced by a free-text Input.
+
+						  NOTE: visible="false" is NOT enough to stop the 404 - UI5
+						  still creates and resolves a list binding on a hidden
+						  control. The binding itself has to go.
+
+						  selected_variant is a real field (String 14) so typed input
+						  still persists correctly.
+
+						  TO RESTORE THE DROPDOWN: expose
+						  /BPCFN/BV_XB_SH_SCHD_ZCOPY as F4VariantCopy, then swap this
+						  Input back for:
+						    <Select selectedKey="{schdMod>/selected_variant}"
+						            showSecondaryValues="false" forceSelection="false"
+						            items="{custModel>/F4VariantCopy}">
+						      <core:ListItem key="{custModel>Variant}"
+						                     text="{custModel>Variant}"
+						                     additionalText="{custModel>VariantText}"/>
+						    </Select>
+						-->
+						<Input id="inpSelectedVariant" value="{schdMod>/selected_variant}" maxLength="14" placeholder="{i18n>SelTheVar}"/>
+					</f:SimpleForm>
+				</WizardStep>
+			</Wizard>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Button id="messageButton" icon="sap-icon://message-information" press="onMessagePopoverPress" ariaLabelledBy="messageButtonLabel"/>
+				<ToolbarSpacer/>
+				<Button id="idScheduleJob" text="{i18n>Schedule}" type = "Emphasized" press="onScheduleJob" enabled="{schdMod>/schJobBtnVisible}"/>
+				<Button text="{i18n>Cancel}" press="onCancelJob"/>
+			</OverflowToolbar>
+		</footer>
+	</Page>
+</mvc:View>

@@ -1,0 +1,174 @@
+<mvc:View controllerName="com.bpcfn.jobscheduler.controller.Home"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:t="sap.ui.table"
+    xmlns:core="sap.ui.core">
+    <f:DynamicPage id="Home" class="sapUiNoContentPadding">
+        <f:header>
+            <f:DynamicPageHeader>
+                <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onRefreshData" clear=".onClear" afterVariantLoad=".onAfterVariantLoad" showClearOnFB="true" showFilterConfiguration="false">
+                    <fb:filterGroupItems>
+                        <fb:FilterGroupItem name="JobName" label="{i18n>JobName}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <Input id="idJobNameFilter" value="{filterModel>/JobNameText}" showValueHelp="true" valueHelpRequest="onValueHelpJobName" showSuggestion="true" suggestionItems="{path:'custModel>/VH_Job', length: 99999}">
+                                    <core:ListItem key="{custModel>Jobname}" text="{custModel>Jobname}"/>
+                                </Input>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem name="DateRange" label="{i18n>Date}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <DynamicDateRange id="idDateFilter" required="true" placeholder="{i18n>DateRangePlaceholder}" change="onChangeDateRange"/>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem name="CreatedBy" label="{i18n>CreatedBy}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <Input id="idCreatedByFilter" value="{filterModel>/CreatedBy}" showValueHelp="true" valueHelpRequest="onValueHelpCreatedBy" showSuggestion="true" suggestionItems="{path:'custModel>/VH_GenericUser', length: 99999}">
+                                    <core:ListItem key="{custModel>Bname}" text="{custModel>Bname}"/>
+                                </Input>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem name="Status" label="{i18n>Status}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <!-- Fed from statusFilterModel, built in
+                                     _loadStatusFilter: "All" first, then the
+                                     domain values. Descriptions only - the
+                                     one-letter codes are internal. -->
+                                <MultiComboBox id="idStatusFilter" selectedKeys="{filterModel>/StatusKeys}" items="{statusFilterModel>/items}">
+                                    <core:Item key="{statusFilterModel>key}" text="{statusFilterModel>text}"/>
+                                </MultiComboBox>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <!-- Fiscal year / period filters. Used by the KPI
+                             drill-down (which scopes to the dashboard's FY/
+                             period) and available for manual filtering. -->
+                        <fb:FilterGroupItem name="FcYear" label="{i18n>FiscalYear}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <Input id="idFcYearFilter" value="{filterModel>/FcYear}" maxLength="4" placeholder="YYYY"/>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                        <fb:FilterGroupItem name="FcPeriod" label="{i18n>Period}" groupName="Group1" visibleInFilterBar="true">
+                            <fb:control>
+                                <Input id="idFcPeriodFilter" value="{filterModel>/FcPeriod}" maxLength="3" placeholder="PPP"/>
+                            </fb:control>
+                        </fb:FilterGroupItem>
+                    </fb:filterGroupItems>
+                </fb:FilterBar>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            
+<t:Table id="idJobDetTable" rows="{path: 'jobModel>/results', sorter: [{ path: 'sdl_startdt', descending: true },{ path: 'sdl_starttm', descending: true },{ path: 'jobname', descending: true },{ path: 'createdby', descending: true }]}" selectionBehavior="Row" selectionMode="Single" rowSelectionChange="onJobSelected" rowActionCount="1" ariaLabelledBy="title" class="sapUiSmallMarginTop">
+                <t:extension>
+                    <OverflowToolbar >
+                        <Title text="{jobModel>/JobDetailsTitle}"/>
+                        <ToolbarSpacer />
+                        <Button text="{i18n>Create}" type="Emphasized" press="onCreateJob" enabled="{jobModel>/CreateEnabled}"/>
+                        <Button text="{i18n>Copy}" type="Emphasized" press="onCopyJob" enabled="{jobModel>/CopyEnabled}"/>
+                        <MenuButton text="{i18n>Cancel}" type="Reject" enabled="{jobModel>/CancelEnabled}" visible="true">
+                            <menu>
+                                <Menu>
+                                    <MenuItem text="{i18n>SelectedOccur}" press="onCanSelJob"/>
+                                    <MenuItem text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
+                                </Menu>
+                            </menu>
+                        </MenuButton>
+                        <Button text="Manual Activity Completed" type="Accept" press="onManualActivityJob" enabled="{jobModel>/ManualActivityEnabled}" visible="false"/>
+                        <Button icon="sap-icon://excel-attachment" press="onExport" tooltip="Export to Excel"/>
+                    </OverflowToolbar>
+                </t:extension>
+                <t:columns>
+                    <t:Column width="7rem" visible="true" filterProperty="status" sortProperty="status">
+                        <Label text="{i18n>Status}" />
+                        <t:template>
+                            <ObjectStatus
+                                text="{path:'jobModel>status', formatter:'.formatter.statusText'}"
+                                state="{path:'jobModel>status', formatter:'.formatter.statusState'}"
+                                inverted="false" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column filterProperty="jobname" sortProperty="jobname">
+                        <Label text="{i18n>JobName}"/>
+                        <t:template>
+                            <Text text="{jobModel>jobname}" wrapping="false" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="7rem" filterProperty="version" sortProperty="version">
+                        <Label text="{i18n>Version}"/>
+                        <t:template>
+                            <Text text="{jobModel>version}" wrapping="false" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="7rem" filterProperty="task_type" sortProperty="task_type">
+                        <Label text="{i18n>TaskType}"/>
+                        <t:template>
+                            <Text text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false" />
+                        </t:template>
+                    </t:Column>
+                    <!-- fc_year and fc_period are separate fields on
+                         SchedulerTask; joined for display only. Sorting and
+                         filtering use fc_year, since a t:Column can carry
+                         one sortProperty. -->
+                    <t:Column width="9rem" filterProperty="fc_year" sortProperty="fc_year">
+                        <Label text="{i18n>FiscalYearPeriod}"/>
+                        <t:template>
+                            <Text text="{parts: [{path:'jobModel>fc_year'}, {path:'jobModel>fc_period'}], formatter: '.formatter.fiscalYearPeriod'}" wrapping="false" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="8rem" filterProperty="con_grp" sortProperty="con_grp">
+                        <Label text="{i18n>ConsGroup}"/>
+                        <t:template>
+                            <Text text="{jobModel>con_grp}" wrapping="false" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="12rem" sortProperty="sdl_startdt">
+                        <Label text="{i18n>PlannedStart}" />
+                        <t:template>
+                            <Text text="{parts: [{path:'jobModel>sdl_startdt'}, {path:'jobModel>sdl_starttm'}], formatter: '.formatter.formatDateTime'}" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="12rem" sortProperty="enddate">
+                        <Label text="{i18n>End}" />
+                        <t:template>
+                            <Text text="{parts: [{path:'jobModel>enddate'}, {path:'jobModel>endtime'}], formatter: '.formatter.formatDateTime'}" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="8rem" filterProperty="duration" sortProperty="duration">
+                        <Label text="{i18n>Duration}" />
+                        <t:template>
+                            <Text text="{jobModel>duration}" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="7rem" visible="true" filterProperty="generic_user_id" sortProperty="generic_user_id">
+                        <Label text="{i18n>CreatedBy}" />
+                        <t:template>
+                            <Text text="{=${jobModel>generic_user_id} === '' ? ${jobModel>createdby} : ${jobModel>generic_user_id}}" wrapping="false"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="7rem" visible="false" filterProperty="createdby" sortProperty="createdby">
+                        <Label text="{i18n>CreatedBy}" />
+                        <t:template>
+                            <Text text="{jobModel>createdby}" wrapping="false"/>
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="12rem" sortProperty="creation_date">
+                        <Label text="{i18n>CreatedOn}" />
+                        <t:template>
+                            <Text text="{parts: [{path:'jobModel>creation_date'}, {path:'jobModel>creation_time'}], formatter: '.formatter.formatDateTime'}" />
+                        </t:template>
+                    </t:Column>
+                </t:columns>
+                <t:rowActionTemplate>
+                    <t:RowAction>
+                        <t:items>
+                            <t:RowActionItem icon="sap-icon://slim-arrow-right" press="onJobDetails" />
+                        </t:items>
+                    </t:RowAction>
+                </t:rowActionTemplate>
+            </t:Table>
+
+      
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>
