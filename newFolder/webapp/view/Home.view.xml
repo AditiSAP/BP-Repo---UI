@@ -15,13 +15,15 @@
             <mdc:ValueHelp id="jobNameVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
-                    <mdcvh:Popover>
-                        <mdcvc:MTable keyPath="Jobname" descriptionPath="Jobname">
-                            <Table items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
-                                <columns><Column><Label text="{i18n>JobName}"/></Column></columns>
+                    <mdcvh:Popover id="jobNameVHPopover">
+                        <mdcvc:MTable id="jobNameVHMTableP" keyPath="Jobname" descriptionPath="Jobname">
+                            <Table id="jobNameVHTableP" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
+                                <columns>
+                                    <Column id="jobNameVHColP"><Label id="jobNameVHLabelP" text="{i18n>JobName}"/></Column>
+                                </columns>
                                 <items>
-                                    <ColumnListItem type="Active">
-                                        <cells><Text text="{custModel>Jobname}"/></cells>
+                                    <ColumnListItem id="jobNameVHItemP" type="Active">
+                                        <cells><Text id="jobNameVHTxtP" text="{custModel>Jobname}"/></cells>
                                     </ColumnListItem>
                                 </items>
                             </Table>
@@ -29,18 +31,20 @@
                     </mdcvh:Popover>
                 </mdc:typeahead>
                 <mdc:dialog>
-                    <mdcvh:Dialog title="{i18n>JobName}">
-                        <mdcvc:MTable keyPath="Jobname" descriptionPath="Jobname">
-                            <Table items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
-                                <columns><Column><Label text="{i18n>JobName}"/></Column></columns>
+                    <mdcvh:Dialog id="jobNameVHDialog" title="{i18n>JobName}">
+                        <mdcvc:MTable id="jobNameVHMTableD" keyPath="Jobname" descriptionPath="Jobname">
+                            <Table id="jobNameVHTableD" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
+                                <columns>
+                                    <Column id="jobNameVHColD"><Label id="jobNameVHLabelD" text="{i18n>JobName}"/></Column>
+                                </columns>
                                 <items>
-                                    <ColumnListItem type="Active">
-                                        <cells><Text text="{custModel>Jobname}"/></cells>
+                                    <ColumnListItem id="jobNameVHItemD" type="Active">
+                                        <cells><Text id="jobNameVHTxtD" text="{custModel>Jobname}"/></cells>
                                     </ColumnListItem>
                                 </items>
                             </Table>
                         </mdcvc:MTable>
-                        <mdcvc:Conditions/>
+                        <mdcvc:Conditions id="jobNameVHConditions"/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
@@ -48,13 +52,15 @@
             <mdc:ValueHelp id="createdByVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
-                    <mdcvh:Popover>
-                        <mdcvc:MTable keyPath="Bname" descriptionPath="Bname">
-                            <Table items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
-                                <columns><Column><Label text="{i18n>CreatedBy}"/></Column></columns>
+                    <mdcvh:Popover id="createdByVHPopover">
+                        <mdcvc:MTable id="createdByVHMTableP" keyPath="Bname" descriptionPath="Bname">
+                            <Table id="createdByVHTableP" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
+                                <columns>
+                                    <Column id="createdByVHColP"><Label id="createdByVHLabelP" text="{i18n>CreatedBy}"/></Column>
+                                </columns>
                                 <items>
-                                    <ColumnListItem type="Active">
-                                        <cells><Text text="{custModel>Bname}"/></cells>
+                                    <ColumnListItem id="createdByVHItemP" type="Active">
+                                        <cells><Text id="createdByVHTxtP" text="{custModel>Bname}"/></cells>
                                     </ColumnListItem>
                                 </items>
                             </Table>
@@ -62,18 +68,20 @@
                     </mdcvh:Popover>
                 </mdc:typeahead>
                 <mdc:dialog>
-                    <mdcvh:Dialog title="{i18n>CreatedBy}">
-                        <mdcvc:MTable keyPath="Bname" descriptionPath="Bname">
-                            <Table items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
-                                <columns><Column><Label text="{i18n>CreatedBy}"/></Column></columns>
+                    <mdcvh:Dialog id="createdByVHDialog" title="{i18n>CreatedBy}">
+                        <mdcvc:MTable id="createdByVHMTableD" keyPath="Bname" descriptionPath="Bname">
+                            <Table id="createdByVHTableD" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
+                                <columns>
+                                    <Column id="createdByVHColD"><Label id="createdByVHLabelD" text="{i18n>CreatedBy}"/></Column>
+                                </columns>
                                 <items>
-                                    <ColumnListItem type="Active">
-                                        <cells><Text text="{custModel>Bname}"/></cells>
+                                    <ColumnListItem id="createdByVHItemD" type="Active">
+                                        <cells><Text id="createdByVHTxtD" text="{custModel>Bname}"/></cells>
                                     </ColumnListItem>
                                 </items>
                             </Table>
                         </mdcvc:MTable>
-                        <mdcvc:Conditions/>
+                        <mdcvc:Conditions id="createdByVHConditions"/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
@@ -81,13 +89,15 @@
             <mdc:ValueHelp id="statusVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
-                    <mdcvh:Popover>
-                        <mdcvc:MTable keyPath="key" descriptionPath="text">
-                            <Table items="{path:'statusFilterModel>/items'}" mode="MultiSelect">
-                                <columns><Column><Label text="{i18n>Status}"/></Column></columns>
+                    <mdcvh:Popover id="statusVHPopover">
+                        <mdcvc:MTable id="statusVHMTableP" keyPath="key" descriptionPath="text">
+                            <Table id="statusVHTableP" items="{path:'statusFilterModel>/items'}" mode="MultiSelect">
+                                <columns>
+                                    <Column id="statusVHColP"><Label id="statusVHLabelP" text="{i18n>Status}"/></Column>
+                                </columns>
                                 <items>
-                                    <ColumnListItem type="Active">
-                                        <cells><Text text="{statusFilterModel>text}"/></cells>
+                                    <ColumnListItem id="statusVHItemP" type="Active">
+                                        <cells><Text id="statusVHTxtP" text="{statusFilterModel>text}"/></cells>
                                     </ColumnListItem>
                                 </items>
                             </Table>
@@ -99,7 +109,7 @@
         </f:dependents>
 
         <f:title>
-            <f:DynamicPageTitle>
+            <f:DynamicPageTitle id="homePageTitle">
                 <f:heading>
                     <vm:VariantManagement id="filterbarVM" for="filterbar"/>
                 </f:heading>
@@ -107,7 +117,7 @@
         </f:title>
 
         <f:header>
-            <f:DynamicPageHeader>
+            <f:DynamicPageHeader id="homePageHeader">
                 <mdc:FilterBar id="filterbar"
                     delegate="{name:'com/bpcfn/jobscheduler/util/FilterBarDelegate', payload:{}}"
                     search=".onRefreshData"
@@ -124,7 +134,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="Contains,EQ"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
                             valueHelp="jobNameVH"/>
 
                         <mdc:FilterField
@@ -136,7 +146,7 @@
                             required="true"
                             operators="BT,GE,LE"
                             placeholder="{i18n>DateRangePlaceholder}"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
                         <mdc:FilterField
                             id="idCreatedByFilter"
@@ -145,7 +155,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="Contains,EQ"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
                             valueHelp="createdByVH"/>
 
                         <mdc:FilterField
@@ -155,7 +165,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="-1"
                             operators="EQ"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
                             valueHelp="statusVH"/>
 
                         <mdc:FilterField
@@ -166,7 +176,7 @@
                             maxConditions="1"
                             operators="EQ"
                             placeholder="YYYY"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
                         <mdc:FilterField
                             id="idFcPeriodFilter"
@@ -176,7 +186,7 @@
                             maxConditions="1"
                             operators="EQ"
                             placeholder="PPP"
-                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
                     </mdc:filterItems>
                 </mdc:FilterBar>
@@ -195,89 +205,89 @@
                 class="sapUiSmallMarginTop">
 
                 <mdc:variant>
-                    <vm:VariantManagement id="tableVM"/>
+                    <vm:VariantManagement id="tableVM" for="idJobDetTable"/>
                 </mdc:variant>
 
                 <mdc:actions>
-                    <Button text="{i18n>Create}"
+                    <Button id="btnCreate" text="{i18n>Create}"
                         type="Emphasized"
                         press="onCreateJob"
                         enabled="{jobModel>/CreateEnabled}"/>
-                    <Button text="{i18n>Copy}"
+                    <Button id="btnCopy" text="{i18n>Copy}"
                         type="Emphasized"
                         press="onCopyJob"
                         enabled="{jobModel>/CopyEnabled}"/>
-                    <MenuButton text="{i18n>Cancel}"
+                    <MenuButton id="menuBtnCancel" text="{i18n>Cancel}"
                         type="Reject"
                         enabled="{jobModel>/CancelEnabled}">
                         <menu>
-                            <Menu>
-                                <MenuItem text="{i18n>SelectedOccur}"   press="onCanSelJob"/>
-                                <MenuItem text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
+                            <Menu id="cancelMenu">
+                                <MenuItem id="menuItemSelOccur"  text="{i18n>SelectedOccur}"   press="onCanSelJob"/>
+                                <MenuItem id="menuItemEntJob"    text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
                             </Menu>
                         </menu>
                     </MenuButton>
-                    <Button text="Manual Activity Completed"
+                    <Button id="btnManualActivity" text="Manual Activity Completed"
                         type="Accept"
                         press="onManualActivityJob"
                         enabled="{jobModel>/ManualActivityEnabled}"
                         visible="false"/>
-                    <Button icon="sap-icon://excel-attachment"
+                    <Button id="btnExport" icon="sap-icon://excel-attachment"
                         press="onExport"
                         tooltip="Export to Excel"/>
                 </mdc:actions>
 
                 <mdc:columns>
 
-                    <mdct:Column propertyKey="status" header="{i18n>Status}" width="7rem">
-                        <ObjectStatus
+                    <mdct:Column id="colStatus" propertyKey="status" header="{i18n>Status}" width="7rem">
+                        <ObjectStatus id="osStatus"
                             text="{path:'jobModel>status',  formatter:'.formatter.statusText'}"
                             state="{path:'jobModel>status', formatter:'.formatter.statusState'}"
                             inverted="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="jobname" header="{i18n>JobName}">
-                        <Text text="{jobModel>jobname}" wrapping="false"/>
+                    <mdct:Column id="colJobname" propertyKey="jobname" header="{i18n>JobName}">
+                        <Text id="txtJobname" text="{jobModel>jobname}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="version" header="{i18n>Version}" width="7rem">
-                        <Text text="{jobModel>version}" wrapping="false"/>
+                    <mdct:Column id="colVersion" propertyKey="version" header="{i18n>Version}" width="7rem">
+                        <Text id="txtVersion" text="{jobModel>version}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="task_type" header="{i18n>TaskType}" width="7rem">
-                        <Text text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false"/>
+                    <mdct:Column id="colTaskType" propertyKey="task_type" header="{i18n>TaskType}" width="7rem">
+                        <Text id="txtTaskType" text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="fc_year" header="{i18n>FiscalYearPeriod}" width="9rem">
-                        <Text text="{parts:[{path:'jobModel>fc_year'},{path:'jobModel>fc_period'}], formatter:'.formatter.fiscalYearPeriod'}" wrapping="false"/>
+                    <mdct:Column id="colFcYear" propertyKey="fc_year" header="{i18n>FiscalYearPeriod}" width="9rem">
+                        <Text id="txtFcYear" text="{parts:[{path:'jobModel>fc_year'},{path:'jobModel>fc_period'}], formatter:'.formatter.fiscalYearPeriod'}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="con_grp" header="{i18n>ConsGroup}" width="8rem">
-                        <Text text="{jobModel>con_grp}" wrapping="false"/>
+                    <mdct:Column id="colConGrp" propertyKey="con_grp" header="{i18n>ConsGroup}" width="8rem">
+                        <Text id="txtConGrp" text="{jobModel>con_grp}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="sdl_startdt" header="{i18n>PlannedStart}" width="12rem">
-                        <Text text="{parts:[{path:'jobModel>sdl_startdt'},{path:'jobModel>sdl_starttm'}], formatter:'.formatter.formatDateTime'}"/>
+                    <mdct:Column id="colSdlStart" propertyKey="sdl_startdt" header="{i18n>PlannedStart}" width="12rem">
+                        <Text id="txtSdlStart" text="{parts:[{path:'jobModel>sdl_startdt'},{path:'jobModel>sdl_starttm'}], formatter:'.formatter.formatDateTime'}"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="enddate" header="{i18n>End}" width="12rem">
-                        <Text text="{parts:[{path:'jobModel>enddate'},{path:'jobModel>endtime'}], formatter:'.formatter.formatDateTime'}"/>
+                    <mdct:Column id="colEnddate" propertyKey="enddate" header="{i18n>End}" width="12rem">
+                        <Text id="txtEnddate" text="{parts:[{path:'jobModel>enddate'},{path:'jobModel>endtime'}], formatter:'.formatter.formatDateTime'}"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="duration" header="{i18n>Duration}" width="8rem">
-                        <Text text="{jobModel>duration}"/>
+                    <mdct:Column id="colDuration" propertyKey="duration" header="{i18n>Duration}" width="8rem">
+                        <Text id="txtDuration" text="{jobModel>duration}"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
-                        <Text text="{=${jobModel>generic_user_id} === '' ? ${jobModel>createdby} : ${jobModel>generic_user_id}}" wrapping="false"/>
+                    <mdct:Column id="colGenericUser" propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
+                        <Text id="txtGenericUser" text="{= ${jobModel>generic_user_id} ? ${jobModel>generic_user_id} : ${jobModel>createdby} }" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="createdby" header="{i18n>CreatedBy}" width="7rem">
-                        <Text text="{jobModel>createdby}" wrapping="false"/>
+                    <mdct:Column id="colCreatedby" propertyKey="createdby" header="{i18n>CreatedBy}" width="7rem">
+                        <Text id="txtCreatedby" text="{jobModel>createdby}" wrapping="false"/>
                     </mdct:Column>
 
-                    <mdct:Column propertyKey="creation_date" header="{i18n>CreatedOn}" width="12rem">
-                        <Text text="{parts:[{path:'jobModel>creation_date'},{path:'jobModel>creation_time'}], formatter:'.formatter.formatDateTime'}"/>
+                    <mdct:Column id="colCreationDate" propertyKey="creation_date" header="{i18n>CreatedOn}" width="12rem">
+                        <Text id="txtCreationDate" text="{parts:[{path:'jobModel>creation_date'},{path:'jobModel>creation_time'}], formatter:'.formatter.formatDateTime'}"/>
                     </mdct:Column>
 
                 </mdc:columns>
