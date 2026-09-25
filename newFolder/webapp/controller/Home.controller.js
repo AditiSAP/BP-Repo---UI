@@ -411,8 +411,7 @@ sap.ui.define([
                         return oCtx.requestObject();
                     }));
                     this.busyDialog.close();
-                    aData.JobDetailsTitle = "Job Details (" + aData.length + ")";
-                    jobModel.setProperty("/JobDetailsTitle", aData.JobDetailsTitle);
+                    jobModel.setProperty("/JobDetailsTitle", "Job Details");
                     jobModel.setProperty("/results", aData);
                 } catch (oError) {
                     MessageBox.error(this.i18nModel.getText("unexpErr"));
