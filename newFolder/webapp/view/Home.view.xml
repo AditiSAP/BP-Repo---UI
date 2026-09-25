@@ -5,22 +5,13 @@
     xmlns:mdc="sap.ui.mdc"
     xmlns:mdct="sap.ui.mdc.table"
     xmlns:mdcvh="sap.ui.mdc.valuehelp"
-    xmlns:mdcvc="sap.ui.mdc.valuehelp.content">
+    xmlns:mdcvc="sap.ui.mdc.valuehelp.content"
+    xmlns:vm="sap.ui.fl.variants">
 
     <f:DynamicPage id="Home" class="sapUiNoContentPadding">
 
-        <!-- ─────────────────────────────────────────────────────────────
-             VALUE HELP ELEMENTS
-             sap.ui.mdc.ValueHelp extends sap.ui.core.Element (not Control).
-             dependents aggregation (type Element[]) is the correct home for
-             Element-typed controls that must stay in scope for the whole view.
-        ───────────────────────────────────────────────────────────────── -->
         <f:dependents>
 
-            <!-- Job Name VH – replaces the original jobNameValueHelp fragment.
-                 Popover = typeahead suggestions; Dialog = full F4 list.
-                 Aggregation tags carry the same namespace prefix as their parent
-                 class (IDE rule: aggregation namespace must match parent class). -->
             <mdc:ValueHelp id="jobNameVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
@@ -49,11 +40,11 @@
                                 </items>
                             </Table>
                         </mdcvc:MTable>
+                        <mdcvc:Conditions/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
 
-            <!-- Created By VH – replaces the original creatorValueHelp fragment. -->
             <mdc:ValueHelp id="createdByVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
@@ -82,13 +73,11 @@
                                 </items>
                             </Table>
                         </mdcvc:MTable>
+                        <mdcvc:Conditions/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
 
-            <!-- Status VH – statusFilterModel is built in _loadStatusFilter()
-                 exactly as before. Popover replaces the original MultiComboBox.
-                 Multi-select is enabled via maxConditions="-1" on the field. -->
             <mdc:ValueHelp id="statusVH"
                 delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
                 <mdc:typeahead>
@@ -109,24 +98,25 @@
 
         </f:dependents>
 
-        <!-- ─────────────────────────────────────────────────────────────
-             FILTER BAR  (sap.ui.mdc.FilterBar)
-             delegate.name uses the AMD module path (slashes, no .js suffix).
-             liveMode="false" → the search fires on the Go button or Enter,
-             matching the original sap.ui.comp.filterbar.FilterBar behaviour.
-        ───────────────────────────────────────────────────────────────── -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <vm:VariantManagement id="filterbarVM" for="filterbar"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
         <f:header>
             <f:DynamicPageHeader>
                 <mdc:FilterBar id="filterbar"
                     delegate="{name:'com/bpcfn/jobscheduler/util/FilterBarDelegate', payload:{}}"
                     search=".onRefreshData"
                     showClearButton="true"
+                    p13nMode="Item"
                     liveMode="false">
 
                     <mdc:filterItems>
 
-                        <!-- Job Name: valueHelp association (since 1.114)
-                             references the standalone mdc:ValueHelp by id. -->
                         <mdc:FilterField
                             id="idJobNameFilter"
                             propertyKey="jobname"
@@ -134,6 +124,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="Contains,EQ"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
                             valueHelp="jobNameVH"/>
 
                         <mdc:FilterField
@@ -144,7 +135,8 @@
                             maxConditions="1"
                             required="true"
                             operators="BT,GE,LE"
-                            placeholder="{i18n>DateRangePlaceholder}"/>
+                            placeholder="{i18n>DateRangePlaceholder}"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
 
                         <mdc:FilterField
                             id="idCreatedByFilter"
@@ -153,6 +145,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="Contains,EQ"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
                             valueHelp="createdByVH"/>
 
                         <mdc:FilterField
@@ -162,6 +155,7 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="-1"
                             operators="EQ"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'
                             valueHelp="statusVH"/>
 
                         <mdc:FilterField
@@ -171,7 +165,8 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="EQ"
-                            placeholder="YYYY"/>
+                            placeholder="YYYY"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
 
                         <mdc:FilterField
                             id="idFcPeriodFilter"
@@ -180,23 +175,14 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="EQ"
-                            placeholder="PPP"/>
+                            placeholder="PPP"
+                            delegate='{"name": "sap/ui/mdc/field/FieldBaseDelegate", "payload": {}}'/>
 
                     </mdc:filterItems>
                 </mdc:FilterBar>
             </f:DynamicPageHeader>
         </f:header>
 
-        <!-- ─────────────────────────────────────────────────────────────
-             MDC TABLE  (sap.ui.mdc.Table)
-             type="Table"          → inner sap.ui.table.Table (GridTable),
-                                     matching the original control type.
-             p13nMode="Sort,Column" → adds Sort and Column personalisation
-                                     panels (additive over original behaviour).
-             selectionMode="Single" + selectionChange → onJobSelected keeps
-             the same toolbar button enable/disable logic as before.
-             rowPress → onJobDetails replaces the original RowAction arrow.
-        ───────────────────────────────────────────────────────────────── -->
         <f:content>
             <mdc:Table id="idJobDetTable"
                 delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{}}"
@@ -207,6 +193,10 @@
                 header="{jobModel>/JobDetailsTitle}"
                 p13nMode="Sort,Column"
                 class="sapUiSmallMarginTop">
+
+                <mdc:variant>
+                    <vm:VariantManagement id="tableVM"/>
+                </mdc:variant>
 
                 <mdc:actions>
                     <Button text="{i18n>Create}"
@@ -227,7 +217,6 @@
                             </Menu>
                         </menu>
                     </MenuButton>
-                    <!-- Kept hidden, matching original visible="false" -->
                     <Button text="Manual Activity Completed"
                         type="Accept"
                         press="onManualActivityJob"
@@ -259,8 +248,6 @@
                         <Text text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false"/>
                     </mdct:Column>
 
-                    <!-- fc_year and fc_period are separate SchedulerTask fields;
-                         joined for display only via formatter.fiscalYearPeriod. -->
                     <mdct:Column propertyKey="fc_year" header="{i18n>FiscalYearPeriod}" width="9rem">
                         <Text text="{parts:[{path:'jobModel>fc_year'},{path:'jobModel>fc_period'}], formatter:'.formatter.fiscalYearPeriod'}" wrapping="false"/>
                     </mdct:Column>
@@ -281,13 +268,10 @@
                         <Text text="{jobModel>duration}"/>
                     </mdct:Column>
 
-                    <!-- Shows generic_user_id when set, falls back to createdby –
-                         matches the original expression binding in the old view. -->
                     <mdct:Column propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
                         <Text text="{=${jobModel>generic_user_id} === '' ? ${jobModel>createdby} : ${jobModel>generic_user_id}}" wrapping="false"/>
                     </mdct:Column>
 
-                    <!-- Hidden column kept for P13n / export; mirrors original visible="false". -->
                     <mdct:Column propertyKey="createdby" header="{i18n>CreatedBy}" width="7rem">
                         <Text text="{jobModel>createdby}" wrapping="false"/>
                     </mdct:Column>
