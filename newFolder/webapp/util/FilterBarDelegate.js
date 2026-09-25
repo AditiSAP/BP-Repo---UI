@@ -26,8 +26,7 @@ sap.ui.define([
             {
                 name: "dateRange",
                 label: "Date",
-                // DateTimeOffset gives MDC the full date+time picker for the BT operator
-                dataType: "sap.ui.model.odata.type.DateTimeOffset",
+                dataType: "sap.ui.model.type.Date",
                 maxConditions: 1,
                 required: true
             },

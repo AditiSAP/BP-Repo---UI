@@ -133,44 +133,34 @@
                             label="{i18n>JobName}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
-                            conditions="{$filters>/conditions/jobname}"
                             operators="Contains,EQ"
                             valueHelp="jobNameVH"/>
 
-                        <!-- Date Range: BT=Between, GE=From, LE=To.
-                             createFilters() mirrors the original DynamicDateRange
-                             FROM/TO expansion for single-sided ranges. -->
                         <mdc:FilterField
                             id="idDateFilter"
                             propertyKey="dateRange"
                             label="{i18n>Date}"
-                            dataType="sap.ui.model.odata.type.DateTimeOffset"
+                            dataType="sap.ui.model.type.Date"
                             maxConditions="1"
                             required="true"
-                            conditions="{$filters>/conditions/dateRange}"
                             operators="BT,GE,LE"
                             placeholder="{i18n>DateRangePlaceholder}"/>
 
-                        <!-- Created By: valueHelp backed by VH_GenericUser. -->
                         <mdc:FilterField
                             id="idCreatedByFilter"
                             propertyKey="createdby"
                             label="{i18n>CreatedBy}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
-                            conditions="{$filters>/conditions/createdby}"
                             operators="Contains,EQ"
                             valueHelp="createdByVH"/>
 
-                        <!-- Status: maxConditions="-1" = unlimited multi-select,
-                             matching the original MultiComboBox behaviour. -->
                         <mdc:FilterField
                             id="idStatusFilter"
                             propertyKey="status"
                             label="{i18n>Status}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="-1"
-                            conditions="{$filters>/conditions/status}"
                             operators="EQ"
                             valueHelp="statusVH"/>
 
@@ -180,7 +170,6 @@
                             label="{i18n>FiscalYear}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
-                            conditions="{$filters>/conditions/fcYear}"
                             operators="EQ"
                             placeholder="YYYY"/>
 
@@ -190,7 +179,6 @@
                             label="{i18n>Period}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
-                            conditions="{$filters>/conditions/fcPeriod}"
                             operators="EQ"
                             placeholder="PPP"/>
 
