@@ -442,7 +442,7 @@ sap.ui.define([
          * Replaces the original sap.ui.table rowSelectionChange handler.
          */
         onJobSelected: function (oEvent) {
-            const aContexts = oEvent.getParameter("aContexts");
+            const aContexts = oEvent.getParameter("bindingContexts");
             if (aContexts && aContexts.length > 0) {
                 this.selJobRowData = aContexts[0].getObject();
                 this.selRowData    = this.selJobRowData;
