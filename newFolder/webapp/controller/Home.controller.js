@@ -56,8 +56,18 @@ sap.ui.define([
         },
 
         _onHomeMatched: async function () {
-            this.initializeData();
             this._checkAuth(false);
+
+            // sap.ui.mdc.FilterBar initialises its condition model asynchronously.
+            // Wait for it before calling setConditions/getConditions, otherwise
+            // the conditions model doesn't exist yet and both calls are no-ops,
+            // leaving createFilters() with no date range → no OData request → empty table.
+            const oFilterBar = this.byId("filterbar");
+            if (oFilterBar && typeof oFilterBar.initialized === "function") {
+                try { await oFilterBar.initialized(); } catch (e) { /* ignore */ }
+            }
+
+            this.initializeData();
 
             // KPI drill-down: the dashboard stashes a status and optional
             // scope on the Component before navigating here. Apply them as
@@ -65,7 +75,6 @@ sap.ui.define([
             // jobs, then clear so normal navigation is not stuck with them.
             const oComp = this.getOwnerComponent();
             if (oComp._kpiStatusFilter !== undefined && oComp._kpiStatusFilter !== null) {
-                const oFilterBar  = this.byId("filterbar");
                 const oConditions = oFilterBar.getConditions() || {};
                 oConditions.status = oComp._kpiStatusFilter
                     ? [{ operator: "EQ", values: [oComp._kpiStatusFilter] }]
