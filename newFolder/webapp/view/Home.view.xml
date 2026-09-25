@@ -205,7 +205,7 @@
                 class="sapUiSmallMarginTop">
 
                 <mdc:variant>
-                    <vm:VariantManagement id="tableVM" for="idJobDetTable"/>
+                    <vm:VariantManagement id="tableVM"/>
                 </mdc:variant>
 
                 <mdc:actions>
