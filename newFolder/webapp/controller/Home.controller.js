@@ -87,7 +87,7 @@ sap.ui.define([
                         oConditions.fcPeriod = [{ operator: "EQ", values: [oComp._kpiScope.period] }];
                     }
                 }
-                oFilterBar.setConditions(oConditions);
+                oFilterBar.setExternalConditions(oConditions);
                 oComp._kpiStatusFilter = undefined;
                 oComp._kpiScope        = undefined;
             }
@@ -110,7 +110,7 @@ sap.ui.define([
             // condition. All other filter fields are cleared.
             const oFilterBar = this.byId("filterbar");
             if (oFilterBar) {
-                oFilterBar.setConditions({
+                oFilterBar.setExternalConditions({
                     dateRange: [{ operator: "BT", values: [stDate, endDate] }],
                     jobname:   [],
                     createdby: [],
