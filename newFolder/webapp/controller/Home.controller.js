@@ -75,19 +75,23 @@ sap.ui.define([
             // jobs, then clear so normal navigation is not stuck with them.
             const oComp = this.getOwnerComponent();
             if (oComp._kpiStatusFilter !== undefined && oComp._kpiStatusFilter !== null) {
-                const oConditions = oFilterBar.getConditions() || {};
-                oConditions.status = oComp._kpiStatusFilter
-                    ? [{ operator: "EQ", values: [oComp._kpiStatusFilter] }]
-                    : [];
-                if (oComp._kpiScope) {
-                    if (oComp._kpiScope.year) {
-                        oConditions.fcYear = [{ operator: "EQ", values: [oComp._kpiScope.year] }];
-                    }
-                    if (oComp._kpiScope.period) {
-                        oConditions.fcPeriod = [{ operator: "EQ", values: [oComp._kpiScope.period] }];
+                const oCondModel = oFilterBar.getModel("$filters");
+                if (oCondModel) {
+                    oCondModel.setProperty("/conditions/status",
+                        oComp._kpiStatusFilter
+                            ? [{ operator: "EQ", values: [oComp._kpiStatusFilter] }]
+                            : []);
+                    if (oComp._kpiScope) {
+                        if (oComp._kpiScope.year) {
+                            oCondModel.setProperty("/conditions/fcYear",
+                                [{ operator: "EQ", values: [oComp._kpiScope.year] }]);
+                        }
+                        if (oComp._kpiScope.period) {
+                            oCondModel.setProperty("/conditions/fcPeriod",
+                                [{ operator: "EQ", values: [oComp._kpiScope.period] }]);
+                        }
                     }
                 }
-                oFilterBar.setExternalConditions(oConditions);
                 oComp._kpiStatusFilter = undefined;
                 oComp._kpiScope        = undefined;
             }
@@ -110,14 +114,13 @@ sap.ui.define([
             // condition. All other filter fields are cleared.
             const oFilterBar = this.byId("filterbar");
             if (oFilterBar) {
-                oFilterBar.setExternalConditions({
-                    dateRange: [{ operator: "BT", values: [stDate, endDate] }],
-                    jobname:   [],
-                    createdby: [],
-                    status:    [],
-                    fcYear:    [],
-                    fcPeriod:  []
-                });
+                const oCondModel = oFilterBar.getModel("$filters");
+                if (oCondModel) {
+                    oCondModel.setProperty("/conditions/dateRange", [{ operator: "BT", values: [stDate, endDate] }]);
+                    ["jobname", "createdby", "status", "fcYear", "fcPeriod"].forEach(function (sKey) {
+                        oCondModel.setProperty("/conditions/" + sKey, []);
+                    });
+                }
             }
 
             this.getView().getModel("jobModel").setData({
@@ -453,7 +456,11 @@ sap.ui.define([
                     .setProperty("/CancelEnabled", sRowStatus === "S");
                 this._checkAuth(true);
             } else {
-                this.initializeData();
+                this.selJobRowData = null;
+                this.selRowData    = null;
+                const oJobModel = this.getView().getModel("jobModel");
+                oJobModel.setProperty("/ManualActivityEnabled", false);
+                oJobModel.setProperty("/CancelEnabled",         false);
                 this._checkAuth(false);
             }
         },

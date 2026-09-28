@@ -36,6 +36,59 @@ sap.ui.define([
         ]);
     };
 
+    // propertyKey → view-local ID for every column defined in Home.view.xml
+    var _mColIds = {
+        "status":          "colStatus",
+        "jobname":         "colJobname",
+        "version":         "colVersion",
+        "task_type":       "colTaskType",
+        "fc_year":         "colFcYear",
+        "con_grp":         "colConGrp",
+        "sdl_startdt":     "colSdlStart",
+        "enddate":         "colEnddate",
+        "duration":        "colDuration",
+        "generic_user_id": "colGenericUser",
+        "createdby":       "colCreatedby",
+        "creation_date":   "colCreationDate"
+    };
+
+    // Walk up from oControl until we reach an ancestor that exposes byId()
+    // (sap.ui.core.mvc.View does; so does UIComponent as a fallback).
+    function _findInView(oControl, sLocalId) {
+        var oAncestor = oControl;
+        while (oAncestor) {
+            if (typeof oAncestor.byId === "function") {
+                var oFound = oAncestor.byId(sLocalId);
+                if (oFound) { return oFound; }
+            }
+            oAncestor = typeof oAncestor.getParent === "function"
+                ? oAncestor.getParent() : null;
+        }
+        return null;
+    }
+
+    JSONTableDelegate.removeItem = function (oTable, oColumn /*, mPropertyBag */) {
+        // Detach WITHOUT destroying so addItem can always find the original
+        // column (with its custom template) via the stable ID in the view.
+        oTable.removeColumn(oColumn);
+        return Promise.resolve(true);
+    };
+
+    JSONTableDelegate.addItem = function (oTable, sPropertyKey /*, mPropertyBag */) {
+        // Look up the original XML-defined column by its stable view-local ID.
+        // This works whether the column was detached by our removeItem above
+        // or directly by the fl change handler during variant switching –
+        // the column stays registered in the Core registry until destroyed.
+        var sLocalId = _mColIds[sPropertyKey];
+        if (sLocalId) {
+            var oColumn = _findInView(oTable, sLocalId);
+            if (oColumn) {
+                return Promise.resolve(oColumn);
+            }
+        }
+        return TableDelegate.addItem.apply(this, arguments);
+    };
+
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
         oBindingInfo.path = "jobModel>/results";
         oBindingInfo.sorter = [
