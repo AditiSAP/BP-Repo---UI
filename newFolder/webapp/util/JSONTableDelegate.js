@@ -67,22 +67,44 @@ sap.ui.define([
         return null;
     }
 
+    // Ensure oTable._oAllCols contains a reference to every column ever seen.
+    // Called by removeItem – snapshotting the full aggregation on the FIRST call
+    // so addItem can always recover the original column with its custom template,
+    // regardless of whether the column was removed by our own delegate or
+    // directly by the fl change handler during variant switching.
+    function _ensureColMap(oTable, oColumn) {
+        if (!oTable._oAllCols) {
+            oTable._oAllCols = {};
+            oTable.getColumns().forEach(function (oCol) {
+                oTable._oAllCols[oCol.getPropertyKey()] = oCol;
+            });
+        }
+        // Also record the column being removed (covers the case where it was
+        // already detached before the snapshot above ran).
+        if (oColumn) {
+            oTable._oAllCols[oColumn.getPropertyKey()] = oColumn;
+        }
+    }
+
     JSONTableDelegate.removeItem = function (oTable, oColumn /*, mPropertyBag */) {
-        // Detach WITHOUT destroying so addItem can always find the original
-        // column (with its custom template) via the stable ID in the view.
-        oTable.removeColumn(oColumn);
+        _ensureColMap(oTable, oColumn);
+        oTable.removeColumn(oColumn); // detach WITHOUT destroying
         return Promise.resolve(true);
     };
 
     JSONTableDelegate.addItem = function (oTable, sPropertyKey /*, mPropertyBag */) {
-        // Look up the original XML-defined column by its stable view-local ID.
-        // This works whether the column was detached by our removeItem above
-        // or directly by the fl change handler during variant switching –
-        // the column stays registered in the Core registry until destroyed.
+        // Primary: use the snapshot map built when columns were first removed.
+        if (oTable._oAllCols && oTable._oAllCols[sPropertyKey]) {
+            return Promise.resolve(oTable._oAllCols[sPropertyKey]);
+        }
+        // Fallback: the fl layer may have bypassed removeItem (variant switching)
+        // so the map was never built. Find the column by its stable view-local ID.
         var sLocalId = _mColIds[sPropertyKey];
         if (sLocalId) {
             var oColumn = _findInView(oTable, sLocalId);
             if (oColumn) {
+                if (!oTable._oAllCols) { oTable._oAllCols = {}; }
+                oTable._oAllCols[sPropertyKey] = oColumn; // prime the map for next time
                 return Promise.resolve(oColumn);
             }
         }
