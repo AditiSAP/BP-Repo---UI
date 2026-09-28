@@ -79,16 +79,16 @@ sap.ui.define([
                 if (oCondModel) {
                     oCondModel.setProperty("/conditions/status",
                         oComp._kpiStatusFilter
-                            ? [{ operator: "EQ", values: [oComp._kpiStatusFilter] }]
+                            ? [{ operator: "EQ", values: [oComp._kpiStatusFilter], validated: "NotValidated" }]
                             : []);
                     if (oComp._kpiScope) {
                         if (oComp._kpiScope.year) {
                             oCondModel.setProperty("/conditions/fcYear",
-                                [{ operator: "EQ", values: [oComp._kpiScope.year] }]);
+                                [{ operator: "EQ", values: [oComp._kpiScope.year], validated: "NotValidated" }]);
                         }
                         if (oComp._kpiScope.period) {
                             oCondModel.setProperty("/conditions/fcPeriod",
-                                [{ operator: "EQ", values: [oComp._kpiScope.period] }]);
+                                [{ operator: "EQ", values: [oComp._kpiScope.period], validated: "NotValidated" }]);
                         }
                     }
                 }
@@ -116,7 +116,7 @@ sap.ui.define([
             if (oFilterBar) {
                 const oCondModel = oFilterBar.getModel("$filters");
                 if (oCondModel) {
-                    oCondModel.setProperty("/conditions/dateRange", [{ operator: "BT", values: [stDate, endDate] }]);
+                    oCondModel.setProperty("/conditions/dateRange", [{ operator: "BT", values: [stDate, endDate], validated: "NotValidated" }]);
                     ["jobname", "createdby", "status", "fcYear", "fcPeriod"].forEach(function (sKey) {
                         oCondModel.setProperty("/conditions/" + sKey, []);
                     });
@@ -454,6 +454,8 @@ sap.ui.define([
                     .setProperty("/ManualActivityEnabled", sRowStatus === "C");
                 this.getView().getModel("jobModel")
                     .setProperty("/CancelEnabled", sRowStatus === "S");
+                this.getView().getModel("jobModel")
+                    .setProperty("/CopyEnabled", true);
                 this._checkAuth(true);
             } else {
                 this.selJobRowData = null;
