@@ -68,44 +68,65 @@
                     <HBox class="grsSplit" width="100%" wrap="Wrap" renderType="Bare">
                             <VBox class="grsLeft" width="70%">
 
-                                <!-- KPI tiles (back from the donut). Compact,
-                                     no wasted gaps: a tight tile row, not a
-                                     stretched Grid. On Hold is NOT a tile - it
-                                     is the table on the right. -->
-                                <HBox class="grsKpiRow" wrap="Wrap">
-                                    <GenericTile header="{i18n>KpiScheduled}" press="onKpiPress"
-                                        app:kpi="S" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-                                        class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/S}" valueColor="Neutral" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                    <GenericTile header="{i18n>KpiRunning}" press="onKpiPress"
-                                        app:kpi="I" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-                                        class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/I}" valueColor="Good" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                    <GenericTile header="{i18n>KpiCompleted}" press="onKpiPress"
-                                        app:kpi="C" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-                                        class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/C}" valueColor="Good" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                    <GenericTile header="{i18n>KpiFailed}" press="onKpiPress"
-                                        app:kpi="F" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-                                        class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/F}" valueColor="Error" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                    <GenericTile header="{i18n>KpiTotal}" press="onKpiPress"
-                                        app:kpi="ALL" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
-                                        class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/TOTAL}" valueColor="Neutral" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                    <!-- On Hold is a UNIT count from logdt, not a job status,
-                                         so it does NOT navigate to Schedules (there is no
-                                         "on hold" status to filter by). The held units are
-                                         shown in the On-Hold panel on this page. -->
-                                    <GenericTile header="{i18n>KpiOnHold}" class="grsKpi">
-                                        <TileContent><NumericContent value="{dashModel>/kpi/H}" valueColor="Critical" withMargin="false"/></TileContent>
-                                    </GenericTile>
-                                </HBox>
+                                <!-- KPI summary card – replaces the 6 individual tiles.
+                                     Rows for S/I/C/F/ALL navigate to Schedules via onKpiPress;
+                                     On-Hold is display-only (no job-status filter exists for it). -->
+                                <f:Card id="kpiSummaryCard" class="grsCard sapUiSmallMarginBottom">
+                                    <f:header>
+                                        <card:Header id="kpiSummaryCardHeader" title="{i18n>StatusBreakdown}" subtitle="{dashModel>/contextText}"/>
+                                    </f:header>
+                                    <f:content>
+                                        <Table id="kpiSummaryTable" width="auto" showSeparators="Inner" mode="None">
+                                            <columns>
+                                                <Column id="kpiColStatus"><Text id="kpiColStatusLbl" text="{i18n>ColStatus}"/></Column>
+                                                <Column id="kpiColCount" hAlign="End" width="6rem"><Text id="kpiColCountLbl" text="{i18n>ColCount}"/></Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem id="kpiRowS" type="Active" press="onKpiPress">
+                                                    <customData><core:CustomData key="kpi" value="S"/></customData>
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblS" text="{i18n>KpiScheduled}" state="None"/>
+                                                        <ObjectStatus id="kpiValS" text="{dashModel>/kpi/S}" state="None"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                                <ColumnListItem id="kpiRowI" type="Active" press="onKpiPress">
+                                                    <customData><core:CustomData key="kpi" value="I"/></customData>
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblI" text="{i18n>KpiRunning}" state="Information"/>
+                                                        <ObjectStatus id="kpiValI" text="{dashModel>/kpi/I}" state="Information"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                                <ColumnListItem id="kpiRowC" type="Active" press="onKpiPress">
+                                                    <customData><core:CustomData key="kpi" value="C"/></customData>
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblC" text="{i18n>KpiCompleted}" state="Success"/>
+                                                        <ObjectStatus id="kpiValC" text="{dashModel>/kpi/C}" state="Success"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                                <ColumnListItem id="kpiRowF" type="Active" press="onKpiPress">
+                                                    <customData><core:CustomData key="kpi" value="F"/></customData>
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblF" text="{i18n>KpiFailed}" state="Error"/>
+                                                        <ObjectStatus id="kpiValF" text="{dashModel>/kpi/F}" state="Error"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                                <ColumnListItem id="kpiRowAll" type="Active" press="onKpiPress">
+                                                    <customData><core:CustomData key="kpi" value="ALL"/></customData>
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblAll" text="{i18n>KpiTotal}" state="None"/>
+                                                        <ObjectStatus id="kpiValAll" text="{dashModel>/kpi/TOTAL}" state="None"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                                <ColumnListItem id="kpiRowH" type="Inactive">
+                                                    <cells>
+                                                        <ObjectStatus id="kpiLblH" text="{i18n>KpiOnHold}" state="Warning"/>
+                                                        <ObjectStatus id="kpiValH" text="{dashModel>/kpi/H}" state="Warning"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </f:content>
+                                </f:Card>
 
                                 <!-- Timeline -->
                                 <f:Card class="grsCard grsScrollCard">
