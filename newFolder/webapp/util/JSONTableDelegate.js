@@ -93,21 +93,38 @@ sap.ui.define([
     };
 
     JSONTableDelegate.addItem = function (oTable, sPropertyKey /*, mPropertyBag */) {
+        var oColumn = null;
+
         // Primary: use the snapshot map built when columns were first removed.
         if (oTable._oAllCols && oTable._oAllCols[sPropertyKey]) {
-            return Promise.resolve(oTable._oAllCols[sPropertyKey]);
+            oColumn = oTable._oAllCols[sPropertyKey];
         }
+
         // Fallback: the fl layer may have bypassed removeItem (variant switching)
         // so the map was never built. Find the column by its stable view-local ID.
-        var sLocalId = _mColIds[sPropertyKey];
-        if (sLocalId) {
-            var oColumn = _findInView(oTable, sLocalId);
-            if (oColumn) {
-                if (!oTable._oAllCols) { oTable._oAllCols = {}; }
-                oTable._oAllCols[sPropertyKey] = oColumn; // prime the map for next time
-                return Promise.resolve(oColumn);
+        if (!oColumn) {
+            var sLocalId = _mColIds[sPropertyKey];
+            if (sLocalId) {
+                oColumn = _findInView(oTable, sLocalId);
+                if (oColumn) {
+                    if (!oTable._oAllCols) { oTable._oAllCols = {}; }
+                    oTable._oAllCols[sPropertyKey] = oColumn;
+                }
             }
         }
+
+        if (oColumn) {
+            // MDC Table calls insertColumn() on the returned column. If the column
+            // still has a parent (e.g. Reset calls addItem for columns already in
+            // the table without a preceding removeItem), UI5 aggregation throws and
+            // breaks the p13n state machine. Detach first to prevent that.
+            var oParent = oColumn.getParent && oColumn.getParent();
+            if (oParent && typeof oParent.removeColumn === "function") {
+                oParent.removeColumn(oColumn);
+            }
+            return Promise.resolve(oColumn);
+        }
+
         return TableDelegate.addItem.apply(this, arguments);
     };
 

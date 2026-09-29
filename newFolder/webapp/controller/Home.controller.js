@@ -110,6 +110,11 @@ sap.ui.define([
             const stDate  = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
             const endDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
+            // Persist defaults so createFilters() can fall back to them even if
+            // variant management or MDC type processing clears the $filters model.
+            this._dfltDateStart = stDate;
+            this._dfltDateEnd   = endDate;
+
             // Push the default date range into the MDC FilterBar as a BT
             // condition. All other filter fields are cleared.
             const oFilterBar = this.byId("filterbar");
@@ -272,6 +277,14 @@ sap.ui.define([
                             oEndDate      = oAdjEnd;
                         }
                     }
+                }
+
+                // If the FilterBar has no usable date condition (e.g. variant management
+                // cleared it after initializeData ran, or MDC type-processing nulled the
+                // values), fall back to the defaults stored by initializeData().
+                if ((!oStartDate || !oEndDate) && this._dfltDateStart) {
+                    oStartDate = this._dfltDateStart;
+                    oEndDate   = this._dfltDateEnd;
                 }
 
                 // ── Created By ─────────────────────────────────────────
@@ -445,7 +458,14 @@ sap.ui.define([
          * Replaces the original sap.ui.table rowSelectionChange handler.
          */
         onJobSelected: function (oEvent) {
-            const aContexts = oEvent.getParameter("bindingContexts");
+            // MDC Table selectionChange: try bindingContexts param first;
+            // fall back to the table's own getSelectedContexts() API in case
+            // the param comes back undefined/empty in certain MDC Table builds.
+            var aContexts = oEvent.getParameter("bindingContexts");
+            if ((!aContexts || !aContexts.length) &&
+                    typeof this.JobDetailTable.getSelectedContexts === "function") {
+                aContexts = this.JobDetailTable.getSelectedContexts();
+            }
             if (aContexts && aContexts.length > 0) {
                 this.selJobRowData = aContexts[0].getObject();
                 this.selRowData    = this.selJobRowData;
