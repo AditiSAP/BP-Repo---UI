@@ -66,7 +66,7 @@
 
                     <!-- 70 / 30 split: left = KPI tiles + timeline, right = on-hold -->
                     <HBox class="grsSplit" width="100%" wrap="Wrap" renderType="Bare">
-                            <VBox class="grsLeft" width="70%">
+                            <VBox class="grsLeft" width="30%">
 
                                 <!-- KPI summary card – replaces the 6 individual tiles.
                                      Rows for S/I/C/F/ALL navigate to Schedules via onKpiPress;
@@ -127,8 +127,39 @@
                                         </Table>
                                     </f:content>
                                 </f:Card>
-
-                                <!-- Timeline -->
+    <f:Card class="grsDashCard grsScrollCard">
+                                    <f:header>
+                                        <card:Header title="{i18n>OnHoldUnits}" subtitle="{i18n>OnHoldUnitsSub}"/>
+                                    </f:header>
+                                    <f:content>
+                                        <Table id="holdTable" items="{dashModel>/hold}" width="auto"
+                                               growing="true" growingThreshold="15" growingScrollToLoad="true"
+                                               noDataText="{i18n>NoHoldUnits}">
+                                            <columns>
+                                                <Column><Text text="{i18n>ColUnit}"/></Column>
+                                                <Column><Text text="{i18n>ColJob}"/></Column>
+                                                <Column><Text text="{i18n>ColTask}"/></Column>
+                                                <Column><Text text="{i18n>ColReason}"/></Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text text="{dashModel>ConUnit}"/>
+                                                        <ObjectIdentifier title="{dashModel>Jobname}"/>
+                                                        <Text text="{dashModel>TaskId}"/>
+                                                        <ObjectStatus text="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonText'}"
+                                                                      state="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonState'}"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </f:content>
+                                </f:Card>
+                               
+                            </VBox>
+                            <!-- right 50%: on-hold units -->
+                            <VBox class="grsRight" width="70%">
+                                 <!-- Timeline -->
                                 <f:Card class="grsDashCard grsScrollCard">
                                     <f:header>
                                         <card:Header title="{i18n>TodaysRuns}" subtitle="{i18n>TodaysRunsSub}"/>
@@ -172,37 +203,6 @@
                                                 <ObjectStatus text="{i18n>KpiScheduled}" state="None"/>
                                             </HBox>
                                         </VBox>
-                                    </f:content>
-                                </f:Card>
-                            </VBox>
-                            <!-- right 30%: on-hold units -->
-                            <VBox class="grsRight" width="30%">
-                                <f:Card class="grsDashCard grsScrollCard">
-                                    <f:header>
-                                        <card:Header title="{i18n>OnHoldUnits}" subtitle="{i18n>OnHoldUnitsSub}"/>
-                                    </f:header>
-                                    <f:content>
-                                        <Table id="holdTable" items="{dashModel>/hold}" width="auto"
-                                               growing="true" growingThreshold="15" growingScrollToLoad="true"
-                                               noDataText="{i18n>NoHoldUnits}">
-                                            <columns>
-                                                <Column><Text text="{i18n>ColUnit}"/></Column>
-                                                <Column><Text text="{i18n>ColJob}"/></Column>
-                                                <Column><Text text="{i18n>ColTask}"/></Column>
-                                                <Column><Text text="{i18n>ColReason}"/></Column>
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Text text="{dashModel>ConUnit}"/>
-                                                        <ObjectIdentifier title="{dashModel>Jobname}"/>
-                                                        <Text text="{dashModel>TaskId}"/>
-                                                        <ObjectStatus text="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonText'}"
-                                                                      state="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonState'}"/>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
                                     </f:content>
                                 </f:Card>
                             </VBox>
