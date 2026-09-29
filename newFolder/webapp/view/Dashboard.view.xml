@@ -71,7 +71,7 @@
                                 <!-- KPI summary card – replaces the 6 individual tiles.
                                      Rows for S/I/C/F/ALL navigate to Schedules via onKpiPress;
                                      On-Hold is display-only (no job-status filter exists for it). -->
-                                <f:Card id="kpiSummaryCard" class="grsCard sapUiSmallMarginBottom">
+                                <f:Card id="kpiSummaryCard" class="grsDashCard sapUiSmallMarginBottom">
                                     <f:header>
                                         <card:Header id="kpiSummaryCardHeader" title="{i18n>StatusBreakdown}" subtitle="{dashModel>/contextText}"/>
                                     </f:header>
@@ -129,7 +129,7 @@
                                 </f:Card>
 
                                 <!-- Timeline -->
-                                <f:Card class="grsCard grsScrollCard">
+                                <f:Card class="grsDashCard grsScrollCard">
                                     <f:header>
                                         <card:Header title="{i18n>TodaysRuns}" subtitle="{i18n>TodaysRunsSub}"/>
                                     </f:header>
@@ -139,7 +139,7 @@
                                                 <Label text="{i18n>RunDate}" class="sapUiTinyMarginEnd"/>
                                                 <DatePicker id="runDatePicker" value="{dashModel>/scope/runDate}"
                                                     valueFormat="yyyy-MM-dd" displayFormat="medium"
-                                                    change="onRunDateChange" width="10rem"/>
+                                                    change="onRunDateChange" width="8rem"/>
                                             </HBox>
                                             <HBox class="grsRuler" justifyContent="SpaceBetween">
                                                 <Text text="00:00"/><Text text="06:00"/><Text text="12:00"/><Text text="18:00"/><Text text="24:00"/>
@@ -177,7 +177,7 @@
                             </VBox>
                             <!-- right 30%: on-hold units -->
                             <VBox class="grsRight" width="30%">
-                                <f:Card class="grsCard grsScrollCard">
+                                <f:Card class="grsDashCard grsScrollCard">
                                     <f:header>
                                         <card:Header title="{i18n>OnHoldUnits}" subtitle="{i18n>OnHoldUnitsSub}"/>
                                     </f:header>
@@ -215,7 +215,7 @@
                     <MessageStrip class="sapUiSmallMarginBottom"
                         text="{dashModel>/mgrScopeText}" type="Information" showIcon="true"/>
 
-                    <f:Card class="sapUiTinyMargin">
+                    <f:Card class="grsDashCard sapUiTinyMargin">
                         <f:header><card:Header title="{i18n>NeedsAction}" subtitle="{i18n>NeedsActionSub}"/></f:header>
                         <f:content>
                             <Table items="{dashModel>/actions}" width="auto" noDataText="{i18n>NoActions}">
@@ -240,7 +240,7 @@
                     </f:Card>
 
                     <l:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true">
-                        <f:Card class="sapUiTinyMargin">
+                        <f:Card class="grsDashCard sapUiTinyMargin">
                             <f:header><card:Header title="{i18n>PeriodReadiness}" subtitle="{i18n>PeriodReadinessSub}"/></f:header>
                             <f:content>
                                 <Table items="{dashModel>/readiness}" width="auto" noDataText="{i18n>MgrPanelPending}">
@@ -265,7 +265,7 @@
                         </f:Card>
                     </l:Grid>
 
-                    <f:Card class="sapUiTinyMargin">
+                    <f:Card class="grsDashCard sapUiTinyMargin">
                         <f:header><card:Header title="{i18n>SeriesHealth}" subtitle="{i18n>SeriesHealthSub}"/></f:header>
                         <f:content>
                             <Table items="{dashModel>/series}" width="auto" noDataText="{i18n>MgrPanelPending}">

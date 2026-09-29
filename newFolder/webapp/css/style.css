@@ -18,6 +18,9 @@
 .grsScrollCard { height:26rem; }
 .grsScrollCard .sapFCardContent { height:100%; overflow:auto; }
 
+/* all dashboard cards: fixed width */
+.grsDashCard { width:35rem; }
+
 /* timeline internals */
 .grsTimeline { width:100%; }
 .grsRuler { color:#6a7889; font-size:0.66rem; border-bottom:1px dashed #e5e5e5; padding-bottom:4px; margin:0 6rem 8px 11rem; }
