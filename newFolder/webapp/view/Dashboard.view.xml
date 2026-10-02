@@ -5,6 +5,8 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns:l="sap.ui.layout"
+    xmlns:ui="sap.ui.table"
+    xmlns:rowmode="sap.ui.table.rowmodes"
     height="100%">
 
     <f:DynamicPage id="Dashboard" class="sapUiNoContentPadding" fitContent="false">
@@ -131,56 +133,38 @@
                                         subtitle="{i18n>OnHoldUnitsSub}"/>
                                 </f:header>
                                 <f:content>
-                                    <Table id="holdTable" items="{dashModel>/hold}" width="auto"
-                                           growing="true" growingThreshold="15" growingScrollToLoad="true"
-                                           noDataText="{i18n>NoHoldUnits}">
-                                        <columns>
-                                            <Column id="holdColUnit">
-                                                <VBox id="holdColUnitVBox">
-                                                    <Text id="holdColUnitLbl" text="{i18n>ColUnit}"/>
-                                                    <Input id="holdFilterUnit" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
-                                                        <customData><core:CustomData key="field" value="ConUnit"/></customData>
-                                                    </Input>
-                                                </VBox>
-                                            </Column>
-                                            <Column id="holdColJob">
-                                                <VBox id="holdColJobVBox">
-                                                    <Text id="holdColJobLbl" text="{i18n>ColJob}"/>
-                                                    <Input id="holdFilterJob" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
-                                                        <customData><core:CustomData key="field" value="Jobname"/></customData>
-                                                    </Input>
-                                                </VBox>
-                                            </Column>
-                                            <Column id="holdColTask">
-                                                <VBox id="holdColTaskVBox">
-                                                    <Text id="holdColTaskLbl" text="{i18n>ColTask}"/>
-                                                    <Input id="holdFilterTask" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
-                                                        <customData><core:CustomData key="field" value="TaskId"/></customData>
-                                                    </Input>
-                                                </VBox>
-                                            </Column>
-                                            <Column id="holdColReason">
-                                                <VBox id="holdColReasonVBox">
-                                                    <Text id="holdColReasonLbl" text="{i18n>ColReason}"/>
-                                                    <Input id="holdFilterReason" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
-                                                        <customData><core:CustomData key="field" value="HoldReason"/></customData>
-                                                    </Input>
-                                                </VBox>
-                                            </Column>
-                                        </columns>
-                                        <items>
-                                            <ColumnListItem id="holdColLI">
-                                                <cells>
-                                                    <Text             id="holdCellUnit"   text="{dashModel>ConUnit}"/>
-                                                    <ObjectIdentifier id="holdCellJob"    title="{dashModel>Jobname}"/>
-                                                    <Text             id="holdCellTask"   text="{dashModel>TaskId}"/>
-                                                    <ObjectStatus     id="holdCellReason"
+                                    <ui:Table id="holdTable" rows="{dashModel>/hold}" selectionMode="None">
+                                        <ui:rowMode>
+                                            <rowmode:Auto id="holdTableRowMode" minRowCount="5"/>
+                                        </ui:rowMode>
+                                        <ui:noData>
+                                            <Text id="holdTableNoData" text="{i18n>NoHoldUnits}"/>
+                                        </ui:noData>
+                                        <ui:columns>
+                                            <ui:Column id="holdColUnit" label="{i18n>ColUnit}" filterProperty="ConUnit" width="10rem">
+                                                <ui:template>
+                                                    <Text id="holdCellUnit" text="{dashModel>ConUnit}" wrapping="false"/>
+                                                </ui:template>
+                                            </ui:Column>
+                                            <ui:Column id="holdColJob" label="{i18n>ColJob}" filterProperty="Jobname">
+                                                <ui:template>
+                                                    <ObjectIdentifier id="holdCellJob" title="{dashModel>Jobname}"/>
+                                                </ui:template>
+                                            </ui:Column>
+                                            <ui:Column id="holdColTask" label="{i18n>ColTask}" filterProperty="TaskId" width="8rem">
+                                                <ui:template>
+                                                    <Text id="holdCellTask" text="{dashModel>TaskId}" wrapping="false"/>
+                                                </ui:template>
+                                            </ui:Column>
+                                            <ui:Column id="holdColReason" label="{i18n>ColReason}" filterProperty="HoldReason">
+                                                <ui:template>
+                                                    <ObjectStatus id="holdCellReason"
                                                         text="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonText'}"
                                                         state="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonState'}"/>
-                                                </cells>
-                                            </ColumnListItem>
-                                        </items>
-                                    </Table>
+                                                </ui:template>
+                                            </ui:Column>
+                                        </ui:columns>
+                                    </ui:Table>
                                 </f:content>
                             </f:Card>
 
