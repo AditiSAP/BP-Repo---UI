@@ -7,6 +7,9 @@
     xmlns:l="sap.ui.layout"
     xmlns:ui="sap.ui.table"
     xmlns:rowmode="sap.ui.table.rowmodes"
+    xmlns:gantt="sap.gantt.simple"
+    xmlns:axistime="sap.gantt.axistime"
+    xmlns:ganttconfig="sap.gantt.config"
     height="100%">
 
     <f:DynamicPage id="Dashboard" class="sapUiNoContentPadding" fitContent="false">
@@ -179,47 +182,58 @@
                                         subtitle="{i18n>TodaysRunsSub}"/>
                                 </f:header>
                                 <f:content>
-                                    <VBox id="timelineVBox" class="grsTimeline sapUiMediumMargin">
-                                        <HBox id="runDateBox" alignItems="Center" class="grsRunDate">
+                                    <VBox id="timelineVBox" class="grsTimeline">
+                                        <HBox id="runDateBox" alignItems="Center" class="grsRunDate sapUiTinyMarginBegin sapUiTinyMarginTop">
                                             <Label id="runDateLbl" text="{i18n>RunDate}" class="sapUiTinyMarginEnd"/>
                                             <DatePicker id="runDatePicker" value="{dashModel>/scope/runDate}"
                                                 valueFormat="yyyy-MM-dd" displayFormat="medium"
                                                 change="onRunDateChange" width="8rem"/>
                                         </HBox>
-                                        <HBox id="grsRulerHBox" class="grsRuler" justifyContent="SpaceBetween">
-                                            <Text id="ruler0"  text="00:00"/>
-                                            <Text id="ruler3"  text="03:00"/>
-                                            <Text id="ruler6"  text="06:00"/>
-                                            <Text id="ruler9"  text="09:00"/>
-                                            <Text id="ruler12" text="12:00"/>
-                                            <Text id="ruler15" text="15:00"/>
-                                            <Text id="ruler18" text="18:00"/>
-                                            <Text id="ruler21" text="21:00"/>
-                                            <Text id="ruler24" text="24:00"/>
-                                        </HBox>
-                                        <List id="runList" items="{dashModel>/runs}" showSeparators="None"
-                                              noDataText="{i18n>NoRunsToday}"
-                                              growing="true" growingThreshold="10" growingScrollToLoad="true">
-                                            <CustomListItem id="runLI" type="Active" press="onRunPress">
-                                                <HBox id="runLane" alignItems="Center" class="grsLane" width="100%">
-                                                    <VBox id="runLaneName" width="11rem" class="grsLaneName">
-                                                        <Text id="runJobname" text="{dashModel>jobname}" maxLines="1"/>
-                                                        <Text id="runConGrp"  text="{dashModel>con_grp}" class="grsLaneSub"/>
-                                                    </VBox>
-                                                    <VBox id="runTrack" class="grsTrack">
-                                                        <GenericTag id="runBar" class="grsBar" text="" design="StatusIconHidden"
-                                                            status="{dashModel>barState}" tooltip="{dashModel>startText}">
-                                                            <customData>
-                                                                <core:CustomData key="barleft"  value="{dashModel>barLeft}"  writeToDom="true"/>
-                                                                <core:CustomData key="barwidth" value="{dashModel>barWidth}" writeToDom="true"/>
-                                                            </customData>
-                                                        </GenericTag>
-                                                    </VBox>
-                                                    <Text id="runStartLbl" class="grsStartLbl" text="{dashModel>startText}"/>
-                                                </HBox>
-                                            </CustomListItem>
-                                        </List>
-                                        <HBox id="runLegend" class="grsLegend">
+                                        <gantt:GanttChartWithTable id="ganttTimeline"
+                                                rows="{dashModel>/runs}"
+                                                selectionMode="None"
+                                                width="100%"
+                                                cellClick="onRunPress">
+                                            <gantt:axisTimeStrategy>
+                                                <axistime:FullScreenStrategy id="ganttAxisTime">
+                                                    <axistime:totalHorizon>
+                                                        <ganttconfig:TimeHorizon id="ganttTotalHorizon"
+                                                            startTime="{dashModel>/gantt/horizonStart}"
+                                                            endTime="{dashModel>/gantt/horizonEnd}"/>
+                                                    </axistime:totalHorizon>
+                                                    <axistime:visibleHorizon>
+                                                        <ganttconfig:TimeHorizon id="ganttVisibleHorizon"
+                                                            startTime="{dashModel>/gantt/horizonStart}"
+                                                            endTime="{dashModel>/gantt/horizonEnd}"/>
+                                                    </axistime:visibleHorizon>
+                                                </axistime:FullScreenStrategy>
+                                            </gantt:axisTimeStrategy>
+                                            <gantt:columns>
+                                                <ui:Column id="ganttColJob" label="{i18n>ColJob}" width="14rem">
+                                                    <ui:template>
+                                                        <VBox id="ganttJobCell">
+                                                            <Text id="ganttCellJobname" text="{dashModel>jobname}" wrapping="false"/>
+                                                            <Text id="ganttCellConGrp"  text="{dashModel>con_grp}" class="grsLaneSub" wrapping="false"/>
+                                                        </VBox>
+                                                    </ui:template>
+                                                </ui:Column>
+                                            </gantt:columns>
+                                            <gantt:rowSettingsTemplate>
+                                                <gantt:GanttRowSettings id="ganttRowSettings" rowId="{dashModel>jobname}">
+                                                    <gantt:shapes1>
+                                                        <gantt:BaseRectangle id="ganttBar"
+                                                            time="{dashModel>startTime}"
+                                                            endTime="{dashModel>endTime}"
+                                                            fill="{path:'dashModel>barState', formatter:'.formatter.ganttBarFill'}"
+                                                            title="{dashModel>startText}"
+                                                            height="18"
+                                                            rx="3" ry="3"
+                                                            showTitle="true"/>
+                                                    </gantt:shapes1>
+                                                </gantt:GanttRowSettings>
+                                            </gantt:rowSettingsTemplate>
+                                        </gantt:GanttChartWithTable>
+                                        <HBox id="runLegend" class="grsLegend sapUiTinyMarginBegin sapUiTinyMarginBottom">
                                             <ObjectStatus id="legendCompleted" text="{i18n>KpiCompleted}" state="Success"     class="sapUiTinyMarginEnd"/>
                                             <ObjectStatus id="legendRunning"   text="{i18n>KpiRunning}"   state="Information" class="sapUiTinyMarginEnd"/>
                                             <ObjectStatus id="legendFailed"    text="{i18n>KpiFailed}"    state="Error"       class="sapUiTinyMarginEnd"/>
