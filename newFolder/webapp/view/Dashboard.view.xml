@@ -196,30 +196,31 @@
                     <MessageStrip class="sapUiSmallMarginBottom"
                         text="{dashModel>/mgrScopeText}" type="Information" showIcon="true"/>
 
-                    <f:Card class="sapUiTinyMargin">
-                        <f:header><card:Header title="{i18n>NeedsAction}" subtitle="{i18n>NeedsActionSub}"/></f:header>
-                        <f:content>
-                            <ui:Table id="actionsTable" rows="{dashModel>/actions}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
-                                <ui:noData><Text text="{i18n>NoActions}"/></ui:noData>
-                                <ui:columns>
-                                    <ui:Column label="{i18n>ColPriority}" filterProperty="priority" sortProperty="priority" showFilterMenuEntry="true" showSortMenuEntry="true" width="8rem">
-                                        <ui:template><ObjectStatus text="{dashModel>priority}" state="{dashModel>priorityState}"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColIssue}" filterProperty="issue" sortProperty="issue" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><Text text="{dashModel>issue}" wrapping="false"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColAction}" showFilterMenuEntry="false" showSortMenuEntry="false" width="10rem">
-                                        <ui:template><Button text="{dashModel>actionText}" type="Transparent" press="onActionPress"/></ui:template>
-                                    </ui:Column>
-                                </ui:columns>
-                            </ui:Table>
-                        </f:content>
-                    </f:Card>
+                    <l:Grid defaultSpan="XL4 L4 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true">
 
-                    <l:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true">
+                        <f:Card class="sapUiTinyMargin">
+                            <f:header><card:Header title="{i18n>NeedsAction}" subtitle="{i18n>NeedsActionSub}"/></f:header>
+                            <f:content>
+                                <ui:Table id="actionsTable" rows="{dashModel>/actions}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
+                                    <ui:noData><Text text="{i18n>NoActions}"/></ui:noData>
+                                    <ui:columns>
+                                        <ui:Column label="{i18n>ColPriority}" filterProperty="priority" sortProperty="priority" showFilterMenuEntry="true" showSortMenuEntry="true" width="8rem">
+                                            <ui:template><ObjectStatus text="{dashModel>priority}" state="{dashModel>priorityState}"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColIssue}" filterProperty="issue" sortProperty="issue" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>issue}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColAction}" showFilterMenuEntry="false" showSortMenuEntry="false" width="10rem">
+                                            <ui:template><Button text="{dashModel>actionText}" type="Transparent" press="onActionPress"/></ui:template>
+                                        </ui:Column>
+                                    </ui:columns>
+                                </ui:Table>
+                            </f:content>
+                        </f:Card>
+
                         <f:Card class="sapUiTinyMargin">
                             <f:header><card:Header title="{i18n>PeriodReadiness}" subtitle="{i18n>PeriodReadinessSub}"/></f:header>
                             <f:content>
@@ -242,30 +243,31 @@
                                 </ui:Table>
                             </f:content>
                         </f:Card>
-                    </l:Grid>
 
-                    <f:Card class="sapUiTinyMargin">
-                        <f:header><card:Header title="{i18n>SeriesHealth}" subtitle="{i18n>SeriesHealthSub}"/></f:header>
-                        <f:content>
-                            <ui:Table id="seriesTable" rows="{dashModel>/series}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
-                                <ui:noData><Text text="{i18n>MgrPanelPending}"/></ui:noData>
-                                <ui:columns>
-                                    <ui:Column label="{i18n>ColSchedule}" filterProperty="name" sortProperty="name" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><Text text="{dashModel>name}" wrapping="false"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColCadence}" filterProperty="cadence" sortProperty="cadence" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><Text text="{dashModel>cadence}" wrapping="false"/></ui:template>
-                                    </ui:Column>
-                                    <ui:Column label="{i18n>ColStreak}" filterProperty="streak" sortProperty="streak" showFilterMenuEntry="true" showSortMenuEntry="true">
-                                        <ui:template><ObjectStatus text="{dashModel>streak}" state="{dashModel>streakState}"/></ui:template>
-                                    </ui:Column>
-                                </ui:columns>
-                            </ui:Table>
-                        </f:content>
-                    </f:Card>
+                        <f:Card class="sapUiTinyMargin">
+                            <f:header><card:Header title="{i18n>SeriesHealth}" subtitle="{i18n>SeriesHealthSub}"/></f:header>
+                            <f:content>
+                                <ui:Table id="seriesTable" rows="{dashModel>/series}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
+                                    <ui:noData><Text text="{i18n>MgrPanelPending}"/></ui:noData>
+                                    <ui:columns>
+                                        <ui:Column label="{i18n>ColSchedule}" filterProperty="name" sortProperty="name" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>name}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColCadence}" filterProperty="cadence" sortProperty="cadence" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>cadence}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColStreak}" filterProperty="streak" sortProperty="streak" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><ObjectStatus text="{dashModel>streak}" state="{dashModel>streakState}"/></ui:template>
+                                        </ui:Column>
+                                    </ui:columns>
+                                </ui:Table>
+                            </f:content>
+                        </f:Card>
+
+                    </l:Grid>
                 </VBox>
 
             </VBox>
