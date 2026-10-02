@@ -135,10 +135,38 @@
                                            growing="true" growingThreshold="15" growingScrollToLoad="true"
                                            noDataText="{i18n>NoHoldUnits}">
                                         <columns>
-                                            <Column id="holdColUnit"><Text id="holdColUnitLbl" text="{i18n>ColUnit}"/></Column>
-                                            <Column id="holdColJob"><Text id="holdColJobLbl" text="{i18n>ColJob}"/></Column>
-                                            <Column id="holdColTask"><Text id="holdColTaskLbl" text="{i18n>ColTask}"/></Column>
-                                            <Column id="holdColReason"><Text id="holdColReasonLbl" text="{i18n>ColReason}"/></Column>
+                                            <Column id="holdColUnit">
+                                                <VBox id="holdColUnitVBox">
+                                                    <Text id="holdColUnitLbl" text="{i18n>ColUnit}"/>
+                                                    <Input id="holdFilterUnit" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
+                                                        <customData><core:CustomData key="field" value="ConUnit"/></customData>
+                                                    </Input>
+                                                </VBox>
+                                            </Column>
+                                            <Column id="holdColJob">
+                                                <VBox id="holdColJobVBox">
+                                                    <Text id="holdColJobLbl" text="{i18n>ColJob}"/>
+                                                    <Input id="holdFilterJob" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
+                                                        <customData><core:CustomData key="field" value="Jobname"/></customData>
+                                                    </Input>
+                                                </VBox>
+                                            </Column>
+                                            <Column id="holdColTask">
+                                                <VBox id="holdColTaskVBox">
+                                                    <Text id="holdColTaskLbl" text="{i18n>ColTask}"/>
+                                                    <Input id="holdFilterTask" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
+                                                        <customData><core:CustomData key="field" value="TaskId"/></customData>
+                                                    </Input>
+                                                </VBox>
+                                            </Column>
+                                            <Column id="holdColReason">
+                                                <VBox id="holdColReasonVBox">
+                                                    <Text id="holdColReasonLbl" text="{i18n>ColReason}"/>
+                                                    <Input id="holdFilterReason" placeholder="{i18n>Filter}" width="100%" liveChange="onHoldFilter">
+                                                        <customData><core:CustomData key="field" value="HoldReason"/></customData>
+                                                    </Input>
+                                                </VBox>
+                                            </Column>
                                         </columns>
                                         <items>
                                             <ColumnListItem id="holdColLI">
