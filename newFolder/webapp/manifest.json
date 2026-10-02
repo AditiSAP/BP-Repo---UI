@@ -63,8 +63,7 @@
         "sap.ui.mdc": {},
         "sap.ui.fl": {},
         "sap.ui.table": {},
-        "sap.ui.export": {},
-        "sap.gantt": {}
+        "sap.ui.export": {}
       }
     },
     "contentDensities": {
