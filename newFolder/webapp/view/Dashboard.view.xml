@@ -179,7 +179,7 @@
                                         subtitle="{i18n>TodaysRunsSub}"/>
                                 </f:header>
                                 <f:content>
-                                    <VBox id="timelineVBox" class="grsTimeline">
+                                    <VBox id="timelineVBox" class="grsTimeline sapUiMediumMargin">
                                         <HBox id="runDateBox" alignItems="Center" class="grsRunDate">
                                             <Label id="runDateLbl" text="{i18n>RunDate}" class="sapUiTinyMarginEnd"/>
                                             <DatePicker id="runDatePicker" value="{dashModel>/scope/runDate}"
