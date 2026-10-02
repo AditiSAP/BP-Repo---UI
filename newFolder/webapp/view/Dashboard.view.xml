@@ -176,9 +176,13 @@
                                         </HBox>
                                         <HBox id="grsRulerHBox" class="grsRuler" justifyContent="SpaceBetween">
                                             <Text id="ruler0"  text="00:00"/>
+                                            <Text id="ruler3"  text="03:00"/>
                                             <Text id="ruler6"  text="06:00"/>
+                                            <Text id="ruler9"  text="09:00"/>
                                             <Text id="ruler12" text="12:00"/>
+                                            <Text id="ruler15" text="15:00"/>
                                             <Text id="ruler18" text="18:00"/>
+                                            <Text id="ruler21" text="21:00"/>
                                             <Text id="ruler24" text="24:00"/>
                                         </HBox>
                                         <List id="runList" items="{dashModel>/runs}" showSeparators="None"
