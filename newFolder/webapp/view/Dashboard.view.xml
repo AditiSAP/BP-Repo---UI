@@ -80,41 +80,41 @@
                                             <ColumnListItem id="kpiRowS" type="Active" press="onKpiPress">
                                                 <customData><core:CustomData key="kpi" value="S"/></customData>
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblS" text="{i18n>KpiScheduled}" state="None"/>
-                                                    <ObjectStatus id="kpiValS" text="{dashModel>/kpi/S}" state="None"/>
+                                                    <ObjectStatus id="kpiLblS" text="{i18n>KpiScheduled}" state="None"        icon="sap-icon://calendar"/>
+                                                    <ObjectStatus id="kpiValS" text="{dashModel>/kpi/S}"   state="None"/>
                                                 </cells>
                                             </ColumnListItem>
                                             <ColumnListItem id="kpiRowI" type="Active" press="onKpiPress">
                                                 <customData><core:CustomData key="kpi" value="I"/></customData>
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblI" text="{i18n>KpiRunning}" state="Information"/>
-                                                    <ObjectStatus id="kpiValI" text="{dashModel>/kpi/I}" state="Information"/>
+                                                    <ObjectStatus id="kpiLblI" text="{i18n>KpiRunning}"   state="Information" icon="sap-icon://status-in-process"/>
+                                                    <ObjectStatus id="kpiValI" text="{dashModel>/kpi/I}"  state="Information"/>
                                                 </cells>
                                             </ColumnListItem>
                                             <ColumnListItem id="kpiRowC" type="Active" press="onKpiPress">
                                                 <customData><core:CustomData key="kpi" value="C"/></customData>
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblC" text="{i18n>KpiCompleted}" state="Success"/>
-                                                    <ObjectStatus id="kpiValC" text="{dashModel>/kpi/C}" state="Success"/>
+                                                    <ObjectStatus id="kpiLblC" text="{i18n>KpiCompleted}" state="Success"     icon="sap-icon://status-completed"/>
+                                                    <ObjectStatus id="kpiValC" text="{dashModel>/kpi/C}"  state="Success"/>
                                                 </cells>
                                             </ColumnListItem>
                                             <ColumnListItem id="kpiRowF" type="Active" press="onKpiPress">
                                                 <customData><core:CustomData key="kpi" value="F"/></customData>
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblF" text="{i18n>KpiFailed}" state="Error"/>
-                                                    <ObjectStatus id="kpiValF" text="{dashModel>/kpi/F}" state="Error"/>
+                                                    <ObjectStatus id="kpiLblF" text="{i18n>KpiFailed}"    state="Error"       icon="sap-icon://status-error"/>
+                                                    <ObjectStatus id="kpiValF" text="{dashModel>/kpi/F}"  state="Error"/>
                                                 </cells>
                                             </ColumnListItem>
                                             <ColumnListItem id="kpiRowAll" type="Active" press="onKpiPress">
                                                 <customData><core:CustomData key="kpi" value="ALL"/></customData>
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblAll" text="{i18n>KpiTotal}" state="None"/>
+                                                    <ObjectStatus id="kpiLblAll" text="{i18n>KpiTotal}"        state="None" icon="sap-icon://list"/>
                                                     <ObjectStatus id="kpiValAll" text="{dashModel>/kpi/TOTAL}" state="None"/>
                                                 </cells>
                                             </ColumnListItem>
                                             <ColumnListItem id="kpiRowH" type="Inactive">
                                                 <cells>
-                                                    <ObjectStatus id="kpiLblH" text="{i18n>KpiOnHold}" state="Warning"/>
+                                                    <ObjectStatus id="kpiLblH" text="{i18n>KpiOnHold}" state="Warning" icon="sap-icon://status-critical"/>
                                                     <ObjectStatus id="kpiValH" text="{dashModel>/kpi/H}" state="Warning"/>
                                                 </cells>
                                             </ColumnListItem>
