@@ -319,13 +319,15 @@ sap.ui.define([
 			this.enableSchChkFn(this.enableSchChk);
 		},
 		onPressRecurrPatrn: async function () {
-			const oDialog = await Fragment.load({
-				id: this.getView().getId(),
-				name: "com.bpcfn.jobscheduler.fragments.defRecurrPatrn",
-				controller: this
-			});
-			this.getView().addDependent(oDialog);
-			oDialog.open();
+			if (!this._oRecurrPatrnDialog) {
+				this._oRecurrPatrnDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.defRecurrPatrn",
+					controller: this
+				});
+				this.getView().addDependent(this._oRecurrPatrnDialog);
+			}
+			this._oRecurrPatrnDialog.open();
 		},
 		validateSchedule: function (schdMod) {
 			// If recurrence is not enabled, no further validation needed
