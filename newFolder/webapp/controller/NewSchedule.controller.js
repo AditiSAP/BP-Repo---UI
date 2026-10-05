@@ -481,20 +481,24 @@ sap.ui.define([
 				return;
 			}
 			await this.readF4TaskData();
-			// Load the fragment ONCE and reuse it. Re-loading on every open
-			// re-creates idTaskVHTable, which UI5 rejects as a duplicate ID.
-			// Caching the dialog also preserves selection state between opens.
+			// Guard against concurrent opens: if a load is already in progress,
+			// await the same promise instead of starting a second Fragment.load
+			// (which would create duplicate IDs for idTaskVHTable).
 			if (!this._oTaskVHDialog) {
-				this._oTaskVHDialog = await Fragment.load({
-					id: this.getView().getId(),
-					name: "com.bpcfn.jobscheduler.fragments.jobTemplateValueHelp",
-					controller: this
-				});
-				this.getView().addDependent(this._oTaskVHDialog);
+				if (!this._oTaskVHDialogPromise) {
+					this._oTaskVHDialogPromise = Fragment.load({
+						id: this.getView().getId(),
+						name: "com.bpcfn.jobscheduler.fragments.jobTemplateValueHelp",
+						controller: this
+					}).then(function (oDialog) {
+						this.getView().addDependent(oDialog);
+						this._oTaskVHDialog = oDialog;
+						this._oTaskVHDialogPromise = null;
+						return oDialog;
+					}.bind(this));
+				}
+				await this._oTaskVHDialogPromise;
 			}
-			// Pre-check the rows already chosen, so reopening the F4 shows the
-			// current selection ticked. Without this the table opens blank and
-			// the user would have to re-pick everything to add one task.
 			this._preselectTaskRows();
 			this._oTaskVHDialog.open();
 		},
@@ -523,23 +527,41 @@ sap.ui.define([
 			setTimeout(fnApply, 0);   // catch late-bound rows
 		},
 
-		handleValueHelpVersion: function (oEvent) {
+		handleValueHelpVersion: async function (oEvent) {
 			this._vhField = oEvent.getSource();
-			const oDialog = sap.ui.xmlfragment("com.bpcfn.jobscheduler.fragments.versionValueHelp", this);
-			this.getView().addDependent(oDialog);
-			oDialog.open();
+			if (!this._oVersionVHDialog) {
+				this._oVersionVHDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.versionValueHelp",
+					controller: this
+				});
+				this.getView().addDependent(this._oVersionVHDialog);
+			}
+			this._oVersionVHDialog.open();
 		},
-		handleValueHelpCoa: function (oEvent) {
+		handleValueHelpCoa: async function (oEvent) {
 			this._vhField = oEvent.getSource();
-			const oDialog = sap.ui.xmlfragment("com.bpcfn.jobscheduler.fragments.coaValueHelp", this);
-			this.getView().addDependent(oDialog);
-			oDialog.open();
+			if (!this._oCoaVHDialog) {
+				this._oCoaVHDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.coaValueHelp",
+					controller: this
+				});
+				this.getView().addDependent(this._oCoaVHDialog);
+			}
+			this._oCoaVHDialog.open();
 		},
-		handleValueHelpGroup: function (oEvent) {
+		handleValueHelpGroup: async function (oEvent) {
 			this._vhField = oEvent.getSource();
-			const oDialog = sap.ui.xmlfragment("com.bpcfn.jobscheduler.fragments.groupValueHelp", this);
-			this.getView().addDependent(oDialog);
-			oDialog.open();
+			if (!this._oGroupVHDialog) {
+				this._oGroupVHDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.groupValueHelp",
+					controller: this
+				});
+				this.getView().addDependent(this._oGroupVHDialog);
+			}
+			this._oGroupVHDialog.open();
 		},
 		/* ==================================================================
 		 *  Layer 1 - format validation on the field itself
@@ -769,13 +791,17 @@ sap.ui.define([
 			// for the stack can leave the second rendered but empty.
 			this.busyDialog.close();
 
-			const oDialog = sap.ui.xmlfragment(
-				"com.bpcfn.jobscheduler.fragments.unitMultiInputValueHelp", this);
-			this.getView().addDependent(oDialog);
-			// Set the model directly on the dialog - addDependent does not
-			// reliably propagate a model bound after fragment creation.
-			oDialog.setModel(oVHModel, "conUnitVHModel");
-			oDialog.open();
+			if (!this._oUnitVHDialog) {
+				this._oUnitVHDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.unitMultiInputValueHelp",
+					controller: this
+				});
+				this.getView().addDependent(this._oUnitVHDialog);
+			}
+			// Refresh the data model on every open so the list stays current.
+			this._oUnitVHDialog.setModel(oVHModel, "conUnitVHModel");
+			this._oUnitVHDialog.open();
 
 		} catch (oErr) {
 			this.busyDialog.close();
@@ -1031,13 +1057,15 @@ sap.ui.define([
 			});
 		},
 		onTimeZoneValueHelp: async function () {
-			const oDialog = await Fragment.load({
-				id: this.getView().getId(),
-				name: "com.bpcfn.jobscheduler.fragments.timeZone",
-				controller: this
-			});
-			this.getView().addDependent(oDialog);
-			oDialog.open();
+			if (!this._oTimeZoneVHDialog) {
+				this._oTimeZoneVHDialog = await Fragment.load({
+					id: this.getView().getId(),
+					name: "com.bpcfn.jobscheduler.fragments.timeZone",
+					controller: this
+				});
+				this.getView().addDependent(this._oTimeZoneVHDialog);
+			}
+			this._oTimeZoneVHDialog.open();
 		},
 		onChangeSchEndDate: function (oEvent) {
 			this.onSelectionChangeTimeZone();
