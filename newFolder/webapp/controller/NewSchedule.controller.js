@@ -76,11 +76,16 @@ sap.ui.define([
 			}
 		},
 		initializeData: async function () {
-			var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-				pattern: "dd.MM.yyyy, HH:mm:ss"
+			var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({
+				pattern: "dd.MM.yyyy"
+			});
+			var oTimeFormat = sap.ui.core.format.DateFormat.getTimeInstance({
+				pattern: "HH:mm:ss"
 			});
 			var oDate = new Date();
 			var sFormattedDate = oDateFormat.format(oDate);
+			var sFormattedTime = oTimeFormat.format(oDate);
+			var sCombinedDate = sFormattedDate + ", " + sFormattedTime;
 			// Extract timezone code with proper null/undefined checks
 			var timezoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
 			try {
@@ -113,9 +118,10 @@ sap.ui.define([
 				RepType: 0,
 				RepTypeVisible: false,
 				SchDate: sFormattedDate,
+				SchTime: sFormattedTime,
 				scheduling_timezone: timezoneCode,
 				TimeZoneCode: Intl.DateTimeFormat().resolvedOptions().timeZone,
-				start_date_time: sFormattedDate,
+				start_date_time: sCombinedDate,
 				selected_variant: "",
 				SchDateValueState: "None",
 				block_unblock: "",
@@ -124,7 +130,29 @@ sap.ui.define([
 				periodic_value: 0,
 				generic_user_id: "",
 				schJobBtnVisible: false,
-				ConsUnitEditable: true
+				ConsUnitEditable: true,
+				// Recurrence fields
+				RecurrenceSetIndicator: false,
+				SchEndDt: "",
+				SchEndTime: "",
+				BeginEndMonthSelection: "B",
+				MonthDay: "1",
+				MonthsDayType: "D",
+				MonthsDaysType: "D",
+				WeekNumber: "W1",
+				WeekDays: [],
+				MonthOnlyWorkdaysInd: false,
+				StartRestrictionCode: "A",
+				StartRestrictionCodeEnabled: false,
+				CalendarId: "",
+				CalendarSelectionEnabled: false,
+				// Visibility flags for "On" sub-selectors
+				OnFieldVisible: false,
+				OnMonthsVisible: false,
+				MonthDayNrVisible: false,
+				MonthDayTypeVisible: false,
+				MonthNegDayNrVisible: false,
+				WeekDayVisible: false
 			});
 		},
 		validateGenericUser: async function () {
@@ -300,6 +328,10 @@ sap.ui.define([
 			oDialog.open();
 		},
 		validateSchedule: function (schdMod) {
+			// If recurrence is not enabled, no further validation needed
+			if (!schdMod.RecurrenceSetIndicator) {
+				return { ok: true };
+			}
 			// NOTE: was "if (schdMod?.prd_days || schdMod.prd_days.trim() !== \"\")".
 			// The || made the optional chain pointless and threw a TypeError
 			// whenever prd_days was undefined. Must be &&.
@@ -942,27 +974,28 @@ sap.ui.define([
 		},
 		onStartImmSelctd: function (oEvent) {
 			var startImmSelctd = oEvent.getParameter("selected");
-			var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-				pattern: "dd.MM.yyyy, HH:mm:ss"
-			});
-			var oDate = new Date();
-			var sFormattedDate = oDateFormat.format(oDate);
-			this.getView().getModel("schdMod").setProperty("/SchDate", sFormattedDate);
+			var oDateFmt = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "dd.MM.yyyy" });
+			var oTimeFmt = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "HH:mm:ss" });
+			var oNow = new Date();
+			this.getView().getModel("schdMod").setProperty("/SchDate", oDateFmt.format(oNow));
+			this.getView().getModel("schdMod").setProperty("/SchTime", oTimeFmt.format(oNow));
 			this.getView().getModel("schdMod").setProperty("/start_immed", startImmSelctd ? "X" : "");
 			this.onSelectionChangeTimeZone();
 			this.secondStepValidation();
 		},
 		onRecrSel: function (oEvent) {
-			this.getView().getModel("schdMod").setProperty("/prd_days", oEvent.getParameter("selectedItem").getKey());
-			var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-				pattern: "dd.MM.yyyy, HH:mm:ss"
-			});
-			var oDate = new Date();
-			var sFormattedDate = oDateFormat.format(oDate);
-			if (oEvent.getParameter("selectedItem").getKey()) {
-				this.getView().getModel("schdMod").setProperty("/SchEndDt", sFormattedDate);
-				this.getView().getModel("schdMod").setProperty("/end_date_time", sFormattedDate);
+			var sKey = oEvent.getParameter("selectedItem").getKey();
+			this.getView().getModel("schdMod").setProperty("/prd_days", sKey);
+			var oDateFmt = sap.ui.core.format.DateFormat.getDateInstance({ pattern: "dd.MM.yyyy" });
+			var oTimeFmt = sap.ui.core.format.DateFormat.getTimeInstance({ pattern: "HH:mm:ss" });
+			var oNow = new Date();
+			if (sKey) {
+				this.getView().getModel("schdMod").setProperty("/SchEndDt", oDateFmt.format(oNow));
+				this.getView().getModel("schdMod").setProperty("/SchEndTime", oTimeFmt.format(oNow));
+				var sCombined = oDateFmt.format(oNow) + ", " + oTimeFmt.format(oNow);
+				this.getView().getModel("schdMod").setProperty("/end_date_time", sCombined);
 			}
+			this._updateOnFieldVisibility(sKey);
 		},
 		onSearchTimeZone: function (oEvent) {
 			const value = oEvent.getParameter("newValue");
@@ -1005,15 +1038,16 @@ sap.ui.define([
 			this.onSelectionChangeTimeZone();
 		},
 		onSelectionChangeTimeZone: async function (oEvent) {
-			var selStTime = this.getView().getModel("schdMod").getProperty("/SchDate");
-			var selEndTime = this.getView().getModel("schdMod").getProperty("/SchEndDt");
+			var oMod = this.getView().getModel("schdMod");
+			var selStTime = this._combineDateAndTime(oMod.getProperty("/SchDate"), oMod.getProperty("/SchTime"));
+			var selEndTime = this._combineDateAndTime(oMod.getProperty("/SchEndDt"), oMod.getProperty("/SchEndTime"));
 			var selTimeZone;
 			if (oEvent) {
 				this.evtSrc = oEvent.getSource();
 				selTimeZone = oEvent.getParameter("listItem").getProperty("description");
-				this.getView().getModel("schdMod").setProperty("/scheduling_timezone", selTimeZone);
+				oMod.setProperty("/scheduling_timezone", selTimeZone);
 			} else {
-				selTimeZone = this.getView().getModel("schdMod").getProperty("/scheduling_timezone");
+				selTimeZone = oMod.getProperty("/scheduling_timezone");
 			}
 			await this.convertTime(selStTime, "/start_date_time", selTimeZone);
 			await this.convertTime(selEndTime, "/end_date_time", selTimeZone);
@@ -1053,6 +1087,122 @@ sap.ui.define([
 		},
 		onPressCancel: function (oEvent) {
 			oEvent.getSource().getParent().close();
+		},
+		_combineDateAndTime: function (sDate, sTime) {
+			if (!sDate) { return ""; }
+			return sDate + ", " + (sTime || "00:00:00");
+		},
+		onChangeSchTime: function () {
+			this.onSelectionChangeTimeZone();
+		},
+		onChangeSchEndTime: function () {
+			this.onSelectionChangeTimeZone();
+		},
+		onRecurrenceIndChanged: function (oEvent) {
+			var bSelected = oEvent.getParameter("selected");
+			var oMod = this.getView().getModel("schdMod");
+			oMod.setProperty("/RecurrenceSetIndicator", bSelected);
+			if (!bSelected) {
+				oMod.setProperty("/prd_days", "");
+				oMod.setProperty("/periodic_value", 0);
+				oMod.setProperty("/end_type_c", "");
+				oMod.setProperty("/max_iterations", "");
+				oMod.setProperty("/SchEndDt", "");
+				oMod.setProperty("/SchEndTime", "");
+				oMod.setProperty("/end_date_time", "");
+				this._updateOnFieldVisibility("");
+			}
+		},
+		_updateOnFieldVisibility: function (sPrdDays) {
+			var oMod = this.getView().getModel("schdMod");
+			var bShowOn = ["W", "MO"].includes(sPrdDays);
+			var bShowMonths = sPrdDays === "MO";
+			var sBeginEnd = oMod.getProperty("/BeginEndMonthSelection") || "B";
+			oMod.setProperty("/OnFieldVisible", bShowOn);
+			oMod.setProperty("/OnMonthsVisible", bShowMonths);
+			// Month day number row: months + begin/end = B (specific day)
+			oMod.setProperty("/MonthDayNrVisible", bShowMonths && sBeginEnd === "B");
+			oMod.setProperty("/MonthDayTypeVisible", bShowMonths && sBeginEnd === "B");
+			// Negative day / week rows: months + begin/end = D (last N days)
+			oMod.setProperty("/MonthNegDayNrVisible", bShowMonths && sBeginEnd === "D");
+			// Week day selector: weekly pattern
+			oMod.setProperty("/WeekDayVisible", sPrdDays === "W");
+		},
+		onBeginEndMonthSelectionChange: function (oEvent) {
+			var sKey = oEvent.getParameter("selectedItem").getKey();
+			this.getView().getModel("schdMod").setProperty("/BeginEndMonthSelection", sKey);
+			var sPrdDays = this.getView().getModel("schdMod").getProperty("/prd_days");
+			this._updateOnFieldVisibility(sPrdDays);
+		},
+		onMonthDaySelectionChange: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/MonthDay",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onMonthsDayTypeSelectionChange: function (oEvent) {
+			var sSrcId = oEvent.getSource().getId();
+			var sKey = oEvent.getParameter("selectedItem").getKey();
+			// monthsDayTypeSelectionddlb sets MonthsDayType; monthsDaysTypeSelectionddlb sets MonthsDaysType
+			if (sSrcId.indexOf("monthsDaysType") !== -1) {
+				this.getView().getModel("schdMod").setProperty("/MonthsDaysType", sKey);
+			} else {
+				this.getView().getModel("schdMod").setProperty("/MonthsDayType", sKey);
+			}
+		},
+		onWeekNumberChange: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/WeekNumber",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onWeeksDaySelectionFinish: function (oEvent) {
+			var aKeys = oEvent.getParameter("selectedItems").map(function (oItem) {
+				return oItem.getKey();
+			});
+			this.getView().getModel("schdMod").setProperty("/WeekDays", aKeys);
+		},
+		onEndTypeCChange: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/end_type_c",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onWorkdayIndChanged: function (oEvent) {
+			var bChecked = oEvent.getParameter("selected");
+			var oMod = this.getView().getModel("schdMod");
+			oMod.setProperty("/MonthOnlyWorkdaysInd", bChecked);
+			oMod.setProperty("/StartRestrictionCodeEnabled", bChecked);
+			oMod.setProperty("/CalendarSelectionEnabled", bChecked);
+			if (!bChecked) {
+				oMod.setProperty("/StartRestrictionCode", "A");
+				oMod.setProperty("/CalendarId", "");
+			}
+		},
+		onStartRestrictionSelect: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/StartRestrictionCode",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onCalendarSelectionChange: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/CalendarId",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onPressReset: function () {
+			var oMod = this.getView().getModel("schdMod");
+			oMod.setProperty("/RecurrenceSetIndicator", false);
+			oMod.setProperty("/prd_days", "");
+			oMod.setProperty("/periodic_value", 0);
+			oMod.setProperty("/end_type_c", "");
+			oMod.setProperty("/max_iterations", "");
+			oMod.setProperty("/SchEndDt", "");
+			oMod.setProperty("/SchEndTime", "");
+			oMod.setProperty("/end_date_time", "");
+			oMod.setProperty("/BeginEndMonthSelection", "B");
+			oMod.setProperty("/MonthDay", "1");
+			oMod.setProperty("/MonthsDayType", "D");
+			oMod.setProperty("/MonthsDaysType", "D");
+			oMod.setProperty("/WeekNumber", "W1");
+			oMod.setProperty("/WeekDays", []);
+			oMod.setProperty("/MonthOnlyWorkdaysInd", false);
+			oMod.setProperty("/StartRestrictionCode", "A");
+			oMod.setProperty("/StartRestrictionCodeEnabled", false);
+			oMod.setProperty("/CalendarId", "");
+			oMod.setProperty("/CalendarSelectionEnabled", false);
+			this._updateOnFieldVisibility("");
 		},
 		/**
 		 * Read the consolidation group value help.

@@ -1,55 +1,460 @@
 <core:FragmentDefinition xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:form="sap.ui.layout.form"
-    xmlns:l="sap.ui.layout">
-    <Dialog title="{i18n>SchInfo}" contentWidth="50%">
-        <form:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" columnsXL="1" columnsL="1" columnsM="1">
-            <Label text="{i18n>StartImm}" required="{=${schdMod>/start_immed} === 'X' ? true : false}" />
-            <CheckBox selected="{=${schdMod>/start_immed} === 'X' ? true : false}" select="onStartImmSelctd"/>
-            <Label text="{i18n>Start}"/>
-            <DateTimePicker value="{schdMod>/SchDate}" valueFormat="dd.MM.yyyy, HH:mm:ss" displayFormat="dd.MM.yyyy, HH:mm:ss" visible="{=${schdMod>/start_immed} === 'X' ? false : true}" afterValueHelpClose="secondStepValidation" liveChange="onlvChangeSchDate" change="onChangeSchDate" valueState="{schdMod>/SchDateValueState}">
-                <layoutData>
-                    <l:GridData span="XL4 L4 M4 S4" />
-                </layoutData>
-            </DateTimePicker>
-            <Input value="{schdMod>/scheduling_timezone}" showValueHelp="true" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onTimeZoneValueHelp" suggestionItems="{timeZoneModel>/}" visible="{=${schdMod>/start_immed} === 'X' ? false : true}">
-                <suggestionItems>
-                    <core:Item key="{timeZoneModel>Code}" text="{timeZoneModel>Description}" />
-                </suggestionItems>
-            </Input>
-            <Label text="{i18n>StartDtTm}" required="{=${schdMod>/start_immed} === 'X' ? false : true}"/>
-            <DateTimePicker value="{
-							path:'schdMod>/start_date_time',
-							type:'sap.ui.model.odata.type.String'
-							}" showTimezone="true" timezone="{schdMod>/TimeZoneCode}" editable="false" class="customDate"/>
-            <Label text="{i18n>Recurrence}"/>
-            <Select selectedKey="{schdMod>/prd_days}" items="{jobModel>/recurrence}" change="onRecrSel">
-                <core:Item key="{jobModel>key}" text="{jobModel>text}" />
-            </Select>
-            <Label text="{i18n>Every}"/>
-            <Input value="{path:'schdMod>/periodic_value'}" description="{path: 'schdMod>/prd_days', formatter: '.formatter.everyLabel'}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}" liveChange="onDigit3LiveChange" change="onDigit3Change" valueState="{schdMod>/periodic_value_vs}" valueStateText="{schdMod>/periodic_value_vst}"/>
-            <Label text="{i18n>End}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}"/>
-            <Select selectedKey="{path: 'schdMod>/end_type_c'}" items="{path: 'jobModel>/end_type_c', sorter: { path: 'key' }}" visible="{path: 'schdMod>/prd_days', formatter: '.formatter.everyEndFieldVisible'}">
-                <core:Item key="{jobModel>key}" text="{jobModel>text}" />
-                <layoutData>
-                    <l:GridData span="XL4 L4 M4 S4" />
-                </layoutData>
-            </Select>
-            <HBox width="100%">
-                <DateTimePicker value="{schdMod>/SchEndDt}" valueFormat="dd.MM.yyyy, HH:mm:ss" displayFormat="dd.MM.yyyy, HH:mm:ss" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byEndByVisible'}" width="100%" liveChange="onChangeSchEndDate" change="onChangeSchEndDate"/>
-                <Input value="{schdMod>/max_iterations}" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byOccurenceVisible'}" description="{i18n>Occurr}" width="100%" liveChange="onDigit3LiveChange" change="onDigit3Change" valueState="{schdMod>/max_iterations_vs}" valueStateText="{schdMod>/max_iterations_vst}"/>
-            </HBox>
-            <Label text="{i18n>EndDtTmLocal}"/>
-            <DateTimePicker value="{
-							path:'schdMod>/end_date_time',
-							type:'sap.ui.model.odata.type.String'
-                            }" showTimezone="true" timezone="{schdMod>/TimeZoneCode}" editable="false" class="customDate" visible="{parts:[{path: 'schdMod>/prd_days'},{path: 'schdMod>/end_type_c'}], formatter: '.formatter.byEndByVisible'}"/>
-        </form:SimpleForm>
-        <beginButton>
-            <Button text="{i18n>OK}" type="Emphasized" press="onPressOk"/>
-        </beginButton>
-        <endButton>
-            <Button text="{i18n>Cancel}" press="onPressCancel" visible="false"/>
-        </endButton>
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+    <Dialog id="defRecurrPtrnDialog" showHeader="false"
+            contentWidth="80%" contentHeight="80%">
+        <content>
+
+            <Bar design="Header">
+                <contentMiddle>
+                    <Label text="{i18n>SchInfo}"/>
+                </contentMiddle>
+            </Bar>
+
+            <l:Grid defaultSpan="L12 M12 S12" width="auto">
+                <l:content>
+
+                    <f:Form id="formDefRecurrPatrn" editable="true">
+                        <f:layout>
+                            <f:ResponsiveGridLayout
+                                labelSpanL="4" labelSpanM="4"
+                                emptySpanL="0"  emptySpanM="0"
+                                columnsL="2"    columnsM="1"/>
+                        </f:layout>
+                        <f:formContainers>
+                            <f:FormContainer title="">
+                                <f:formElements>
+
+                                    <!-- Schedule Immediately -->
+                                    <f:FormElement label="{i18n>StartImm}">
+                                        <f:fields>
+                                            <CheckBox id="immediateCheckbox"
+                                                selected="{= ${schdMod>/start_immed} === 'X'}"
+                                                select="onStartImmSelctd"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Start Date + Time (split from DateTimePicker) -->
+                                    <f:FormElement label="{i18n>Start}">
+                                        <f:fields>
+                                            <DatePicker id="jobScheduleDatePicker"
+                                                value="{schdMod>/SchDate}"
+                                                placeholder="{i18n>SchDate}"
+                                                valueFormat="dd.MM.yyyy"
+                                                displayFormat="short"
+                                                enabled="{= ${schdMod>/start_immed} !== 'X'}"
+                                                afterValueHelpClose="secondStepValidation"
+                                                liveChange="onlvChangeSchDate"
+                                                change="onChangeSchDate"
+                                                valueState="{schdMod>/SchDateValueState}"
+                                                valueStateText="{i18n>StartDtInvalid}">
+                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                            </DatePicker>
+                                            <TimePicker id="jobScheduleTimeInput"
+                                                value="{schdMod>/SchTime}"
+                                                placeholder="{i18n>SchTime}"
+                                                enabled="{= ${schdMod>/start_immed} !== 'X'}"
+                                                change="onChangeSchTime"
+                                                valueStateText="{i18n>StartDtInvalid}">
+                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                            </TimePicker>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Timezone -->
+                                    <f:FormElement label="{i18n>TimeZone}">
+                                        <f:fields>
+                                            <Input id="timezoneSelection"
+                                                value="{schdMod>/scheduling_timezone}"
+                                                showValueHelp="true"
+                                                valueHelpOnly="true"
+                                                showSuggestion="true"
+                                                valueHelpRequest="onTimeZoneValueHelp"
+                                                enabled="{= ${schdMod>/start_immed} !== 'X'}"
+                                                suggestionItems="{timeZoneModel>/}">
+                                                <suggestionItems>
+                                                    <core:Item key="{timeZoneModel>Code}" text="{timeZoneModel>Description}"/>
+                                                </suggestionItems>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
+                                            </Input>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Local Start DateTime (read-only display) -->
+                                    <f:FormElement label="{i18n>StartDtTm}">
+                                        <f:fields>
+                                            <DateTimePicker
+                                                value="{path:'schdMod>/start_date_time', type:'sap.ui.model.odata.type.String'}"
+                                                showTimezone="true"
+                                                timezone="{schdMod>/TimeZoneCode}"
+                                                editable="false"
+                                                class="customDate"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Spacer -->
+                                    <f:FormElement label="">
+                                        <f:fields>
+                                            <Text text="" visible="true">
+                                                <layoutData><l:GridData span="L8 M8 S8"/></layoutData>
+                                            </Text>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Recurrence toggle -->
+                                    <f:FormElement label="{i18n>Recurrence}">
+                                        <f:fields>
+                                            <CheckBox id="recurrenceCheckbox"
+                                                selected="{schdMod>/RecurrenceSetIndicator}"
+                                                select="onRecurrenceIndChanged"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Recurrence Pattern -->
+                                    <f:FormElement label="{i18n>RecurrPtrn}">
+                                        <f:fields>
+                                            <Select id="schedulPeriodCodeddlb"
+                                                selectedKey="{schdMod>/prd_days}"
+                                                items="{jobModel>/recurrence}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%"
+                                                change="onRecrSel">
+                                                <core:Item key="{jobModel>key}" text="{jobModel>text}"/>
+                                                <layoutData><l:GridData span="L2 M4 S8"/></layoutData>
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Every N -->
+                                    <f:FormElement label="{i18n>Every}">
+                                        <f:fields>
+                                            <Input id="scheduleInput"
+                                                value="{schdMod>/periodic_value}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                type="Number"
+                                                textAlign="End"
+                                                liveChange="onDigit3LiveChange"
+                                                change="onDigit3Change"
+                                                valueState="{schdMod>/periodic_value_vs}"
+                                                valueStateText="{schdMod>/periodic_value_vst}">
+                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                            </Input>
+                                            <Text id="recurranceTextInputField"
+                                                text="{path:'schdMod>/prd_days', formatter:'.formatter.everyLabel'}"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- On (weekday / month selectors — visible for W and MO periods) -->
+                                    <f:FormElement label="{i18n>On}"
+                                        visible="{path:'schdMod>/prd_days', formatter:'.formatter.showOnField'}">
+                                        <f:fields>
+
+                                            <!-- Beginning / End / Certain Weekday — monthly only -->
+                                            <Select id="beginEndMonthSelectionddlb"
+                                                visible="{path:'schdMod>/prd_days', formatter:'.formatter.showOnMonths'}"
+                                                change="onBeginEndMonthSelectionChange"
+                                                selectedKey="{schdMod>/BeginEndMonthSelection}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="B"  text="{i18n>BeginOfMonth}"/>
+                                                    <core:Item key="E"  text="{i18n>EndOfMonth}"/>
+                                                    <core:Item key="CW" text="{i18n>CertainWeekday}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L2 M4 S8"/></layoutData>
+                                            </Select>
+
+                                            <!-- Ordinal day (1-31) -->
+                                            <Select id="monthsDayNrSelectionddlb"
+                                                visible="{schdMod>/MonthsDayNrVisible}"
+                                                change="onMonthDaySelectionChange"
+                                                selectedKey="{schdMod>/MonthDay}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="1"  text="{i18n>Ord1}"/>
+                                                    <core:Item key="2"  text="{i18n>Ord2}"/>
+                                                    <core:Item key="3"  text="{i18n>Ord3}"/>
+                                                    <core:Item key="4"  text="{i18n>Ord4}"/>
+                                                    <core:Item key="5"  text="{i18n>Ord5}"/>
+                                                    <core:Item key="6"  text="{i18n>Ord6}"/>
+                                                    <core:Item key="7"  text="{i18n>Ord7}"/>
+                                                    <core:Item key="8"  text="{i18n>Ord8}"/>
+                                                    <core:Item key="9"  text="{i18n>Ord9}"/>
+                                                    <core:Item key="10" text="{i18n>Ord10}"/>
+                                                    <core:Item key="11" text="{i18n>Ord11}"/>
+                                                    <core:Item key="12" text="{i18n>Ord12}"/>
+                                                    <core:Item key="13" text="{i18n>Ord13}"/>
+                                                    <core:Item key="14" text="{i18n>Ord14}"/>
+                                                    <core:Item key="15" text="{i18n>Ord15}"/>
+                                                    <core:Item key="16" text="{i18n>Ord16}"/>
+                                                    <core:Item key="17" text="{i18n>Ord17}"/>
+                                                    <core:Item key="18" text="{i18n>Ord18}"/>
+                                                    <core:Item key="19" text="{i18n>Ord19}"/>
+                                                    <core:Item key="20" text="{i18n>Ord20}"/>
+                                                    <core:Item key="21" text="{i18n>Ord21}"/>
+                                                    <core:Item key="22" text="{i18n>Ord22}"/>
+                                                    <core:Item key="23" text="{i18n>Ord23}"/>
+                                                    <core:Item key="24" text="{i18n>Ord24}"/>
+                                                    <core:Item key="25" text="{i18n>Ord25}"/>
+                                                    <core:Item key="26" text="{i18n>Ord26}"/>
+                                                    <core:Item key="27" text="{i18n>Ord27}"/>
+                                                    <core:Item key="28" text="{i18n>Ord28}"/>
+                                                    <core:Item key="29" text="{i18n>Ord29}"/>
+                                                    <core:Item key="30" text="{i18n>Ord30}"/>
+                                                    <core:Item key="31" text="{i18n>Ord31}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                            </Select>
+
+                                            <!-- Day / Workday type -->
+                                            <Select id="monthsDayTypeSelectionddlb"
+                                                visible="{schdMod>/MonthsDayTypeVisible}"
+                                                change="onMonthsDayTypeSelectionChange"
+                                                selectedKey="{schdMod>/MonthsDayType}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="D" text="{i18n>Day}"/>
+                                                    <core:Item key="W" text="{i18n>Workday}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                            </Select>
+
+                                            <!-- Negative ordinal day (last N days, 1-31) -->
+                                            <Select id="monthsNegDayNrSelectionddlb"
+                                                visible="{schdMod>/MonthsNegDayNrVisible}"
+                                                change="onMonthDaySelectionChange"
+                                                selectedKey="{schdMod>/MonthDay}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="1"  text="{i18n>N1}"/>
+                                                    <core:Item key="2"  text="{i18n>N2}"/>
+                                                    <core:Item key="3"  text="{i18n>N3}"/>
+                                                    <core:Item key="4"  text="{i18n>N4}"/>
+                                                    <core:Item key="5"  text="{i18n>N5}"/>
+                                                    <core:Item key="6"  text="{i18n>N6}"/>
+                                                    <core:Item key="7"  text="{i18n>N7}"/>
+                                                    <core:Item key="8"  text="{i18n>N8}"/>
+                                                    <core:Item key="9"  text="{i18n>N9}"/>
+                                                    <core:Item key="10" text="{i18n>N10}"/>
+                                                    <core:Item key="11" text="{i18n>N11}"/>
+                                                    <core:Item key="12" text="{i18n>N12}"/>
+                                                    <core:Item key="13" text="{i18n>N13}"/>
+                                                    <core:Item key="14" text="{i18n>N14}"/>
+                                                    <core:Item key="15" text="{i18n>N15}"/>
+                                                    <core:Item key="16" text="{i18n>N16}"/>
+                                                    <core:Item key="17" text="{i18n>N17}"/>
+                                                    <core:Item key="18" text="{i18n>N18}"/>
+                                                    <core:Item key="19" text="{i18n>N19}"/>
+                                                    <core:Item key="20" text="{i18n>N20}"/>
+                                                    <core:Item key="21" text="{i18n>N21}"/>
+                                                    <core:Item key="22" text="{i18n>N22}"/>
+                                                    <core:Item key="23" text="{i18n>N23}"/>
+                                                    <core:Item key="24" text="{i18n>N24}"/>
+                                                    <core:Item key="25" text="{i18n>N25}"/>
+                                                    <core:Item key="26" text="{i18n>N26}"/>
+                                                    <core:Item key="27" text="{i18n>N27}"/>
+                                                    <core:Item key="28" text="{i18n>N28}"/>
+                                                    <core:Item key="29" text="{i18n>N29}"/>
+                                                    <core:Item key="30" text="{i18n>N30}"/>
+                                                    <core:Item key="31" text="{i18n>N31}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                            </Select>
+
+                                            <!-- Days / Workdays type (plural) -->
+                                            <Select id="monthsDaysTypeSelectionddlb"
+                                                visible="{schdMod>/MonthsDaysTypeVisible}"
+                                                change="onMonthsDayTypeSelectionChange"
+                                                selectedKey="{schdMod>/MonthsDaysType}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="D" text="{i18n>Days}"/>
+                                                    <core:Item key="W" text="{i18n>Workdays}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                            </Select>
+
+                                            <!-- Week number within month (W1-W5) -->
+                                            <Select id="scheduleMonthWeekCodeddlb"
+                                                visible="{schdMod>/MonthWeekCodeVisible}"
+                                                selectedKey="{schdMod>/WeekNumber}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%"
+                                                change="onWeekNumberChange">
+                                                <items>
+                                                    <core:Item key="W1" text="{i18n>Week1}"/>
+                                                    <core:Item key="W2" text="{i18n>Week2}"/>
+                                                    <core:Item key="W3" text="{i18n>Week3}"/>
+                                                    <core:Item key="W4" text="{i18n>Week4}"/>
+                                                    <core:Item key="W5" text="{i18n>Week5}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                            </Select>
+
+                                            <!-- Weekday multi-select (weekly period) -->
+                                            <MultiComboBox id="weeksDaySelectionddlb"
+                                                visible="{schdMod>/WeeksDaySelectionVisible}"
+                                                selectionFinish="onWeeksDaySelectionFinish"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="D1" text="{i18n>Monday}"/>
+                                                    <core:Item key="D2" text="{i18n>Tuesday}"/>
+                                                    <core:Item key="D3" text="{i18n>Wednesday}"/>
+                                                    <core:Item key="D4" text="{i18n>Thursday}"/>
+                                                    <core:Item key="D5" text="{i18n>Friday}"/>
+                                                    <core:Item key="D6" text="{i18n>Saturday}"/>
+                                                    <core:Item key="D7" text="{i18n>Sunday}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L4 M4 S8"/></layoutData>
+                                            </MultiComboBox>
+
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- End type + conditional date or occurrence count -->
+                                    <f:FormElement label="{i18n>End}"
+                                        visible="{path:'schdMod>/prd_days', formatter:'.formatter.everyEndFieldVisible'}">
+                                        <f:fields>
+
+                                            <Select id="scheduleEndTypeCddlb"
+                                                selectedKey="{schdMod>/end_type_c}"
+                                                items="{path:'jobModel>/end_type_c', sorter:{path:'key'}}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                change="onEndTypeCChange">
+                                                <core:Item key="{jobModel>key}" text="{jobModel>text}"/>
+                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                            </Select>
+
+                                            <Input id="scheduleEndMaxIterations"
+                                                value="{schdMod>/max_iterations}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byOccurenceVisible'}"
+                                                type="Number"
+                                                textAlign="End"
+                                                liveChange="onDigit3LiveChange"
+                                                change="onDigit3Change"
+                                                valueState="{schdMod>/max_iterations_vs}"
+                                                valueStateText="{schdMod>/max_iterations_vst}">
+                                                <layoutData><l:GridData span="L1 M2 S8"/></layoutData>
+                                            </Input>
+
+                                            <Text id="occurranceTextId"
+                                                text="{i18n>Occurr}"
+                                                visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byOccurenceVisible'}">
+                                                <layoutData><l:GridData span="L3 M3 S8"/></layoutData>
+                                            </Text>
+
+                                            <DatePicker id="scheduleEndDatePicker"
+                                                value="{schdMod>/SchEndDt}"
+                                                valueFormat="dd.MM.yyyy"
+                                                displayFormat="short"
+                                                visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byEndByVisible'}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                change="onChangeSchEndDate"
+                                                valueStateText="{i18n>EndDtInvalid}">
+                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                            </DatePicker>
+
+                                            <TimePicker id="scheduleEndDateTimeInput"
+                                                value="{schdMod>/SchEndTime}"
+                                                visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byEndByVisible'}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                change="onChangeSchEndTime"
+                                                valueStateText="{i18n>EndDtInvalid}">
+                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                            </TimePicker>
+
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Local End DateTime (read-only display) -->
+                                    <f:FormElement label="{i18n>EndDtTmLocal}"
+                                        visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byEndByVisible'}">
+                                        <f:fields>
+                                            <DateTimePicker
+                                                value="{path:'schdMod>/end_date_time', type:'sap.ui.model.odata.type.String'}"
+                                                showTimezone="true"
+                                                timezone="{schdMod>/TimeZoneCode}"
+                                                editable="false"
+                                                class="customDate"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Spacer -->
+                                    <f:FormElement label="">
+                                        <f:fields>
+                                            <Text text="" visible="true">
+                                                <layoutData><l:GridData span="L8 M8 S8"/></layoutData>
+                                            </Text>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Run only on working days -->
+                                    <f:FormElement label="{i18n>WorkDaysOnly}">
+                                        <f:fields>
+                                            <CheckBox id="workdayCheckbox"
+                                                selected="{schdMod>/MonthOnlyWorkdaysInd}"
+                                                select="onWorkdayIndChanged"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"/>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- If on non-working day -->
+                                    <f:FormElement id="ifOnNonWorkingDaySelection" label="{i18n>IfOnNonWorkingDay}">
+                                        <f:fields>
+                                            <Select id="StartRestrictionCodeddlb"
+                                                selectedKey="{schdMod>/StartRestrictionCode}"
+                                                change="onStartRestrictionSelect"
+                                                enabled="{schdMod>/StartRestrictionCodeEnabled}">
+                                                <items>
+                                                    <core:Item key="A" text="{i18n>NextWorkingDay}"/>
+                                                    <core:Item key="B" text="{i18n>PrevWorkingDay}"/>
+                                                    <core:Item key="D" text="{i18n>DontRun}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- Calendar -->
+                                    <f:FormElement id="jobCalendarSelectionFE" label="{i18n>Calendar}">
+                                        <f:fields>
+                                            <Select id="jobCalendarSelection"
+                                                selectedKey="{schdMod>/CalendarId}"
+                                                enabled="{schdMod>/CalendarSelectionEnabled}"
+                                                change="onCalendarSelectionChange">
+                                                <items>
+                                                    <core:Item key="{jobModel>Id}" text="{jobModel>Text}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
+                                            </Select>
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                </f:formElements>
+                            </f:FormContainer>
+                        </f:formContainers>
+                    </f:Form>
+
+                </l:content>
+            </l:Grid>
+
+        </content>
+        <buttons>
+            <Button id="btnRecurrenceOK"     text="{i18n>OK}"              type="Emphasized"
+                    press="onPressOk"     tooltip="{i18n>OK}"/>
+            <Button id="btnRecurrenceRemove" text="{i18n>ResetRecurrence}"
+                    press="onPressReset"  tooltip="{i18n>ResetRecurrence}"/>
+            <Button id="btnRecurrenceCancel" text="{i18n>Cancel}"
+                    press="onPressCancel" tooltip="{i18n>Cancel}"/>
+        </buttons>
     </Dialog>
+
 </core:FragmentDefinition>

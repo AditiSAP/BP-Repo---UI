@@ -100,12 +100,22 @@ sap.ui.define([
                     return "Hour(s)";
                 case "D":
                     return "Day(s)";
+                case "W":
+                    return "Week(s)";
+                case "MO":
+                    return "Month(s)";
                 default:
                     return "";
             }
         },
         everyEndFieldVisible: function (key) {
-            return ["MI", "H", "D"].includes(key);
+            return ["MI", "H", "D", "W", "MO"].includes(key);
+        },
+        showOnField: function (sPrdDays) {
+            return ["W", "MO"].includes(sPrdDays);
+        },
+        showOnMonths: function (sPrdDays) {
+            return sPrdDays === "MO";
         },
         runEndVisible: function (runEnd, visible) {
             const runEndVisible = runEnd ?? false;
