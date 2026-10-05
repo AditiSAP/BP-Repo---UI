@@ -117,11 +117,16 @@
                                         <f:fields>
                                             <Select id="schedulPeriodCodeddlb"
                                                 selectedKey="{schdMod>/prd_days}"
-                                                items="{jobModel>/recurrence}"
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 width="100%"
                                                 change="onRecrSel">
-                                                <core:Item key="{jobModel>key}" text="{jobModel>text}"/>
+                                                <items>
+                                                    <core:Item key="MI" text="{i18n>xfld.recurrenceMinutely}" />
+                                                    <core:Item key="H" text="{i18n>xfld.recurrenceHourly}" />
+                                                    <core:Item key="D" text="{i18n>xfld.recurrenceDaily}" />
+                                                    <core:Item key="W" text="{i18n>xfld.recurrenceWeekly}" />
+                                                    <core:Item key="MO" text="{i18n>xfld.recurrenceMonthly}" />
+                                                </items>
                                                 <layoutData><l:GridData span="L2 M4 S8"/></layoutData>
                                             </Select>
                                         </f:fields>
@@ -417,21 +422,6 @@
                                                     <core:Item key="A" text="{i18n>NextWorkingDay}"/>
                                                     <core:Item key="B" text="{i18n>PrevWorkingDay}"/>
                                                     <core:Item key="D" text="{i18n>DontRun}"/>
-                                                </items>
-                                                <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
-                                            </Select>
-                                        </f:fields>
-                                    </f:FormElement>
-
-                                    <!-- Calendar -->
-                                    <f:FormElement id="jobCalendarSelectionFE" label="{i18n>Calendar}">
-                                        <f:fields>
-                                            <Select id="jobCalendarSelection"
-                                                selectedKey="{schdMod>/CalendarId}"
-                                                enabled="{schdMod>/CalendarSelectionEnabled}"
-                                                change="onCalendarSelectionChange">
-                                                <items>
-                                                    <core:Item key="{jobModel>Id}" text="{jobModel>Text}"/>
                                                 </items>
                                                 <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
                                             </Select>
