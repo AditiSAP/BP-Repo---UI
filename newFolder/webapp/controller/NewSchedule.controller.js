@@ -293,6 +293,7 @@ sap.ui.define([
 			}
 		},
 		secondStepValidation: function () {
+			if (!this.schdMod) { return; }
 			const startImmChecked = this.schdMod.getData().start_immed ? true : false;
 			if (!startImmChecked) {
 				const schDt = this.schdMod.getData().SchDate;
@@ -300,16 +301,18 @@ sap.ui.define([
 					this._wizard.validateStep(this.byId("SchdOptionStep"));
 					this.schdMod.setProperty("/SchDateValueState", "None");
 					this.enableSchChk = true;
+					this.enableSchChkFn(true);
 				} else {
 					this._wizard.invalidateStep(this.byId("SchdOptionStep"));
 					this._wizard.discardProgress(this._wizard.getSteps()[2]);
 					this.enableSchChk = false;
-					this.onSecondStepCompleted();
+					this.enableSchChkFn(false);
 				}
 			} else {
 				this._wizard.validateStep(this.byId("SchdOptionStep"));
 				this.schdMod.setProperty("/SchDateValueState", "None");
 				this.enableSchChk = true;
+				this.enableSchChkFn(true);
 			}
 		},
 		enableSchChkFn: function (bFlag) {
