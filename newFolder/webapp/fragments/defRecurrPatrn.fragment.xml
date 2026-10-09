@@ -337,7 +337,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onEndTypeCChange">
                                                 <core:Item key="{jobModel>key}" text="{jobModel>text}"/>
-                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
                                             </Select>
 
                                             <Input id="scheduleEndMaxIterations"
@@ -356,7 +356,7 @@
                                             <Text id="occurranceTextId"
                                                 text="{i18n>Occurr}"
                                                 visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byOccurenceVisible'}">
-                                                <layoutData><l:GridData span="L3 M4 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L4 M4 S4"/></layoutData>
                                             </Text>
 
                                             <DatePicker id="scheduleEndDatePicker"
@@ -367,7 +367,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onChangeSchEndDate"
                                                 valueStateText="{i18n>EndDtInvalid}">
-                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M3 S8"/></layoutData>
                                             </DatePicker>
 
                                             <TimePicker id="scheduleEndDateTimeInput"
@@ -376,7 +376,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onChangeSchEndTime"
                                                 valueStateText="{i18n>EndDtInvalid}">
-                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M3 S8"/></layoutData>
                                             </TimePicker>
 
                                         </f:fields>
