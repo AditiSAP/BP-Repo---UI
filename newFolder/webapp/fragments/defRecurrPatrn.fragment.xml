@@ -50,7 +50,7 @@
                                                 change="onChangeSchDate"
                                                 valueState="{schdMod>/SchDateValueState}"
                                                 valueStateText="{i18n>StartDtInvalid}">
-                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </DatePicker>
                                             <TimePicker id="jobScheduleTimeInput"
                                                 value="{schdMod>/SchTime}"
@@ -58,7 +58,7 @@
                                                 enabled="{= ${schdMod>/start_immed} !== 'X'}"
                                                 change="onChangeSchTime"
                                                 valueStateText="{i18n>StartDtInvalid}">
-                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </TimePicker>
                                         </f:fields>
                                     </f:FormElement>
@@ -77,7 +77,7 @@
                                                 <suggestionItems>
                                                     <core:Item key="{timeZoneModel>Code}" text="{timeZoneModel>Description}"/>
                                                 </suggestionItems>
-                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
                                             </Input>
                                         </f:fields>
                                     </f:FormElement>
@@ -127,7 +127,7 @@
                                                     <core:Item key="W" text="{i18n>xfld.recurrenceWeekly}" />
                                                     <core:Item key="MO" text="{i18n>xfld.recurrenceMonthly}" />
                                                 </items>
-                                                <layoutData><l:GridData span="L2 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L4 M6 S8"/></layoutData>
                                             </Select>
                                         </f:fields>
                                     </f:FormElement>
@@ -144,10 +144,12 @@
                                                 change="onDigit3Change"
                                                 valueState="{schdMod>/periodic_value_vs}"
                                                 valueStateText="{schdMod>/periodic_value_vst}">
-                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M2 S4"/></layoutData>
                                             </Input>
                                             <Text id="recurranceTextInputField"
-                                                text="{path:'schdMod>/prd_days', formatter:'.formatter.everyLabel'}"/>
+                                                text="{path:'schdMod>/prd_days', formatter:'.formatter.everyLabel'}">
+                                                <layoutData><l:GridData span="L4 M4 S4"/></layoutData>
+                                            </Text>
                                         </f:fields>
                                     </f:FormElement>
 
@@ -168,7 +170,7 @@
                                                     <core:Item key="E"  text="{i18n>EndOfMonth}"/>
                                                     <core:Item key="CW" text="{i18n>CertainWeekday}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L2 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
                                             <!-- Ordinal day (1-31) -->
@@ -211,7 +213,7 @@
                                                     <core:Item key="30" text="{i18n>Ord30}"/>
                                                     <core:Item key="31" text="{i18n>Ord31}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M2 S4"/></layoutData>
                                             </Select>
 
                                             <!-- Day / Workday type -->
@@ -225,7 +227,7 @@
                                                     <core:Item key="D" text="{i18n>Day}"/>
                                                     <core:Item key="W" text="{i18n>Workday}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
                                             <!-- Negative ordinal day (last N days, 1-31) -->
@@ -268,7 +270,7 @@
                                                     <core:Item key="30" text="{i18n>N30}"/>
                                                     <core:Item key="31" text="{i18n>N31}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M2 S4"/></layoutData>
                                             </Select>
 
                                             <!-- Days / Workdays type (plural) -->
@@ -282,7 +284,7 @@
                                                     <core:Item key="D" text="{i18n>Days}"/>
                                                     <core:Item key="W" text="{i18n>Workdays}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
                                             <!-- Week number within month (W1-W5) -->
@@ -299,7 +301,7 @@
                                                     <core:Item key="W4" text="{i18n>Week4}"/>
                                                     <core:Item key="W5" text="{i18n>Week5}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L1 M2 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M3 S4"/></layoutData>
                                             </Select>
 
                                             <!-- Weekday multi-select (weekly period) -->
@@ -310,15 +312,15 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 width="100%">
                                                 <items>
-                                                    <core:Item key="D1" text="Mon"/>
-                                                    <core:Item key="D2" text="Tue"/>
-                                                    <core:Item key="D3" text="Wed"/>
-                                                    <core:Item key="D4" text="Thu"/>
-                                                    <core:Item key="D5" text="Fri"/>
-                                                    <core:Item key="D6" text="Sat"/>
-                                                    <core:Item key="D7" text="Sun"/>
+                                                    <core:Item key="D1" text="{i18n>Monday}"/>
+                                                    <core:Item key="D2" text="{i18n>Tuesday}"/>
+                                                    <core:Item key="D3" text="{i18n>Wednesday}"/>
+                                                    <core:Item key="D4" text="{i18n>Thursday}"/>
+                                                    <core:Item key="D5" text="{i18n>Friday}"/>
+                                                    <core:Item key="D6" text="{i18n>Saturday}"/>
+                                                    <core:Item key="D7" text="{i18n>Sunday}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L4 M4 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L6 M8 S8"/></layoutData>
                                             </MultiComboBox>
 
                                         </f:fields>
@@ -335,7 +337,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onEndTypeCChange">
                                                 <core:Item key="{jobModel>key}" text="{jobModel>text}"/>
-                                                <layoutData><l:GridData span="L2 M2 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
                                             <Input id="scheduleEndMaxIterations"
@@ -348,13 +350,13 @@
                                                 change="onDigit3Change"
                                                 valueState="{schdMod>/max_iterations_vs}"
                                                 valueStateText="{schdMod>/max_iterations_vst}">
-                                                <layoutData><l:GridData span="L1 M2 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M2 S4"/></layoutData>
                                             </Input>
 
                                             <Text id="occurranceTextId"
                                                 text="{i18n>Occurr}"
                                                 visible="{parts:[{path:'schdMod>/prd_days'},{path:'schdMod>/end_type_c'}], formatter:'.formatter.byOccurenceVisible'}">
-                                                <layoutData><l:GridData span="L3 M3 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S4"/></layoutData>
                                             </Text>
 
                                             <DatePicker id="scheduleEndDatePicker"
@@ -365,7 +367,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onChangeSchEndDate"
                                                 valueStateText="{i18n>EndDtInvalid}">
-                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </DatePicker>
 
                                             <TimePicker id="scheduleEndDateTimeInput"
@@ -374,7 +376,7 @@
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 change="onChangeSchEndTime"
                                                 valueStateText="{i18n>EndDtInvalid}">
-                                                <layoutData><l:GridData span="L2 M3 S8"/></layoutData>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </TimePicker>
 
                                         </f:fields>
