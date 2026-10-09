@@ -306,16 +306,17 @@
                                             <MultiComboBox id="weeksDaySelectionddlb"
                                                 visible="{schdMod>/WeeksDaySelectionVisible}"
                                                 selectionFinish="onWeeksDaySelectionFinish"
+                                                selectedKeys="{schdMod>/WeekDays}"
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 width="100%">
                                                 <items>
-                                                    <core:Item key="D1" text="{i18n>Monday}"/>
-                                                    <core:Item key="D2" text="{i18n>Tuesday}"/>
-                                                    <core:Item key="D3" text="{i18n>Wednesday}"/>
-                                                    <core:Item key="D4" text="{i18n>Thursday}"/>
-                                                    <core:Item key="D5" text="{i18n>Friday}"/>
-                                                    <core:Item key="D6" text="{i18n>Saturday}"/>
-                                                    <core:Item key="D7" text="{i18n>Sunday}"/>
+                                                    <core:Item key="D1" text="Mon"/>
+                                                    <core:Item key="D2" text="Tue"/>
+                                                    <core:Item key="D3" text="Wed"/>
+                                                    <core:Item key="D4" text="Thu"/>
+                                                    <core:Item key="D5" text="Fri"/>
+                                                    <core:Item key="D6" text="Sat"/>
+                                                    <core:Item key="D7" text="Sun"/>
                                                 </items>
                                                 <layoutData><l:GridData span="L4 M4 S8"/></layoutData>
                                             </MultiComboBox>

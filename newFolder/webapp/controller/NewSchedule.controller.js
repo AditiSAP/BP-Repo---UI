@@ -148,11 +148,12 @@ sap.ui.define([
 				CalendarSelectionEnabled: false,
 				// Visibility flags for "On" sub-selectors
 				OnFieldVisible: false,
-				OnMonthsVisible: false,
-				MonthDayNrVisible: false,
-				MonthDayTypeVisible: false,
-				MonthNegDayNrVisible: false,
-				WeekDayVisible: false
+				MonthsDayNrVisible: false,
+				MonthsDayTypeVisible: false,
+				MonthsNegDayNrVisible: false,
+				MonthsDaysTypeVisible: false,
+				MonthWeekCodeVisible: false,
+				WeeksDaySelectionVisible: false
 			});
 		},
 		validateGenericUser: async function () {
@@ -1149,17 +1150,21 @@ sap.ui.define([
 		_updateOnFieldVisibility: function (sPrdDays) {
 			var oMod = this.getView().getModel("schdMod");
 			var bShowOn = ["W", "MO"].includes(sPrdDays);
-			var bShowMonths = sPrdDays === "MO";
+			var bMonthly = sPrdDays === "MO";
+			var bWeekly = sPrdDays === "W";
 			var sBeginEnd = oMod.getProperty("/BeginEndMonthSelection") || "B";
+			var bBegin = sBeginEnd === "B";
+			var bEnd = sBeginEnd === "E";
 			oMod.setProperty("/OnFieldVisible", bShowOn);
-			oMod.setProperty("/OnMonthsVisible", bShowMonths);
-			// Month day number row: months + begin/end = B (specific day)
-			oMod.setProperty("/MonthDayNrVisible", bShowMonths && sBeginEnd === "B");
-			oMod.setProperty("/MonthDayTypeVisible", bShowMonths && sBeginEnd === "B");
-			// Negative day / week rows: months + begin/end = D (last N days)
-			oMod.setProperty("/MonthNegDayNrVisible", bShowMonths && sBeginEnd === "D");
-			// Week day selector: weekly pattern
-			oMod.setProperty("/WeekDayVisible", sPrdDays === "W");
+			// Monthly begin: specific day nr + day type
+			oMod.setProperty("/MonthsDayNrVisible", bMonthly && bBegin);
+			oMod.setProperty("/MonthsDayTypeVisible", bMonthly && bBegin);
+			// Monthly end: negative day nr + days type + week code
+			oMod.setProperty("/MonthsNegDayNrVisible", bMonthly && bEnd);
+			oMod.setProperty("/MonthsDaysTypeVisible", bMonthly && bEnd);
+			oMod.setProperty("/MonthWeekCodeVisible", bMonthly && bEnd);
+			// Weekly: weekday multi-select
+			oMod.setProperty("/WeeksDaySelectionVisible", bWeekly);
 		},
 		onBeginEndMonthSelectionChange: function (oEvent) {
 			var sKey = oEvent.getParameter("selectedItem").getKey();
