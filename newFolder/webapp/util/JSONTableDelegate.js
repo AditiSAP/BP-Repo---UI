@@ -96,8 +96,14 @@ sap.ui.define([
         var oColumn = null;
 
         // Primary: use the snapshot map built when columns were first removed.
+        // Skip any entry that was destroyed (e.g. by a variant-management reset).
         if (oTable._oAllCols && oTable._oAllCols[sPropertyKey]) {
-            oColumn = oTable._oAllCols[sPropertyKey];
+            var oCached = oTable._oAllCols[sPropertyKey];
+            if (!oCached.bIsDestroyed) {
+                oColumn = oCached;
+            } else {
+                delete oTable._oAllCols[sPropertyKey];
+            }
         }
 
         // Fallback: the fl layer may have bypassed removeItem (variant switching)
@@ -106,6 +112,21 @@ sap.ui.define([
             var sLocalId = _mColIds[sPropertyKey];
             if (sLocalId) {
                 oColumn = _findInView(oTable, sLocalId);
+
+                // Last resort: walk up to the first ancestor that exposes createId()
+                // (a View or UIComponent) and look up the column via the core registry.
+                // Covers the case where the column is detached but not destroyed.
+                if (!oColumn) {
+                    var oAncestor = oTable;
+                    while (oAncestor && typeof oAncestor.createId !== "function") {
+                        oAncestor = typeof oAncestor.getParent === "function"
+                            ? oAncestor.getParent() : null;
+                    }
+                    if (oAncestor) {
+                        oColumn = sap.ui.getCore().byId(oAncestor.createId(sLocalId));
+                    }
+                }
+
                 if (oColumn) {
                     if (!oTable._oAllCols) { oTable._oAllCols = {}; }
                     oTable._oAllCols[sPropertyKey] = oColumn;

@@ -104,6 +104,23 @@
                         </mdcvc:MTable>
                     </mdcvh:Popover>
                 </mdc:typeahead>
+                <mdc:dialog>
+                    <mdcvh:Dialog id="statusVHDialog" title="{i18n>Status}">
+                        <mdcvc:MTable id="statusVHMTableD" keyPath="key" descriptionPath="text">
+                            <Table id="statusVHTableD" items="{path:'statusFilterModel>/items'}" mode="MultiSelect">
+                                <columns>
+                                    <Column id="statusVHColD"><Label id="statusVHLabelD" text="{i18n>Status}"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="statusVHItemD" type="Active">
+                                        <cells><Text id="statusVHTxtD" text="{statusFilterModel>text}"/></cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                        <mdcvc:Conditions id="statusVHConditions"/>
+                    </mdcvh:Dialog>
+                </mdc:dialog>
             </mdc:ValueHelp>
 
         </f:dependents>
@@ -144,7 +161,7 @@
                             dataType="sap.ui.model.type.Date"
                             maxConditions="1"
                             required="true"
-                            operators="BT,GE,LE"
+                            operators="BT,EQ,GE,GT,LE,LT"
                             placeholder="{i18n>DateRangePlaceholder}"
                             delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
