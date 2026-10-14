@@ -201,7 +201,7 @@
                 selectionChange=".onJobSelected"
                 rowPress=".onJobDetails"
                 header="{jobModel>/JobDetailsTitle}"
-                p13nMode="Sort,Column,Filter"
+                p13nMode="Sort,Column"
                 class="sapUiSmallMarginTop">
 
                 <mdc:variant>
