@@ -12,8 +12,8 @@ sap.ui.define([
 
     const JSONTableDelegate = Object.assign({}, TableDelegate);
 
-    JSONTableDelegate.fetchProperties = function () {
-        return Promise.resolve(JSONPropertyInfo);
+    JSONTableDelegate.fetchProperties = async function () {
+        return JSONPropertyInfo.filter(function (oPI) { return oPI.key !== "$search"; });
     };
 
     JSONTableDelegate.getFilterDelegate = function () {
@@ -167,7 +167,7 @@ sap.ui.define([
     // standard and guarantees a stable, unique ID for each delegate-created column.
     JSONTableDelegate.addItem = async function (oTable, sPropertyKey) {
         const sKey = (sPropertyKey && typeof sPropertyKey === "object")
-            ? sPropertyKey.name : sPropertyKey;
+            ? (sPropertyKey.key || sPropertyKey.name) : sPropertyKey;
         const sId = oTable.getId() + "---col-" + sKey;
         const oColumn = _createColumn(sId, sKey);
         if (oColumn) {
@@ -177,7 +177,7 @@ sap.ui.define([
     };
 
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
-        TableDelegate.updateBindingInfo.call(this, oTable, oBindingInfo);
+        TableDelegate.updateBindingInfo.call(JSONTableDelegate, oTable, oBindingInfo);
         oBindingInfo.path = oTable.getPayload().bindingPath;
         // Apply default sort only when no P13n-driven sorters are present.
         if (!oBindingInfo.sorter || !oBindingInfo.sorter.length) {
