@@ -87,65 +87,39 @@ sap.ui.define([
     }
 
     JSONTableDelegate.removeItem = function (oTable, oColumn /*, mPropertyBag */) {
-        _ensureColMap(oTable, oColumn);
-        oTable.removeColumn(oColumn); // detach WITHOUT destroying
+        oTable.removeColumn(oColumn); // detach without destroying
         return Promise.resolve(true);
     };
 
     JSONTableDelegate.addItem = function (oTable, sPropertyKey /*, mPropertyBag */) {
-        var oColumn = null;
+        // Some MDC versions pass an object {name:...} instead of a plain string.
+        var sKey = (sPropertyKey && typeof sPropertyKey === "object")
+            ? sPropertyKey.name : sPropertyKey;
 
-        // Primary: use the snapshot map built when columns were first removed.
-        // Skip any entry that was destroyed (e.g. by a variant-management reset).
-        if (oTable._oAllCols && oTable._oAllCols[sPropertyKey]) {
-            var oCached = oTable._oAllCols[sPropertyKey];
-            if (!oCached.bIsDestroyed) {
-                oColumn = oCached;
-            } else {
-                delete oTable._oAllCols[sPropertyKey];
-            }
+        var sLocalId = _mColIds[sKey];
+        if (!sLocalId) {
+            return TableDelegate.addItem.apply(this, arguments);
         }
 
-        // Fallback: the fl layer may have bypassed removeItem (variant switching)
-        // so the map was never built. Find the column by its stable view-local ID.
-        if (!oColumn) {
-            var sLocalId = _mColIds[sPropertyKey];
-            if (sLocalId) {
-                oColumn = _findInView(oTable, sLocalId);
-
-                // _findInView only walks the live view tree; a detached column won't
-                // be found there. Look it up via the core registry using createId().
-                if (!oColumn) {
-                    var oAncestor = oTable;
-                    while (oAncestor && typeof oAncestor.createId !== "function") {
-                        oAncestor = typeof oAncestor.getParent === "function"
-                            ? oAncestor.getParent() : null;
-                    }
-                    if (oAncestor) {
-                        oColumn = sap.ui.getCore().byId(oAncestor.createId(sLocalId));
-                    }
-                }
-
-                if (oColumn) {
-                    if (!oTable._oAllCols) { oTable._oAllCols = {}; }
-                    oTable._oAllCols[sPropertyKey] = oColumn;
-                }
-            }
+        // Walk up to the View. View.byId() queries the global ID registry so it
+        // finds detached (removed but not destroyed) columns just as well as
+        // columns that are currently in the aggregation.
+        var oView = oTable;
+        while (oView && !(oView.isA && oView.isA("sap.ui.core.mvc.View"))) {
+            oView = typeof oView.getParent === "function" ? oView.getParent() : null;
         }
 
-        if (oColumn) {
-            // MDC Table calls insertColumn() on the returned column. If the column
-            // still has a parent (e.g. Reset calls addItem for columns already in
-            // the table without a preceding removeItem), UI5 aggregation throws and
-            // breaks the p13n state machine. Detach first to prevent that.
-            var oParent = oColumn.getParent && oColumn.getParent();
-            if (oParent && typeof oParent.removeColumn === "function") {
-                oParent.removeColumn(oColumn);
-            }
-            return Promise.resolve(oColumn);
+        var oColumn = oView ? oView.byId(sLocalId) : null;
+        if (!oColumn || oColumn.bIsDestroyed) {
+            return TableDelegate.addItem.apply(this, arguments);
         }
 
-        return TableDelegate.addItem.apply(this, arguments);
+        // Detach from current parent first so MDC's insertColumn does not throw.
+        var oParent = oColumn.getParent && oColumn.getParent();
+        if (oParent && typeof oParent.removeColumn === "function") {
+            oParent.removeColumn(oColumn);
+        }
+        return Promise.resolve(oColumn);
     };
 
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
