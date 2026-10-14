@@ -196,7 +196,6 @@
         <f:content>
             <mdc:Table id="idJobDetTable"
                 delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{bindingPath:'jobModel>/results'}}"
-                type="Table"
                 selectionMode="Single"
                 selectionChange=".onJobSelected"
                 rowPress=".onJobDetails"
@@ -204,6 +203,10 @@
                 p13nMode="Column,Sort,Group,Filter"
                 enableAutoColumnWidth="true"
                 class="sapUiSmallMarginTop">
+
+                <mdc:type>
+                    <mdct:ResponsiveTableType id="idJobDetTableType" showDetailsButton="true"/>
+                </mdc:type>
 
                 <mdc:variant>
                     <vm:VariantManagement id="tableVM"/>
