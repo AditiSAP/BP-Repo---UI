@@ -5,14 +5,19 @@ sap.ui.define([
     "sap/m/ObjectStatus",
     "sap/ui/model/Sorter",
     "com/bpcfn/jobscheduler/util/JSONPropertyInfo",
+    "com/bpcfn/jobscheduler/util/JSONTableFilterDelegate",
     "com/bpcfn/jobscheduler/model/formatter"
-], function (TableDelegate, Column, Text, ObjectStatus, Sorter, JSONPropertyInfo, Formatter) {
+], function (TableDelegate, Column, Text, ObjectStatus, Sorter, JSONPropertyInfo, JSONTableFilterDelegate, Formatter) {
     "use strict";
 
     const JSONTableDelegate = Object.assign({}, TableDelegate);
 
     JSONTableDelegate.fetchProperties = function () {
         return Promise.resolve(JSONPropertyInfo);
+    };
+
+    JSONTableDelegate.getFilterDelegate = function () {
+        return JSONTableFilterDelegate;
     };
 
     // Creates a fresh column instance for a given property key.

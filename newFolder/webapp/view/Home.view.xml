@@ -201,7 +201,7 @@
                 selectionChange=".onJobSelected"
                 rowPress=".onJobDetails"
                 header="{jobModel>/JobDetailsTitle}"
-                p13nMode="Sort,Column"
+                p13nMode="Column,Sort,Group,Filter"
                 enableAutoColumnWidth="true"
                 class="sapUiSmallMarginTop">
 
