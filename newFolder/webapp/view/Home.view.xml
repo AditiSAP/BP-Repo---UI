@@ -195,7 +195,7 @@
 
         <f:content>
             <mdc:Table id="idJobDetTable"
-                delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{}}"
+                delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{bindingPath:'jobModel>/results'}}"
                 type="Table"
                 selectionMode="Single"
                 selectionChange=".onJobSelected"
@@ -281,10 +281,6 @@
 
                     <mdct:Column id="colGenericUser" propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
                         <Text id="txtGenericUser" text="{= ${jobModel>generic_user_id} ? ${jobModel>generic_user_id} : ${jobModel>createdby} }" wrapping="false"/>
-                    </mdct:Column>
-
-                    <mdct:Column id="colCreatedby" propertyKey="createdby" header="{i18n>CreatedBy}" width="7rem">
-                        <Text id="txtCreatedby" text="{jobModel>createdby}" wrapping="false"/>
                     </mdct:Column>
 
                     <mdct:Column id="colCreationDate" propertyKey="creation_date" header="{i18n>CreatedOn}" width="12rem">

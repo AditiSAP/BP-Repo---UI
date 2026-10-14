@@ -1,151 +1,180 @@
 sap.ui.define([
     "sap/ui/mdc/TableDelegate",
-    "sap/ui/model/Sorter"
-], function (TableDelegate, Sorter) {
+    "sap/ui/mdc/table/Column",
+    "sap/m/Text",
+    "sap/m/ObjectStatus",
+    "sap/ui/model/Sorter",
+    "com/bpcfn/jobscheduler/util/JSONPropertyInfo",
+    "com/bpcfn/jobscheduler/model/formatter"
+], function (TableDelegate, Column, Text, ObjectStatus, Sorter, JSONPropertyInfo, Formatter) {
     "use strict";
 
-    /**
-     * Delegate for the Home view sap.ui.mdc.Table, backed by a JSONModel.
-     *
-     * fetchProperties() describes each column property so MDC can drive the
-     * Sort and Column personalisation panels. Every name here must match the
-     * propertyKey set on the corresponding sap.ui.mdc.Column in the view.
-     *
-     * updateBindingInfo() pins the binding path to jobModel>/results and
-     * applies the same default sort order as the original sap.ui.table.Table.
-     *
-     * filterable: false on every property – filtering is handled by the
-     * FilterBar; the table does not apply its own column filters.
-     */
     const JSONTableDelegate = Object.assign({}, TableDelegate);
 
-    JSONTableDelegate.fetchProperties = function (/* oTable */) {
-        return Promise.resolve([
-            { name: "status",          label: "Status",             dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "jobname",         label: "Job Name",           dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "version",         label: "Version",            dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "task_type",       label: "Task Type",          dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "fc_year",         label: "Fiscal Year/Period", dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "con_grp",         label: "Cons. Group",        dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "sdl_startdt",     label: "Planned Start",      dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "enddate",         label: "End",                dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "duration",        label: "Duration",           dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "generic_user_id", label: "Created By",         dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "createdby",       label: "Created By (User)",  dataType: "sap.ui.model.type.String", sortable: true, filterable: false, visible: false },
-            { name: "creation_date",   label: "Created On",         dataType: "sap.ui.model.type.String", sortable: true, filterable: false }
-        ]);
+    JSONTableDelegate.fetchProperties = function () {
+        return Promise.resolve(JSONPropertyInfo);
     };
 
-    // propertyKey → view-local ID for every column defined in Home.view.xml
-    var _mColIds = {
-        "status":          "colStatus",
-        "jobname":         "colJobname",
-        "version":         "colVersion",
-        "task_type":       "colTaskType",
-        "fc_year":         "colFcYear",
-        "con_grp":         "colConGrp",
-        "sdl_startdt":     "colSdlStart",
-        "enddate":         "colEnddate",
-        "duration":        "colDuration",
-        "generic_user_id": "colGenericUser",
-        "createdby":       "colCreatedby",
-        "creation_date":   "colCreationDate"
-    };
+    // Creates a fresh column instance for a given property key.
+    // Called by addItem whenever MDC needs to (re-)add a column.
+    function _createColumn(sId, sKey) {
+        switch (sKey) {
+            case "status":
+                return new Column(sId, {
+                    propertyKey: "status",
+                    header: "{i18n>Status}",
+                    width: "7rem",
+                    template: new ObjectStatus({
+                        text:  { path: "jobModel>status", formatter: Formatter.statusText },
+                        state: { path: "jobModel>status", formatter: Formatter.statusState }
+                    })
+                });
 
-    // Walk up from oControl until we reach an ancestor that exposes byId()
-    // (sap.ui.core.mvc.View does; so does UIComponent as a fallback).
-    function _findInView(oControl, sLocalId) {
-        var oAncestor = oControl;
-        while (oAncestor) {
-            if (typeof oAncestor.byId === "function") {
-                var oFound = oAncestor.byId(sLocalId);
-                if (oFound) { return oFound; }
-            }
-            oAncestor = typeof oAncestor.getParent === "function"
-                ? oAncestor.getParent() : null;
+            case "jobname":
+                return new Column(sId, {
+                    propertyKey: "jobname",
+                    header: "{i18n>JobName}",
+                    template: new Text({ text: "{jobModel>jobname}", wrapping: false })
+                });
+
+            case "version":
+                return new Column(sId, {
+                    propertyKey: "version",
+                    header: "{i18n>Version}",
+                    width: "7rem",
+                    template: new Text({ text: "{jobModel>version}", wrapping: false })
+                });
+
+            case "task_type":
+                return new Column(sId, {
+                    propertyKey: "task_type",
+                    header: "{i18n>TaskType}",
+                    width: "7rem",
+                    template: new Text({
+                        text: { path: "jobModel>task_type", formatter: Formatter.taskTypeText },
+                        wrapping: false
+                    })
+                });
+
+            case "fc_year":
+                return new Column(sId, {
+                    propertyKey: "fc_year",
+                    header: "{i18n>FiscalYearPeriod}",
+                    width: "9rem",
+                    template: new Text({
+                        text: {
+                            parts: [{ path: "jobModel>fc_year" }, { path: "jobModel>fc_period" }],
+                            formatter: Formatter.fiscalYearPeriod
+                        },
+                        wrapping: false
+                    })
+                });
+
+            case "con_grp":
+                return new Column(sId, {
+                    propertyKey: "con_grp",
+                    header: "{i18n>ConsGroup}",
+                    width: "8rem",
+                    template: new Text({ text: "{jobModel>con_grp}", wrapping: false })
+                });
+
+            case "sdl_startdt":
+                return new Column(sId, {
+                    propertyKey: "sdl_startdt",
+                    header: "{i18n>PlannedStart}",
+                    width: "12rem",
+                    template: new Text({
+                        text: {
+                            parts: [{ path: "jobModel>sdl_startdt" }, { path: "jobModel>sdl_starttm" }],
+                            formatter: Formatter.formatDateTime
+                        }
+                    })
+                });
+
+            case "enddate":
+                return new Column(sId, {
+                    propertyKey: "enddate",
+                    header: "{i18n>End}",
+                    width: "12rem",
+                    template: new Text({
+                        text: {
+                            parts: [{ path: "jobModel>enddate" }, { path: "jobModel>endtime" }],
+                            formatter: Formatter.formatDateTime
+                        }
+                    })
+                });
+
+            case "duration":
+                return new Column(sId, {
+                    propertyKey: "duration",
+                    header: "{i18n>Duration}",
+                    width: "8rem",
+                    template: new Text({ text: "{jobModel>duration}" })
+                });
+
+            case "generic_user_id":
+                return new Column(sId, {
+                    propertyKey: "generic_user_id",
+                    header: "{i18n>CreatedBy}",
+                    width: "7rem",
+                    template: new Text({
+                        text: {
+                            parts: [
+                                { path: "jobModel>generic_user_id" },
+                                { path: "jobModel>createdby" }
+                            ],
+                            formatter: function (sGenericUser, sCreatedBy) {
+                                return sGenericUser || sCreatedBy || "";
+                            }
+                        },
+                        wrapping: false
+                    })
+                });
+
+            case "createdby":
+                return new Column(sId, {
+                    propertyKey: "createdby",
+                    header: "{i18n>CreatedBy}",
+                    width: "7rem",
+                    template: new Text({ text: "{jobModel>createdby}", wrapping: false })
+                });
+
+            case "creation_date":
+                return new Column(sId, {
+                    propertyKey: "creation_date",
+                    header: "{i18n>CreatedOn}",
+                    width: "12rem",
+                    template: new Text({
+                        text: {
+                            parts: [{ path: "jobModel>creation_date" }, { path: "jobModel>creation_time" }],
+                            formatter: Formatter.formatDateTime
+                        }
+                    })
+                });
+
+            default:
+                return null;
         }
-        return null;
     }
 
-    // Ensure oTable._oAllCols contains a reference to every column ever seen.
-    // Called by removeItem – snapshotting the full aggregation on the FIRST call
-    // so addItem can always recover the original column with its custom template,
-    // regardless of whether the column was removed by our own delegate or
-    // directly by the fl change handler during variant switching.
-    function _ensureColMap(oTable, oColumn) {
-        if (!oTable._oAllCols) {
-            oTable._oAllCols = {};
-            oTable.getColumns().forEach(function (oCol) {
-                oTable._oAllCols[oCol.getPropertyKey()] = oCol;
-            });
-        }
-        // Also record the column being removed (covers the case where it was
-        // already detached before the snapshot above ran).
-        if (oColumn) {
-            oTable._oAllCols[oColumn.getPropertyKey()] = oColumn;
-        }
-    }
-
-    JSONTableDelegate.removeItem = function (oTable, oColumn /*, mPropertyBag */) {
-        oTable.removeColumn(oColumn); // detach without destroying
-        return Promise.resolve(true);
-    };
-
-    JSONTableDelegate.addItem = function (oTable, sPropertyKey /*, mPropertyBag */) {
-        // Some MDC versions pass an object {name:...} instead of a plain string.
-        var sKey = (sPropertyKey && typeof sPropertyKey === "object")
+    // Standard MDC pattern: create a fresh column instance per property key.
+    // The ID convention oTable.getId() + "---col-" + key matches the SAP demo-kit
+    // standard and guarantees a stable, unique ID for each delegate-created column.
+    JSONTableDelegate.addItem = async function (oTable, sPropertyKey) {
+        const sKey = (sPropertyKey && typeof sPropertyKey === "object")
             ? sPropertyKey.name : sPropertyKey;
-
-        var sLocalId = _mColIds[sKey];
-        if (!sLocalId) {
-            /* eslint-disable no-console */
-            console.error("[JSONTableDelegate.addItem] no _mColIds entry for key:", sKey, "| raw sPropertyKey:", sPropertyKey);
-            /* eslint-enable no-console */
-            return TableDelegate.addItem.apply(this, arguments);
+        const sId = oTable.getId() + "---col-" + sKey;
+        const oColumn = _createColumn(sId, sKey);
+        if (oColumn) {
+            return oColumn;
         }
-
-        // Approach 1: derive full element ID from the table's own ID.
-        // Table ID format: "<viewPrefix>--<localTableId>"; column ID: "<viewPrefix>--<localColId>"
-        var sTableId = oTable && oTable.getId ? oTable.getId() : "";
-        var iSep = sTableId.lastIndexOf("--");
-        var sFullId = iSep >= 0 ? sTableId.substring(0, iSep + 2) + sLocalId : "";
-
-        var ElementCls = sap.ui.require("sap/ui/core/Element");
-        var oColumn = sFullId
-            ? (ElementCls ? ElementCls.getElementById(sFullId) : sap.ui.getCore().byId(sFullId))
-            : null;
-
-        // Approach 2: walk parent chain to the View and call byId.
-        if (!oColumn) {
-            var oView = oTable;
-            while (oView && !(oView.isA && oView.isA("sap.ui.core.mvc.View"))) {
-                oView = typeof oView.getParent === "function" ? oView.getParent() : null;
-            }
-            oColumn = oView ? oView.byId(sLocalId) : null;
-        }
-
-        /* eslint-disable no-console */
-        console.log("[JSONTableDelegate.addItem] key:", sKey, "| sFullId:", sFullId,
-            "| found:", !!(oColumn), "| destroyed:", !!(oColumn && oColumn.bIsDestroyed),
-            "| tableId:", sTableId);
-        /* eslint-enable no-console */
-
-        if (!oColumn || oColumn.bIsDestroyed) {
-            return TableDelegate.addItem.apply(this, arguments);
-        }
-
-        // Detach from current parent first so MDC's insertColumn does not throw.
-        var oParent = oColumn.getParent && oColumn.getParent();
-        if (oParent && typeof oParent.removeColumn === "function") {
-            oParent.removeColumn(oColumn);
-        }
-        return Promise.resolve(oColumn);
+        return TableDelegate.addItem.call(this, oTable, sPropertyKey);
     };
 
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
         TableDelegate.updateBindingInfo.call(this, oTable, oBindingInfo);
-        oBindingInfo.path = "jobModel>/results";
-        // Only apply defaults when MDC has not set any P13n-driven sorters.
+        oBindingInfo.path = oTable.getPayload().bindingPath;
+        // Apply default sort only when no P13n-driven sorters are present.
         if (!oBindingInfo.sorter || !oBindingInfo.sorter.length) {
             oBindingInfo.sorter = [
                 new Sorter("sdl_startdt", true),
