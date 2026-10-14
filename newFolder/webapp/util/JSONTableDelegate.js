@@ -161,5 +161,28 @@ sap.ui.define([
         ];
     };
 
+    /**
+     * Override updateBinding so that column-level filter conditions from the
+     * MDC Filter p13n panel are applied client-side to the JSONModel binding.
+     *
+     * MDC converts its internal p13n conditions to sap.ui.model.Filter objects
+     * and puts them in oBindingInfo.filters before calling this method.
+     * The base TableDelegate.updateBinding targets OData V4 and does not apply
+     * those filters to a JSONModel list binding, so we do it explicitly here.
+     *
+     * getRowBinding() is a public sap.ui.mdc.Table API that returns the inner
+     * sap.m.Table "items" binding (type="Table") or sap.ui.table.Table "rows"
+     * binding (type="GridTable") – whichever is active.
+     */
+    JSONTableDelegate.updateBinding = function (oTable, oBindingInfo, oBinding) {
+        var oCurrentBinding = oBinding ||
+            (typeof oTable.getRowBinding === "function" ? oTable.getRowBinding() : null);
+
+        if (oCurrentBinding) {
+            oCurrentBinding.sort(oBindingInfo.sorter || []);
+            oCurrentBinding.filter(oBindingInfo.filters || [], "Application");
+        }
+    };
+
     return JSONTableDelegate;
 });
