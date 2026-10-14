@@ -8,31 +8,33 @@ sap.ui.define([
      * Delegate for the Home view sap.ui.mdc.Table, backed by a JSONModel.
      *
      * fetchProperties() describes each column property so MDC can drive the
-     * Sort and Column personalisation panels. Every name here must match the
-     * propertyKey set on the corresponding sap.ui.mdc.Column in the view.
+     * Sort, Column, and Filter personalisation panels. Every name here must
+     * match the propertyKey set on the corresponding sap.ui.mdc.Column in the view.
      *
      * updateBindingInfo() pins the binding path to jobModel>/results and
      * applies the same default sort order as the original sap.ui.table.Table.
      *
-     * filterable: false on every property – filtering is handled by the
-     * FilterBar; the table does not apply its own column filters.
+     * Column-level filter conditions are applied client-side to the JSONModel
+     * binding (jobModel>/results) by MDC after updateBindingInfo() runs.
+     * The FilterBar handles the server-side OData fetch; column filters then
+     * narrow the already-loaded result set in memory.
      */
     const JSONTableDelegate = Object.assign({}, TableDelegate);
 
     JSONTableDelegate.fetchProperties = function (/* oTable */) {
         return Promise.resolve([
-            { name: "status",          label: "Status",             dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "jobname",         label: "Job Name",           dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "version",         label: "Version",            dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "task_type",       label: "Task Type",          dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "fc_year",         label: "Fiscal Year/Period", dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "con_grp",         label: "Cons. Group",        dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "sdl_startdt",     label: "Planned Start",      dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "enddate",         label: "End",                dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "duration",        label: "Duration",           dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "generic_user_id", label: "Created By",         dataType: "sap.ui.model.type.String", sortable: true, filterable: false },
-            { name: "createdby",       label: "Created By (User)",  dataType: "sap.ui.model.type.String", sortable: true, filterable: false, visible: false },
-            { name: "creation_date",   label: "Created On",         dataType: "sap.ui.model.type.String", sortable: true, filterable: false }
+            { name: "status",          label: "Status",             dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "jobname",         label: "Job Name",           dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "version",         label: "Version",            dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "task_type",       label: "Task Type",          dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "fc_year",         label: "Fiscal Year/Period", dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "con_grp",         label: "Cons. Group",        dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "sdl_startdt",     label: "Planned Start",      dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "enddate",         label: "End",                dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "duration",        label: "Duration",           dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "generic_user_id", label: "Created By",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true },
+            { name: "createdby",       label: "Created By (User)",  dataType: "sap.ui.model.type.String", sortable: true, filterable: true, visible: false },
+            { name: "creation_date",   label: "Created On",         dataType: "sap.ui.model.type.String", sortable: true, filterable: true }
         ]);
     };
 
