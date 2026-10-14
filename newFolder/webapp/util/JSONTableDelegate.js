@@ -98,18 +98,38 @@ sap.ui.define([
 
         var sLocalId = _mColIds[sKey];
         if (!sLocalId) {
+            /* eslint-disable no-console */
+            console.error("[JSONTableDelegate.addItem] no _mColIds entry for key:", sKey, "| raw sPropertyKey:", sPropertyKey);
+            /* eslint-enable no-console */
             return TableDelegate.addItem.apply(this, arguments);
         }
 
-        // Walk up to the View. View.byId() queries the global ID registry so it
-        // finds detached (removed but not destroyed) columns just as well as
-        // columns that are currently in the aggregation.
-        var oView = oTable;
-        while (oView && !(oView.isA && oView.isA("sap.ui.core.mvc.View"))) {
-            oView = typeof oView.getParent === "function" ? oView.getParent() : null;
+        // Approach 1: derive full element ID from the table's own ID.
+        // Table ID format: "<viewPrefix>--<localTableId>"; column ID: "<viewPrefix>--<localColId>"
+        var sTableId = oTable && oTable.getId ? oTable.getId() : "";
+        var iSep = sTableId.lastIndexOf("--");
+        var sFullId = iSep >= 0 ? sTableId.substring(0, iSep + 2) + sLocalId : "";
+
+        var ElementCls = sap.ui.require("sap/ui/core/Element");
+        var oColumn = sFullId
+            ? (ElementCls ? ElementCls.getElementById(sFullId) : sap.ui.getCore().byId(sFullId))
+            : null;
+
+        // Approach 2: walk parent chain to the View and call byId.
+        if (!oColumn) {
+            var oView = oTable;
+            while (oView && !(oView.isA && oView.isA("sap.ui.core.mvc.View"))) {
+                oView = typeof oView.getParent === "function" ? oView.getParent() : null;
+            }
+            oColumn = oView ? oView.byId(sLocalId) : null;
         }
 
-        var oColumn = oView ? oView.byId(sLocalId) : null;
+        /* eslint-disable no-console */
+        console.log("[JSONTableDelegate.addItem] key:", sKey, "| sFullId:", sFullId,
+            "| found:", !!(oColumn), "| destroyed:", !!(oColumn && oColumn.bIsDestroyed),
+            "| tableId:", sTableId);
+        /* eslint-enable no-console */
+
         if (!oColumn || oColumn.bIsDestroyed) {
             return TableDelegate.addItem.apply(this, arguments);
         }
