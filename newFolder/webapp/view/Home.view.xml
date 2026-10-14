@@ -144,7 +144,7 @@
                             dataType="sap.ui.model.type.Date"
                             maxConditions="1"
                             required="true"
-                            operators="BT,GE,LE"
+                            operators="BT,EQ,GE,GT,LE,LT"
                             placeholder="{i18n>DateRangePlaceholder}"
                             delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
