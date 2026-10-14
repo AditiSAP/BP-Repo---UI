@@ -143,13 +143,17 @@ sap.ui.define([
     };
 
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
+        TableDelegate.updateBindingInfo.call(this, oTable, oBindingInfo);
         oBindingInfo.path = "jobModel>/results";
-        oBindingInfo.sorter = [
-            new Sorter("sdl_startdt", true),
-            new Sorter("sdl_starttm", true),
-            new Sorter("jobname",     true),
-            new Sorter("createdby",   true)
-        ];
+        // Only apply defaults when MDC has not set any P13n-driven sorters.
+        if (!oBindingInfo.sorter || !oBindingInfo.sorter.length) {
+            oBindingInfo.sorter = [
+                new Sorter("sdl_startdt", true),
+                new Sorter("sdl_starttm", true),
+                new Sorter("jobname",     true),
+                new Sorter("createdby",   true)
+            ];
+        }
     };
 
     return JSONTableDelegate;

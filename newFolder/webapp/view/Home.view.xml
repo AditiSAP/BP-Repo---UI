@@ -202,6 +202,7 @@
                 rowPress=".onJobDetails"
                 header="{jobModel>/JobDetailsTitle}"
                 p13nMode="Sort,Column"
+                enableAutoColumnWidth="true"
                 class="sapUiSmallMarginTop">
 
                 <mdc:variant>
