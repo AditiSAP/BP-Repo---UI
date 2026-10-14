@@ -212,7 +212,7 @@
                     <Button id="btnCreate" text="{i18n>Create}"
                         type="Emphasized"
                         press="onCreateJob"
-                        enabled="{jobModel>/CreateEnabled}"/>
+                        enabled="true"/>
                     <Button id="btnCopy" text="{i18n>Copy}"
                         type="Emphasized"
                         press="onCopyJob"
