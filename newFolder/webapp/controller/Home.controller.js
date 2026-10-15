@@ -186,23 +186,31 @@ sap.ui.define([
             });
         },
 
-        // Read all current conditions. FilterBar.getConditions() is the standard API
-        // (same as the demo sample). Falls back to per-FilterField reads if it throws.
+        // Read all current conditions from each FilterField directly.
+        // FilterField.getConditions() is always in sync with setConditions() calls
+        // because setConditions() is synchronous. FilterBar.getConditions() reads
+        // from the ConditionModel, which is updated asynchronously via binding
+        // propagation — so it lags behind a just-called setConditions() and misses
+        // KPI-tile filter values when createFilters() runs right after _mergeFilterConditions().
         _readConditions: function (oFilterBar) {
+            const oConditions = {};
+            const aItems = typeof oFilterBar.getFilterItems === "function"
+                ? oFilterBar.getFilterItems() : [];
+            aItems.forEach(function (oField) {
+                const sKey = typeof oField.getPropertyKey === "function"
+                    ? oField.getPropertyKey() : null;
+                if (sKey && typeof oField.getConditions === "function") {
+                    oConditions[sKey] = oField.getConditions() || [];
+                }
+            });
+            if (aItems.length) {
+                return oConditions;
+            }
+            // Fallback: filterItems not yet populated (early init race), use FilterBar API
             try {
                 return oFilterBar.getConditions() || {};
             } catch (e) {
-                const oConditions = {};
-                const aItems = typeof oFilterBar.getFilterItems === "function"
-                    ? oFilterBar.getFilterItems() : [];
-                aItems.forEach(function (oField) {
-                    const sKey = typeof oField.getPropertyKey === "function"
-                        ? oField.getPropertyKey() : null;
-                    if (sKey && typeof oField.getConditions === "function") {
-                        oConditions[sKey] = oField.getConditions() || [];
-                    }
-                });
-                return oConditions;
+                return {};
             }
         },
 
