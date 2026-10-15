@@ -19,31 +19,35 @@ sap.ui.define([
         return Promise.resolve(_aProperties);
     };
 
-    // MDC calls addItem() when it needs a FilterField instance for a given property key —
-    // both during p13n dialog initialisation and when the user re-adds a hidden filter.
-    // We first try to return the pre-declared XML field (found by propertyKey); only if
-    // it is gone (user hid it) do we create a plain new FilterField.
+    // Standard MDC pattern (matches the official FilterbarTypes demo sample):
+    // addItem() creates a SEPARATE FilterField instance for the p13n dialog panel,
+    // identified by a stable "--filter--" ID so repeated calls return the same instance.
+    //
+    // We do NOT return the XML-declared fields (idJobNameFilter etc.) here.
+    // A SAPUI5 element can only live in one aggregation at a time — returning a field
+    // that is already in filterItems causes MDC to move it into the dialog panel,
+    // disconnecting it from the FilterBar so any input entered in the dialog is lost.
+    //
+    // The XML fields stay permanently in filterItems (FilterBar display).
+    // The delegate-created fields live in the dialog panel context.
+    // Both sets bind to the same $filters>/conditions/<key> path, so they share state.
     FilterBarDelegateImpl.addItem = async function (oFilterBar, sPropertyKey) {
-        // sPropertyKey may be a string or an object in different MDC versions
         const sName = (sPropertyKey && typeof sPropertyKey === "object")
             ? (sPropertyKey.name || sPropertyKey.key) : sPropertyKey;
 
-        // Return the existing XML-declared FilterField if available
-        const aItems = typeof oFilterBar.getFilterItems === "function"
-            ? oFilterBar.getFilterItems() : [];
-        const oExisting = aItems.find(function (oField) {
-            return typeof oField.getPropertyKey === "function"
-                && oField.getPropertyKey() === sName;
-        });
+        const sId = oFilterBar.getId() + "--filter--" + sName;
+
+        // Reuse a previously created instance if it still exists in the UI5 registry
+        const oCore = sap.ui.getCore ? sap.ui.getCore() : null;
+        const oExisting = oCore && typeof oCore.byId === "function" ? oCore.byId(sId) : null;
         if (oExisting) {
             return oExisting;
         }
 
-        // Fallback: create a new FilterField (e.g. user removed it and re-adds from dialog)
         const oProperty = _aProperties.find(function (p) { return p.name === sName; });
         if (!oProperty) { return null; }
 
-        return new FilterField(oFilterBar.getId() + "--filter--" + sName, {
+        return new FilterField(sId, {
             propertyKey: sName,
             conditions: "{$filters>/conditions/" + sName + "}",
             dataType: oProperty.dataType,
@@ -54,9 +58,8 @@ sap.ui.define([
         });
     };
 
-    // Destroy only programmatically-created fields (those with "--filter--" in the ID).
-    // XML-declared fields use custom IDs and should not be destroyed — they would be
-    // unrecoverable (ValueHelp wiring is lost).
+    // Delegate-created fields (--filter-- ID) are destroyed on removal.
+    // XML-declared fields are left alive — they stay in the view's filterItems.
     FilterBarDelegateImpl.removeItem = async function (oFilterBar, oFilterField) {
         const sId = typeof oFilterField.getId === "function" ? oFilterField.getId() : "";
         if (sId.indexOf("--filter--") !== -1) {

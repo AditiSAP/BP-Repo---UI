@@ -86,15 +86,15 @@ sap.ui.define([
             if (oComp._kpiStatusFilter !== undefined && oComp._kpiStatusFilter !== null) {
                 const mKpi = {
                     status: oComp._kpiStatusFilter
-                        ? [{ operator: "EQ", values: [oComp._kpiStatusFilter], validated: "NotValidated" }]
+                        ? [{ operator: "EQ", values: [oComp._kpiStatusFilter], validated: "Valid" }]
                         : []
                 };
                 if (oComp._kpiScope) {
                     if (oComp._kpiScope.year) {
-                        mKpi.fcYear = [{ operator: "EQ", values: [oComp._kpiScope.year], validated: "NotValidated" }];
+                        mKpi.fcYear = [{ operator: "EQ", values: [oComp._kpiScope.year], validated: "Valid" }];
                     }
                     if (oComp._kpiScope.period) {
-                        mKpi.fcPeriod = [{ operator: "EQ", values: [oComp._kpiScope.period], validated: "NotValidated" }];
+                        mKpi.fcPeriod = [{ operator: "EQ", values: [oComp._kpiScope.period], validated: "Valid" }];
                     }
                 }
                 this._mergeFilterConditions(oFilterBar, mKpi);
@@ -124,7 +124,7 @@ sap.ui.define([
             // plain setProperty() bypasses the change-event pipeline in MDC 1.120 and
             // the FilterField display never updates.
             this._setFilterConditions(this.byId("filterbar"), {
-                dateRange: [{ operator: "BT", values: [stDate, endDate], validated: "NotValidated" }],
+                dateRange: [{ operator: "BT", values: [stDate, endDate], validated: "Valid" }],
                 jobname:   [],
                 createdby: [],
                 status:    [],
@@ -299,8 +299,10 @@ sap.ui.define([
 
         // Fired by the MDC FilterBar on every condition change (including the built-in
         // Clear button). When the required dateRange condition is empty, restore the
-        // default range and refresh — this prevents required-field validation from
-        // blocking the Go button after Clear.
+        // default range and refresh.
+        // The restore is deferred via setTimeout(0) so it runs after MDC has fully
+        // completed its own Clear cycle — calling setConditions() synchronously inside
+        // this handler gets overwritten by MDC's own pending binding propagation.
         onFiltersChanged: function () {
             if (this._bRestoringDefaults) { return; }
             const oFilterBar = this.byId("filterbar");
@@ -309,17 +311,20 @@ sap.ui.define([
             const aDateConds = (this._readConditions(oFilterBar).dateRange) || [];
 
             if (!aDateConds.length) {
-                this._bRestoringDefaults = true;
-                this._setFilterConditions(oFilterBar, {
-                    dateRange: [{ operator: "BT", values: [this._dfltDateStart, this._dfltDateEnd], validated: "NotValidated" }],
-                    jobname:   [],
-                    createdby: [],
-                    status:    [],
-                    fcYear:    [],
-                    fcPeriod:  []
-                });
-                this._bRestoringDefaults = false;
-                this.onRefreshData();
+                setTimeout(function () {
+                    if (this._bRestoringDefaults) { return; }
+                    this._bRestoringDefaults = true;
+                    this._setFilterConditions(oFilterBar, {
+                        dateRange: [{ operator: "BT", values: [this._dfltDateStart, this._dfltDateEnd], validated: "Valid" }],
+                        jobname:   [],
+                        createdby: [],
+                        status:    [],
+                        fcYear:    [],
+                        fcPeriod:  []
+                    });
+                    this._bRestoringDefaults = false;
+                    this.onRefreshData();
+                }.bind(this), 0);
             }
         },
 
