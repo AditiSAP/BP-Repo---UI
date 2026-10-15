@@ -145,7 +145,7 @@
                             dataType="sap.ui.model.type.Date"
                             maxConditions="1"
                             required="true"
-                            operators="EQ,BT,TODAY,YESTERDAY,TOMORROW,TODAYFROMTO,LASTDAYS,NEXTDAYS"
+                            operators="EQ,BT,TODAY,YESTERDAY,TOMORROW,TODAYFROMTO,LASTDAYS,NEXTDAYS,THISMONTH,LASTMONTH,NEXTMONTH,THISQUARTER,LASTQUARTER,NEXTQUARTER,QUARTER1,QUARTER2,QUARTER3,QUARTER4"
                             placeholder="{i18n>DateRangePlaceholder}"
                             delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
 
