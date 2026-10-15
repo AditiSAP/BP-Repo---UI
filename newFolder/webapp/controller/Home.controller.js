@@ -82,23 +82,20 @@ sap.ui.define([
             // jobs, then clear so normal navigation is not stuck with them.
             const oComp = this.getOwnerComponent();
             if (oComp._kpiStatusFilter !== undefined && oComp._kpiStatusFilter !== null) {
-                const oCondModel = oFilterBar.getModel("$filters");
-                if (oCondModel) {
-                    oCondModel.setProperty("/conditions/status",
-                        oComp._kpiStatusFilter
-                            ? [{ operator: "EQ", values: [oComp._kpiStatusFilter], validated: "NotValidated" }]
-                            : []);
-                    if (oComp._kpiScope) {
-                        if (oComp._kpiScope.year) {
-                            oCondModel.setProperty("/conditions/fcYear",
-                                [{ operator: "EQ", values: [oComp._kpiScope.year], validated: "NotValidated" }]);
-                        }
-                        if (oComp._kpiScope.period) {
-                            oCondModel.setProperty("/conditions/fcPeriod",
-                                [{ operator: "EQ", values: [oComp._kpiScope.period], validated: "NotValidated" }]);
-                        }
+                const mKpi = {
+                    status: oComp._kpiStatusFilter
+                        ? [{ operator: "EQ", values: [oComp._kpiStatusFilter], validated: "NotValidated" }]
+                        : []
+                };
+                if (oComp._kpiScope) {
+                    if (oComp._kpiScope.year) {
+                        mKpi.fcYear = [{ operator: "EQ", values: [oComp._kpiScope.year], validated: "NotValidated" }];
+                    }
+                    if (oComp._kpiScope.period) {
+                        mKpi.fcPeriod = [{ operator: "EQ", values: [oComp._kpiScope.period], validated: "NotValidated" }];
                     }
                 }
+                this._mergeFilterConditions(oFilterBar, mKpi);
                 oComp._kpiStatusFilter = undefined;
                 oComp._kpiScope        = undefined;
             }
@@ -117,23 +114,21 @@ sap.ui.define([
             const stDate  = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
             const endDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
-            // Persist defaults so createFilters() can fall back to them even if
-            // variant management or MDC type processing clears the $filters model.
             this._dfltDateStart = stDate;
             this._dfltDateEnd   = endDate;
 
-            // Push the default date range into the MDC FilterBar as a BT
-            // condition. All other filter fields are cleared.
-            const oFilterBar = this.byId("filterbar");
-            if (oFilterBar) {
-                const oCondModel = oFilterBar.getModel("$filters");
-                if (oCondModel) {
-                    oCondModel.setProperty("/conditions/dateRange", [{ operator: "BT", values: [stDate, endDate], validated: "NotValidated" }]);
-                    ["jobname", "createdby", "status", "fcYear", "fcPeriod"].forEach(function (sKey) {
-                        oCondModel.setProperty("/conditions/" + sKey, []);
-                    });
-                }
-            }
+            // Set FilterBar to default state: date range filled, everything else cleared.
+            // _setFilterConditions uses ConditionModel.setConditions() when available —
+            // plain setProperty() bypasses the change-event pipeline in MDC 1.120 and
+            // the FilterField display never updates.
+            this._setFilterConditions(this.byId("filterbar"), {
+                dateRange: [{ operator: "BT", values: [stDate, endDate], validated: "NotValidated" }],
+                jobname:   [],
+                createdby: [],
+                status:    [],
+                fcYear:    [],
+                fcPeriod:  []
+            });
 
             this.getView().getModel("jobModel").setData({
                 "CheckAuth":              false,
@@ -144,9 +139,153 @@ sap.ui.define([
             }, true);
         },
 
+        // ── Condition-model helpers ──────────────────────────────────────────
+        // MDC's $filters model is a ConditionModel in 1.120. setConditions() is
+        // its proper API for atomic full-replacement. setProperty() does work but
+        // can skip the model's internal change-event pipeline on some versions,
+        // leaving FilterFields stale. We try setConditions first.
+
+        _setFilterConditions: function (oFilterBar, mConditions) {
+            const oCondModel = oFilterBar ? oFilterBar.getModel("$filters") : null;
+            if (!oCondModel) { return; }
+            if (typeof oCondModel.setConditions === "function") {
+                oCondModel.setConditions(mConditions);
+            } else {
+                const self = this;
+                Object.keys(mConditions).forEach(function (sKey) {
+                    oCondModel.setProperty("/conditions/" + sKey, mConditions[sKey]);
+                });
+            }
+        },
+
+        // Non-destructive merge: only the keys in mPartial are updated; the rest
+        // (e.g. the dateRange set by initializeData) are preserved.
+        _mergeFilterConditions: function (oFilterBar, mPartial) {
+            const oCondModel = oFilterBar ? oFilterBar.getModel("$filters") : null;
+            if (!oCondModel) { return; }
+            const mCurrent = typeof oCondModel.getConditions === "function"
+                ? Object.assign({}, oCondModel.getConditions())
+                : (oCondModel.getProperty("/conditions") || {});
+            const mMerged = Object.assign({}, mCurrent, mPartial);
+            if (typeof oCondModel.setConditions === "function") {
+                oCondModel.setConditions(mMerged);
+            } else {
+                Object.keys(mPartial).forEach(function (sKey) {
+                    oCondModel.setProperty("/conditions/" + sKey, mPartial[sKey]);
+                });
+            }
+        },
+
+        // Converts an MDC date condition array to concrete {oStartDate, oEndDate}.
+        // Handles all operators exposed on the FilterField (BT, EQ, GE/GT, LE/LT,
+        // TODAY, YESTERDAY, TOMORROW, LASTDAYS, NEXTDAYS, TODAYFROMTO).
+        // Falls back to dfltStart/dfltEnd when the condition array is empty or the
+        // operator is unrecognised.
+        _resolveDateCondition: function (aDateConds, dfltStart, dfltEnd) {
+            let oStartDate, oEndDate;
+
+            if (aDateConds.length && aDateConds[0]) {
+                const oCond = aDateConds[0];
+                const v0    = oCond.values && oCond.values[0];
+                const v1    = oCond.values && oCond.values[1];
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                const eod   = new Date(); eod.setHours(23, 59, 59, 999);
+                const DAY   = 86400000;
+
+                switch (oCond.operator) {
+                    case "BT":
+                        oStartDate = v0 ? new Date(v0) : undefined;
+                        oEndDate   = v1 ? new Date(v1) : undefined;
+                        break;
+                    case "EQ":
+                        oStartDate = v0 ? new Date(v0) : undefined;
+                        if (oStartDate) {
+                            oStartDate.setHours(0, 0, 0, 0);
+                            oEndDate = new Date(oStartDate); oEndDate.setHours(23, 59, 59, 999);
+                        }
+                        break;
+                    case "GE": case "GT":
+                        oStartDate = v0 ? new Date(v0) : undefined;
+                        if (oStartDate) { oEndDate = new Date(oStartDate.getTime() + 30 * DAY); }
+                        break;
+                    case "LE": case "LT":
+                        oEndDate = v0 ? new Date(v0) : undefined;
+                        if (oEndDate) { oStartDate = new Date(oEndDate.getTime() - 29 * DAY); }
+                        break;
+                    case "TODAY":
+                        oStartDate = new Date(today); oEndDate = new Date(eod);
+                        break;
+                    case "YESTERDAY":
+                        oStartDate = new Date(today.getTime() - DAY); oStartDate.setHours(0, 0, 0, 0);
+                        oEndDate   = new Date(oStartDate); oEndDate.setHours(23, 59, 59, 999);
+                        break;
+                    case "TOMORROW":
+                        oStartDate = new Date(today.getTime() + DAY); oStartDate.setHours(0, 0, 0, 0);
+                        oEndDate   = new Date(oStartDate); oEndDate.setHours(23, 59, 59, 999);
+                        break;
+                    case "LASTDAYS": {
+                        const n = parseInt(v0, 10) || 30;
+                        oEndDate   = new Date(eod);
+                        oStartDate = new Date(today.getTime() - (n - 1) * DAY);
+                        break;
+                    }
+                    case "NEXTDAYS": {
+                        const n = parseInt(v0, 10) || 10;
+                        oStartDate = new Date(today);
+                        oEndDate   = new Date(today.getTime() + n * DAY); oEndDate.setHours(23, 59, 59, 999);
+                        break;
+                    }
+                    case "TODAYFROMTO": {
+                        const before = parseInt(v0, 10) || 0;
+                        const after  = parseInt(v1, 10) || 0;
+                        oStartDate = new Date(today.getTime() - before * DAY);
+                        oEndDate   = new Date(today.getTime() + after  * DAY); oEndDate.setHours(23, 59, 59, 999);
+                        break;
+                    }
+                    default: break;
+                }
+            }
+
+            if (!oStartDate || !oEndDate) {
+                oStartDate = dfltStart;
+                oEndDate   = dfltEnd;
+            }
+
+            return { oStartDate: oStartDate, oEndDate: oEndDate };
+        },
+
         onClear: async function () {
             this.initializeData();
             await this.onRefreshData();
+        },
+
+        // Fired by the MDC FilterBar on every condition change (including the built-in
+        // Clear button). When the required dateRange condition is empty, restore the
+        // default range and refresh — this prevents required-field validation from
+        // blocking the Go button after Clear.
+        onFiltersChanged: function () {
+            if (this._bRestoringDefaults) { return; }
+            const oFilterBar = this.byId("filterbar");
+            if (!oFilterBar || !this._dfltDateStart) { return; }
+
+            const oCondModel  = oFilterBar.getModel("$filters");
+            const aDateConds  = oCondModel
+                ? (oCondModel.getProperty("/conditions/dateRange") || [])
+                : ((oFilterBar.getConditions() || {}).dateRange || []);
+
+            if (!aDateConds.length) {
+                this._bRestoringDefaults = true;
+                this._setFilterConditions(oFilterBar, {
+                    dateRange: [{ operator: "BT", values: [this._dfltDateStart, this._dfltDateEnd], validated: "NotValidated" }],
+                    jobname:   [],
+                    createdby: [],
+                    status:    [],
+                    fcYear:    [],
+                    fcPeriod:  []
+                });
+                this._bRestoringDefaults = false;
+                this.onRefreshData();
+            }
         },
 
         // ─── Cancel ──────────────────────────────────────────────────────────
@@ -235,70 +374,32 @@ sap.ui.define([
         },
 
         // ─── Filter construction ─────────────────────────────────────────────
-        /**
-         * Reads the MDC FilterBar's condition model and converts each
-         * condition to a sap.ui.model.Filter object for the V4 OData request.
-         *
-         * The date-boundary logic (45-day ceiling, UTC split, composite
-         * start/end filters) is identical to the original; only the source
-         * of the date values changed from this.selDate to FilterBar conditions.
-         */
         createFilters: function () {
             try {
-                const oFilterBar  = this.byId("filterbar");
-                // In deployed environments with sap.ui.fl active, getConditions() can
-                // return stale (last-search) conditions rather than the live UI state.
-                // The $filters model is what FilterFields actually bind to, so it
-                // always reflects the current values regardless of variant/flex state.
-                const oCondModel  = oFilterBar.getModel("$filters");
-                const oConditions = (oCondModel ? oCondModel.getProperty("/conditions") : null)
-                    || oFilterBar.getConditions()
-                    || {};
-                const aFilters    = [];
+                const oFilterBar = this.byId("filterbar");
+                const oCondModel = oFilterBar.getModel("$filters");
+
+                // getConditions() is the public API. Fall back to reading the
+                // ConditionModel directly if getConditions() returns nothing useful
+                // (can happen on some 1.120 patch levels before the first search).
+                let oConditions = oFilterBar.getConditions() || {};
+                const bEmpty = !oConditions || !Object.keys(oConditions).some(function (k) {
+                    return oConditions[k] && oConditions[k].length;
+                });
+                if (bEmpty && oCondModel) {
+                    oConditions = oCondModel.getProperty("/conditions") || {};
+                }
+
+                const aFilters = [];
 
                 // ── Job Name ───────────────────────────────────────────
                 const aJobConds = oConditions.jobname || [];
                 if (aJobConds.length && aJobConds[0].values && aJobConds[0].values[0]) {
                     const sJob = String(aJobConds[0].values[0]).trim();
                     if (sJob) {
-                        const sOp = aJobConds[0].operator === "EQ"
-                            ? FilterOperator.EQ : FilterOperator.Contains;
-                        aFilters.push(new Filter("jobname", sOp, sJob));
+                        aFilters.push(new Filter("jobname",
+                            aJobConds[0].operator === "EQ" ? FilterOperator.EQ : FilterOperator.Contains, sJob));
                     }
-                }
-
-                // ── Date Range ─────────────────────────────────────────
-                const aDateConds = oConditions.dateRange || [];
-                let oStartDate, oEndDate;
-                if (aDateConds.length && aDateConds[0].values) {
-                    const oCond = aDateConds[0];
-                    const v0 = oCond.values[0], v1 = oCond.values[1];
-                    if (oCond.operator === "BT") {
-                        oStartDate = v0 ? new Date(v0) : undefined;
-                        oEndDate   = v1 ? new Date(v1) : undefined;
-                    } else if (oCond.operator === "GE" || oCond.operator === "GT") {
-                        oStartDate = v0 ? new Date(v0) : undefined;
-                        // Mirror the original GT expansion: 30 days forward
-                        if (oStartDate) {
-                            oEndDate = new Date(oStartDate.getTime() + 30 * 24 * 60 * 60 * 1000);
-                        }
-                    } else if (oCond.operator === "LE" || oCond.operator === "LT") {
-                        oEndDate = v0 ? new Date(v0) : undefined;
-                        // Mirror the original LT expansion: 29 days before + next day
-                        if (oEndDate) {
-                            const oAdjEnd = new Date(oEndDate.getTime() + 24 * 60 * 60 * 1000 - 1000);
-                            oStartDate    = new Date(oAdjEnd.getTime() - 29 * 24 * 60 * 60 * 1000);
-                            oEndDate      = oAdjEnd;
-                        }
-                    }
-                }
-
-                // If the FilterBar has no usable date condition (e.g. variant management
-                // cleared it after initializeData ran, or MDC type-processing nulled the
-                // values), fall back to the defaults stored by initializeData().
-                if ((!oStartDate || !oEndDate) && this._dfltDateStart) {
-                    oStartDate = this._dfltDateStart;
-                    oEndDate   = this._dfltDateEnd;
                 }
 
                 // ── Created By ─────────────────────────────────────────
@@ -317,8 +418,7 @@ sap.ui.define([
                 }
 
                 // ── Status (multi) ─────────────────────────────────────
-                const aStatusConds  = oConditions.status || [];
-                const aStatusKeys   = aStatusConds
+                const aStatusKeys = (oConditions.status || [])
                     .map(function (c) { return c.values && c.values[0]; })
                     .filter(function (k) { return k && k !== ""; });
                 if (aStatusKeys.length) {
@@ -335,8 +435,7 @@ sap.ui.define([
                 if (aYearConds.length && aYearConds[0].values && aYearConds[0].values[0]) {
                     const sYear = String(aYearConds[0].values[0]).trim();
                     if (sYear) {
-                        aFilters.push(new Filter("fc_year", FilterOperator.EQ,
-                            sYear.padStart(4, "0")));
+                        aFilters.push(new Filter("fc_year", FilterOperator.EQ, sYear.padStart(4, "0")));
                     }
                 }
 
@@ -345,89 +444,64 @@ sap.ui.define([
                 if (aPeriodConds.length && aPeriodConds[0].values && aPeriodConds[0].values[0]) {
                     const sPeriod = String(aPeriodConds[0].values[0]).trim();
                     if (sPeriod) {
-                        aFilters.push(new Filter("fc_period", FilterOperator.EQ,
-                            sPeriod.padStart(3, "0")));
+                        aFilters.push(new Filter("fc_period", FilterOperator.EQ, sPeriod.padStart(3, "0")));
                     }
                 }
 
                 // ── Date boundary filters ──────────────────────────────
-                // When fiscal year AND period are both set (e.g. KPI tile drill-down),
-                // they already scope the data precisely. The 30-day default date window
-                // would otherwise exclude jobs outside that window (e.g. an older period).
+                // Skip date when fiscal year AND period are both set (KPI drill-down:
+                // the period already scopes the data precisely).
                 if (aYearConds.length > 0 && aPeriodConds.length > 0) {
                     return aFilters;
                 }
-                if (oStartDate && oEndDate) {
-                    if (oEndDate.getTime() - oStartDate.getTime() <= (45 * 24 * 60 * 60 * 1000)) {
-                        this.busyDialog.open();
-                        const localStart = new Date(`${this.formatDateToYYYYMMDD(oStartDate)}T${this.formatDateToHHMMSS(oStartDate)}`);
-                        const localEnd   = new Date(`${this.formatDateToYYYYMMDD(oEndDate)}T${this.formatDateToHHMMSS(oEndDate)}`);
-                        const utcStart   = localStart.toISOString();
-                        const utcEnd     = localEnd.toISOString();
 
-                        const utcStartDate = utcStart.split("T")[0];
-                        const utcStartTime = utcStart.split("T")[1].replace("Z", "");
-                        const utcEndDate   = utcEnd.split("T")[0];
-                        const utcEndTime   = utcEnd.split("T")[1].replace("Z", "");
+                // Resolve all MDC date operators (BT, TODAY, LASTDAYS, etc.) to
+                // concrete Date objects. Falls back to initializeData defaults.
+                const oResolved = this._resolveDateCondition(
+                    oConditions.dateRange || [],
+                    this._dfltDateStart,
+                    this._dfltDateEnd
+                );
+                const oStartDate = oResolved.oStartDate;
+                const oEndDate   = oResolved.oEndDate;
 
-                        const oMiddleDates = new sap.ui.model.Filter({
-                            filters: [
-                                new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.GT, utcStartDate),
-                                new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.LT, utcEndDate)
-                            ],
-                            and: true
-                        });
-                        const oStartBoundary = new sap.ui.model.Filter({
-                            filters: [
-                                new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcStartDate),
-                                new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.GE, utcStartTime)
-                            ],
-                            and: true
-                        });
-                        const oEndBoundary = new sap.ui.model.Filter({
-                            filters: [
-                                new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcEndDate),
-                                new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.LE, utcEndTime)
-                            ],
-                            and: true
-                        });
-                        aFilters.push(new sap.ui.model.Filter({
-                            filters: [oMiddleDates, oStartBoundary, oEndBoundary],
-                            and: false
-                        }));
-                        return aFilters;
-                    } else {
-                        MessageBox.error(this.i18nModel.getText("DateRangeErr"));
-                    }
-                } else if (oEndDate && !oStartDate) {
-                    const localEnd   = new Date(`${this.formatDateToYYYYMMDD(oEndDate)}T${this.formatDateToHHMMSS(oEndDate)}`);
-                    const utcEnd     = localEnd.toISOString();
-                    const utcEndDate = utcEnd.split("T")[0];
-                    const utcEndTime = utcEnd.split("T")[1].replace("Z", "");
-                    aFilters.push(new sap.ui.model.Filter({
-                        filters: [
-                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcEndDate),
-                            new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.LE, utcEndTime)
-                        ],
-                        and: true
-                    }));
-                    return aFilters;
-                } else if (oStartDate && !oEndDate) {
-                    const localStart   = new Date(`${this.formatDateToYYYYMMDD(oStartDate)}T${this.formatDateToHHMMSS(oStartDate)}`);
-                    const utcStart     = localStart.toISOString();
-                    const utcStartDate = utcStart.split("T")[0];
-                    const utcStartTime = utcStart.split("T")[1].replace("Z", "");
-                    aFilters.push(new sap.ui.model.Filter({
-                        filters: [
+                if (!oStartDate || !oEndDate) {
+                    MessageBox.error(this.i18nModel.getText("DateRangeErrBlank"));
+                    return undefined;
+                }
+
+                const rangeMs = oEndDate.getTime() - oStartDate.getTime();
+                if (rangeMs > 180 * 24 * 60 * 60 * 1000) {
+                    MessageBox.error(this.i18nModel.getText("DateRangeErr"));
+                    return undefined;
+                }
+
+                this.busyDialog.open();
+                const utcStart     = new Date(`${this.formatDateToYYYYMMDD(oStartDate)}T${this.formatDateToHHMMSS(oStartDate)}`).toISOString();
+                const utcEnd       = new Date(`${this.formatDateToYYYYMMDD(oEndDate)}T${this.formatDateToHHMMSS(oEndDate)}`).toISOString();
+                const utcStartDate = utcStart.split("T")[0];
+                const utcStartTime = utcStart.split("T")[1].replace("Z", "");
+                const utcEndDate   = utcEnd.split("T")[0];
+                const utcEndTime   = utcEnd.split("T")[1].replace("Z", "");
+
+                aFilters.push(new sap.ui.model.Filter({
+                    filters: [
+                        new sap.ui.model.Filter({ filters: [
+                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.GT, utcStartDate),
+                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.LT, utcEndDate)
+                        ], and: true }),
+                        new sap.ui.model.Filter({ filters: [
                             new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcStartDate),
                             new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.GE, utcStartTime)
-                        ],
-                        and: true
-                    }));
-                    return aFilters;
-                } else {
-                    MessageBox.error(this.i18nModel.getText("DateRangeErrBlank"));
-                }
+                        ], and: true }),
+                        new sap.ui.model.Filter({ filters: [
+                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcEndDate),
+                            new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.LE, utcEndTime)
+                        ], and: true })
+                    ],
+                    and: false
+                }));
+                return aFilters;
             } catch (oError) {
                 this.busyDialog.close();
                 MessageBox.error(oError.message || this.i18nModel.getText("unexpErr"));

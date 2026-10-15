@@ -121,6 +121,7 @@
                 <mdc:FilterBar id="filterbar"
                     delegate="{name:'com/bpcfn/jobscheduler/util/FilterBarDelegate', payload:{}}"
                     search=".onRefreshData"
+                    filtersChanged=".onFiltersChanged"
                     showClearButton="true"
                     p13nMode="Item"
                     liveMode="false">
