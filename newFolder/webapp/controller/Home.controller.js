@@ -351,6 +351,12 @@ sap.ui.define([
                 }
 
                 // ── Date boundary filters ──────────────────────────────
+                // When fiscal year AND period are both set (e.g. KPI tile drill-down),
+                // they already scope the data precisely. The 30-day default date window
+                // would otherwise exclude jobs outside that window (e.g. an older period).
+                if (aYearConds.length > 0 && aPeriodConds.length > 0) {
+                    return aFilters;
+                }
                 if (oStartDate && oEndDate) {
                     if (oEndDate.getTime() - oStartDate.getTime() <= (45 * 24 * 60 * 60 * 1000)) {
                         this.busyDialog.open();
