@@ -31,6 +31,18 @@ sap.ui.define([
             // statusFilterModel feeds the Status ValueHelp popup in the same
             // way it fed the original MultiComboBox.
             this._loadStatusFilter();
+
+            // MDC maps selectionMode="Single" to SingleSelectLeft (radio buttons).
+            // After the inner table is ready, switch to SingleSelectMaster so the
+            // row highlights on click without showing a radio-button column.
+            if (typeof this.JobDetailTable.initialized === "function") {
+                this.JobDetailTable.initialized().then(function () {
+                    var oInner = this.JobDetailTable._oTable;
+                    if (oInner && typeof oInner.setMode === "function") {
+                        oInner.setMode("SingleSelectMaster");
+                    }
+                }.bind(this)).catch(function () {});
+            }
         },
 
         /**
