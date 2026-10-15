@@ -163,10 +163,19 @@ sap.ui.define([
         },
 
         // Set conditions on a map of { propertyKey: conditionArray }.
+        // Writes to BOTH the ConditionModel (so MDC's own required-field validation on
+        // the Go button sees the values) AND the FilterField (so the token displays).
+        // FilterField.setConditions() alone only updates the field's local property;
+        // MDC's Go-button validation reads the ConditionModel ($filters), which is
+        // one-way bound (model→field) and is NOT updated by setConditions() alone.
         _setFilterConditions: function (oFilterBar, mConditions) {
             if (!oFilterBar) { return; }
             const mMap = this._getFilterFieldMap(oFilterBar);
+            const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mConditions).forEach(function (sKey) {
+                if (oCondModel) {
+                    try { oCondModel.setProperty("/conditions/" + sKey, mConditions[sKey]); } catch (e) {}
+                }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
                     oField.setConditions(mConditions[sKey]);
@@ -178,7 +187,11 @@ sap.ui.define([
         _mergeFilterConditions: function (oFilterBar, mPartial) {
             if (!oFilterBar) { return; }
             const mMap = this._getFilterFieldMap(oFilterBar);
+            const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mPartial).forEach(function (sKey) {
+                if (oCondModel) {
+                    try { oCondModel.setProperty("/conditions/" + sKey, mPartial[sKey]); } catch (e) {}
+                }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
                     oField.setConditions(mPartial[sKey]);
@@ -313,6 +326,9 @@ sap.ui.define([
             if (!aDateConds.length) {
                 setTimeout(function () {
                     if (this._bRestoringDefaults) { return; }
+                    // Re-check: user may have entered a date during the 0 ms gap
+                    const aCheck = (this._readConditions(oFilterBar).dateRange) || [];
+                    if (aCheck.length) { return; }
                     this._bRestoringDefaults = true;
                     this._setFilterConditions(oFilterBar, {
                         dateRange: [{ operator: "BT", values: [this._dfltDateStart, this._dfltDateEnd], validated: "Valid" }],
