@@ -1,300 +1,276 @@
-<mvc:View controllerName="com.bpcfn.jobscheduler.controller.Home"
+<mvc:View controllerName="com.bpcfn.jobscheduler.controller.Dashboard"
     xmlns="sap.m"
     xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:mdc="sap.ui.mdc"
-    xmlns:mdct="sap.ui.mdc.table"
-    xmlns:mdcvh="sap.ui.mdc.valuehelp"
-    xmlns:mdcvc="sap.ui.mdc.valuehelp.content"
-    xmlns:vm="sap.ui.fl.variants">
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:ui="sap.ui.table"
+    height="100%">
 
-    <f:DynamicPage id="Home" class="sapUiNoContentPadding">
+    <f:DynamicPage id="Dashboard" class="sapUiNoContentPadding" fitContent="false">
 
-        <f:dependents>
-
-            <mdc:ValueHelp id="jobNameVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
-                <mdc:typeahead>
-                    <mdcvh:Popover id="jobNameVHPopover">
-                        <mdcvc:MTable id="jobNameVHMTableP" keyPath="Jobname" descriptionPath="Jobname">
-                            <Table id="jobNameVHTableP" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
-                                <columns>
-                                    <Column id="jobNameVHColP"><Label id="jobNameVHLabelP" text="{i18n>JobName}"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="jobNameVHItemP" type="Active">
-                                        <cells><Text id="jobNameVHTxtP" text="{custModel>Jobname}"/></cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </mdcvc:MTable>
-                    </mdcvh:Popover>
-                </mdc:typeahead>
-                <mdc:dialog>
-                    <mdcvh:Dialog id="jobNameVHDialog" title="{i18n>JobName}">
-                        <mdcvc:MTable id="jobNameVHMTableD" keyPath="Jobname" descriptionPath="Jobname">
-                            <Table id="jobNameVHTableD" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
-                                <columns>
-                                    <Column id="jobNameVHColD"><Label id="jobNameVHLabelD" text="{i18n>JobName}"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="jobNameVHItemD" type="Active">
-                                        <cells><Text id="jobNameVHTxtD" text="{custModel>Jobname}"/></cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </mdcvc:MTable>
-                        <mdcvc:Conditions id="jobNameVHConditions"/>
-                    </mdcvh:Dialog>
-                </mdc:dialog>
-            </mdc:ValueHelp>
-
-            <mdc:ValueHelp id="createdByVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
-                <mdc:typeahead>
-                    <mdcvh:Popover id="createdByVHPopover">
-                        <mdcvc:MTable id="createdByVHMTableP" keyPath="Bname" descriptionPath="Bname">
-                            <Table id="createdByVHTableP" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
-                                <columns>
-                                    <Column id="createdByVHColP"><Label id="createdByVHLabelP" text="{i18n>CreatedBy}"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="createdByVHItemP" type="Active">
-                                        <cells><Text id="createdByVHTxtP" text="{custModel>Bname}"/></cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </mdcvc:MTable>
-                    </mdcvh:Popover>
-                </mdc:typeahead>
-                <mdc:dialog>
-                    <mdcvh:Dialog id="createdByVHDialog" title="{i18n>CreatedBy}">
-                        <mdcvc:MTable id="createdByVHMTableD" keyPath="Bname" descriptionPath="Bname">
-                            <Table id="createdByVHTableD" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
-                                <columns>
-                                    <Column id="createdByVHColD"><Label id="createdByVHLabelD" text="{i18n>CreatedBy}"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="createdByVHItemD" type="Active">
-                                        <cells><Text id="createdByVHTxtD" text="{custModel>Bname}"/></cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </mdcvc:MTable>
-                        <mdcvc:Conditions id="createdByVHConditions"/>
-                    </mdcvh:Dialog>
-                </mdc:dialog>
-            </mdc:ValueHelp>
-
-            <mdc:ValueHelp id="statusVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
-                <mdc:typeahead>
-                    <mdcvh:Popover id="statusVHPopover">
-                        <mdcvc:MTable id="statusVHMTableP" keyPath="key" descriptionPath="text">
-                            <Table id="statusVHTableP" items="{path:'statusFilterModel>/items'}" mode="MultiSelect">
-                                <columns>
-                                    <Column id="statusVHColP"><Label id="statusVHLabelP" text="{i18n>Status}"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="statusVHItemP" type="Active">
-                                        <cells><Text id="statusVHTxtP" text="{statusFilterModel>text}"/></cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </mdcvc:MTable>
-                    </mdcvh:Popover>
-                </mdc:typeahead>
-            </mdc:ValueHelp>
-
-        </f:dependents>
-
+        <!-- ================= title ================= -->
         <f:title>
-            <f:DynamicPageTitle id="homePageTitle">
+            <f:DynamicPageTitle>
                 <f:heading>
-                    <vm:VariantManagement id="filterbarVM" for="filterbar"/>
+                    <Title text="{i18n>DashTitle}"/>
                 </f:heading>
+                <f:snappedHeading>
+                    <Title text="{i18n>DashTitle}"/>
+                </f:snappedHeading>
+                <f:actions>
+                    <!-- Period scope. Defaults to the current FY/period (set in
+                         onInit) but the user can change it - so the dashboard
+                         also answers "did last period close clean", and we avoid
+                         guessing the current period from the system date. -->
+                    <Label text="{i18n>Version}" class="sapUiTinyMarginBegin"/>
+                    <Select id="versionSelect" selectedKey="{dashModel>/scope/version}"
+                            items="{dashModel>/versions}" change="onScopeChange">
+                        <core:Item key="{dashModel>key}" text="{dashModel>text}"/>
+                    </Select>
+                    <Label text="{i18n>FiscalYear}" class="sapUiTinyMarginBegin"/>
+                    <Select id="yearSelect" selectedKey="{dashModel>/scope/year}"
+                            items="{dashModel>/years}" change="onScopeChange">
+                        <core:Item key="{dashModel>key}" text="{dashModel>text}"/>
+                    </Select>
+                    <Label text="{i18n>Period}" class="sapUiTinyMarginBegin"/>
+                    <Select id="periodSelect" selectedKey="{dashModel>/scope/period}"
+                            items="{dashModel>/periods}" change="onScopeChange">
+                        <core:Item key="{dashModel>key}" text="{dashModel>text}"/>
+                    </Select>
+                    <Text text="{dashModel>/contextText}" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"
+                          />
+                    <!-- role switch: open to all, per decision. The scope shown
+                         would come from the user's authorisations, not this toggle. -->
+                    <SegmentedButton id="roleSwitch" selectedKey="{dashModel>/role}"
+                                     selectionChange="onRoleChange">
+                        <items>
+                            <SegmentedButtonItem key="OPS" text="{i18n>RoleOperator}"/>
+                            <SegmentedButtonItem key="MGR" text="{i18n>RoleManager}"/>
+                        </items>
+                    </SegmentedButton>
+                    <Button icon="sap-icon://refresh" text="{i18n>Refresh}"
+                            press="onRefresh" type="Transparent"/>
+                    <Button text="{i18n>GoToSchedules}" icon="sap-icon://list"
+                            press="onOpenSchedules" type="Transparent"/>
+                </f:actions>
             </f:DynamicPageTitle>
         </f:title>
 
-        <f:header>
-            <f:DynamicPageHeader id="homePageHeader">
-                <mdc:FilterBar id="filterbar"
-                    delegate="{name:'com/bpcfn/jobscheduler/util/FilterBarDelegate', payload:{}}"
-                    search=".onRefreshData"
-                    filtersChanged=".onFiltersChanged"
-                    showClearButton="true"
-                    p13nMode="Item"
-                    liveMode="false">
-
-                    <mdc:filterItems>
-
-                        <mdc:FilterField
-                            id="idJobNameFilter"
-                            propertyKey="jobname"
-                            label="{i18n>JobName}"
-                            dataType="sap.ui.model.type.String"
-                            maxConditions="1"
-                            operators="Contains,EQ"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
-                            valueHelp="jobNameVH"/>
-
-                        <mdc:FilterField
-                            id="idDateFilter"
-                            propertyKey="dateRange"
-                            label="{i18n>Date}"
-                            dataType="sap.ui.model.type.Date"
-                            maxConditions="1"
-                            required="true"
-                            operators="EQ,BT,TODAY,YESTERDAY,TOMORROW,TODAYFROMTO,LASTDAYS,NEXTDAYS,THISMONTH,LASTMONTH,NEXTMONTH,THISQUARTER,LASTQUARTER,NEXTQUARTER,QUARTER1,QUARTER2,QUARTER3,QUARTER4"
-                            placeholder="{i18n>DateRangePlaceholder}"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
-
-                        <mdc:FilterField
-                            id="idCreatedByFilter"
-                            propertyKey="createdby"
-                            label="{i18n>CreatedBy}"
-                            dataType="sap.ui.model.type.String"
-                            maxConditions="1"
-                            operators="Contains,EQ"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
-                            valueHelp="createdByVH"/>
-
-                        <mdc:FilterField
-                            id="idStatusFilter"
-                            propertyKey="status"
-                            label="{i18n>Status}"
-                            dataType="sap.ui.model.type.String"
-                            maxConditions="-1"
-                            operators="EQ"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
-                            valueHelp="statusVH"/>
-
-                        <mdc:FilterField
-                            id="idFcYearFilter"
-                            propertyKey="fcYear"
-                            label="{i18n>FiscalYear}"
-                            dataType="sap.ui.model.type.String"
-                            maxConditions="1"
-                            operators="EQ"
-                            placeholder="YYYY"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
-
-                        <mdc:FilterField
-                            id="idFcPeriodFilter"
-                            propertyKey="fcPeriod"
-                            label="{i18n>Period}"
-                            dataType="sap.ui.model.type.String"
-                            maxConditions="1"
-                            operators="EQ"
-                            placeholder="PPP"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
-
-                    </mdc:filterItems>
-                </mdc:FilterBar>
-            </f:DynamicPageHeader>
-        </f:header>
-
+        <!-- ================= content ================= -->
         <f:content>
-            <mdc:Table id="idJobDetTable"
-                delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{bindingPath:'jobModel>/results'}}"
-                selectionMode="Single"
-                selectionChange=".onJobSelected"
-                rowPress=".onJobDetails"
-                header="{jobModel>/JobDetailsTitle}"
-                p13nMode="Column,Sort,Group,Filter"
-                enableAutoColumnWidth="true"
-                class="sapUiSmallMarginTop">
+            <VBox class="sapUiSmallMargin">
 
-                <mdc:type>
-                    <mdct:GridTableType id="idJobDetTableType"/>
-                </mdc:type>
+                <!-- ===== OPERATOR ===== -->
+                <VBox id="opsBox" visible="{= ${dashModel>/role} === 'OPS' }">
 
-                <mdc:variant>
-                    <vm:VariantManagement id="tableVM"/>
-                </mdc:variant>
+                    <!-- 70 / 30 split: left = KPI tiles + timeline, right = on-hold -->
+                    <HBox class="grsSplit" width="100%" wrap="Wrap" renderType="Bare">
+                            <VBox class="grsLeft" width="60%">
 
-                <mdc:actions>
-                    <Button id="btnCreate" text="{i18n>Create}"
-                        type="Emphasized"
-                        press="onCreateJob"
-                        enabled="true"/>
-                    <Button id="btnCopy" text="{i18n>Copy}"
-                        type="Emphasized"
-                        press="onCopyJob"
-                        enabled="{jobModel>/CopyEnabled}"/>
-                    <MenuButton id="menuBtnCancel" text="{i18n>Cancel}"
-                        type="Reject"
-                        enabled="{jobModel>/CancelEnabled}">
-                        <menu>
-                            <Menu id="cancelMenu">
-                                <MenuItem id="menuItemSelOccur"  text="{i18n>SelectedOccur}"   press="onCanSelJob"/>
-                                <MenuItem id="menuItemEntJob"    text="{i18n>EntireJobSeries}" press="onCanEntJob"/>
-                            </Menu>
-                        </menu>
-                    </MenuButton>
-                    <Button id="btnManualActivity" text="Manual Activity Completed"
-                        type="Accept"
-                        press="onManualActivityJob"
-                        enabled="{jobModel>/ManualActivityEnabled}"
-                        visible="false"/>
-                    <Button id="btnExport" icon="sap-icon://excel-attachment"
-                        press="onExport"
-                        tooltip="Export to Excel"/>
-                </mdc:actions>
+                                <!-- KPI tiles (back from the donut). Compact,
+                                     no wasted gaps: a tight tile row, not a
+                                     stretched Grid. On Hold is NOT a tile - it
+                                     is the table on the right. -->
+                                <HBox class="grsKpiRow" wrap="Wrap">
+                                    <GenericTile header="{i18n>KpiScheduled}" press="onKpiPress"
+                                        app:kpi="S" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+                                        class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/S}" valueColor="Neutral" icon="sap-icon://calendar" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                    <GenericTile header="{i18n>KpiRunning}" press="onKpiPress"
+                                        app:kpi="I" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+                                        class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/I}" valueColor="Good" icon="sap-icon://status-in-process" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                    <GenericTile header="{i18n>KpiCompleted}" press="onKpiPress"
+                                        app:kpi="C" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+                                        class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/C}" valueColor="Good" icon="sap-icon://status-completed" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                    <GenericTile header="{i18n>KpiFailed}" press="onKpiPress"
+                                        app:kpi="F" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+                                        class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/F}" valueColor="Error" icon="sap-icon://status-error" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                    <GenericTile header="{i18n>KpiTotal}" press="onKpiPress"
+                                        app:kpi="ALL" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+                                        class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/TOTAL}" valueColor="Neutral" icon="sap-icon://list" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                    <!-- On Hold is a UNIT count from logdt, not a job status,
+                                         so it does NOT navigate to Schedules (there is no
+                                         "on hold" status to filter by). The held units are
+                                         shown in the On-Hold panel on this page. -->
+                                    <GenericTile header="{i18n>KpiOnHold}" class="grsKpi">
+                                        <TileContent><NumericContent value="{dashModel>/kpi/H}" valueColor="Critical" icon="sap-icon://status-critical" withMargin="false"/></TileContent>
+                                    </GenericTile>
+                                </HBox>
 
-                <mdc:columns>
+                                <!-- Timeline -->
+                                <f:Card class="grsCard grsScrollCard" width="100%">
+                                    <f:header>
+                                        <card:Header title="{i18n>TodaysRuns}" subtitle="{i18n>TodaysRunsSub}"/>
+                                    </f:header>
+                                    <f:content>
+                                        <VBox class="grsTimeline">
+                                            <HBox alignItems="Center" class="grsRunDate">
+                                                <Label text="{i18n>RunDate}" class="sapUiTinyMarginEnd"/>
+                                                <DatePicker id="runDatePicker" value="{dashModel>/scope/runDate}"
+                                                    valueFormat="yyyy-MM-dd" displayFormat="medium"
+                                                    change="onRunDateChange" width="10rem"/>
+                                            </HBox>
+                                            <HBox class="grsRuler" justifyContent="SpaceBetween">
+                                                <Text text="00:00"/><Text text="03:00"/><Text text="06:00"/><Text text="09:00"/><Text text="12:00"/><Text text="15:00"/><Text text="18:00"/><Text text="21:00"/><Text text="24:00"/>
+                                            </HBox>
+                                            <List items="{dashModel>/runs}" showSeparators="None" noDataText="{i18n>NoRunsToday}"
+                                                  growing="true" growingThreshold="10" growingScrollToLoad="true">
+                                                <CustomListItem type="Active" press="onRunPress">
+                                                    <HBox alignItems="Center" class="grsLane" width="100%">
+                                                        <VBox width="11rem" class="grsLaneName">
+                                                            <Text text="{dashModel>jobname}" maxLines="1"/>
+                                                            <Text text="{dashModel>con_grp}" class="grsLaneSub"/>
+                                                        </VBox>
+                                                        <VBox class="grsTrack">
+                                                            <GenericTag class="grsBar" text="" design="StatusIconHidden"
+                                                                status="{dashModel>barState}" tooltip="{dashModel>startText}">
+                                                                <customData>
+                                                                    <core:CustomData key="barleft"  value="{dashModel>barLeft}"  writeToDom="true"/>
+                                                                    <core:CustomData key="barwidth" value="{dashModel>barWidth}" writeToDom="true"/>
+                                                                </customData>
+                                                            </GenericTag>
+                                                        </VBox>
+                                                        <Text class="grsStartLbl" text="{dashModel>startText}"/>
+                                                    </HBox>
+                                                </CustomListItem>
+                                            </List>
+                                            <HBox class="grsLegend">
+                                                <ObjectStatus text="{i18n>KpiCompleted}" state="Success"     icon="sap-icon://status-completed"  class="sapUiTinyMarginEnd"/>
+                                                <ObjectStatus text="{i18n>KpiRunning}"   state="Information" icon="sap-icon://status-in-process"  class="sapUiTinyMarginEnd"/>
+                                                <ObjectStatus text="{i18n>KpiFailed}"    state="Error"       icon="sap-icon://status-error"       class="sapUiTinyMarginEnd"/>
+                                                <ObjectStatus text="{i18n>KpiScheduled}" state="None"        icon="sap-icon://calendar"/>
+                                            </HBox>
+                                        </VBox>
+                                    </f:content>
+                                </f:Card>
+                            </VBox>
+                            <!-- right 30%: on-hold units -->
+                            <VBox class="grsRight" width="40%"  >
+                                <f:Card class="grsCard grsScrollCard" height="38rem">
+                                    <f:header>
+                                        <card:Header title="{i18n>OnHoldUnits}" subtitle="{i18n>OnHoldUnitsSub}"/>
+                                    </f:header>
+                                    <f:content>
+                                        <ui:Table id="holdTable" rows="{dashModel>/hold}"
+                                                  selectionMode="None" visibleRowCount="10"
+                                                  enableColumnReordering="true">
+                                            <ui:noData><Text text="{i18n>NoHoldUnits}"/></ui:noData>
+                                            <ui:columns>
+                                                <ui:Column label="{i18n>ColUnit}" filterProperty="ConUnit" sortProperty="ConUnit" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                                    <ui:template><Text text="{dashModel>ConUnit}" wrapping="false"/></ui:template>
+                                                </ui:Column>
+                                                <ui:Column label="{i18n>ColJob}" filterProperty="Jobname" sortProperty="Jobname" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                                    <ui:template><ObjectIdentifier title="{dashModel>Jobname}"/></ui:template>
+                                                </ui:Column>
+                                                <ui:Column label="{i18n>ColTask}" filterProperty="TaskId" sortProperty="TaskId" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                                    <ui:template><Text text="{dashModel>TaskId}" wrapping="false"/></ui:template>
+                                                </ui:Column>
+                                                <ui:Column label="{i18n>ColReason}" filterProperty="HoldReason" sortProperty="HoldReason" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                                    <ui:template>
+                                                        <ObjectStatus text="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonText'}"
+                                                                      state="{path:'dashModel>HoldReason', formatter:'.formatter.holdReasonState'}"/>
+                                                    </ui:template>
+                                                </ui:Column>
+                                            </ui:columns>
+                                        </ui:Table>
+                                    </f:content>
+                                </f:Card>
+                            </VBox>
+                    </HBox>
+                </VBox>
 
-                    <mdct:Column id="colStatus" propertyKey="status" header="{i18n>Status}" width="7rem">
-                        <ObjectStatus id="osStatus"
-                            text="{path:'jobModel>status',  formatter:'.formatter.statusText'}"
-                            state="{path:'jobModel>status', formatter:'.formatter.statusState'}"
-                            inverted="false"/>
-                    </mdct:Column>
+                <!-- ===== CLOSE MANAGER (built lazily by the controller) ===== -->
+                <VBox id="mgrBox" visible="{= ${dashModel>/role} === 'MGR' }">
+                    <!-- scope banner -->
+                    <MessageStrip class="sapUiSmallMarginBottom"
+                        text="{dashModel>/mgrScopeText}" type="Information" showIcon="true"/>
 
-                    <mdct:Column id="colJobname" propertyKey="jobname" header="{i18n>JobName}">
-                        <Text id="txtJobname" text="{jobModel>jobname}" wrapping="false"/>
-                    </mdct:Column>
+                    <l:Grid defaultSpan="XL4 L4 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true">
 
-                    <mdct:Column id="colVersion" propertyKey="version" header="{i18n>Version}" width="7rem">
-                        <Text id="txtVersion" text="{jobModel>version}" wrapping="false"/>
-                    </mdct:Column>
+                        <f:Card class="sapUiTinyMargin">
+                            <f:header><card:Header title="{i18n>NeedsAction}" subtitle="{i18n>NeedsActionSub}"/></f:header>
+                            <f:content>
+                                <ui:Table id="actionsTable" rows="{dashModel>/actions}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
+                                    <ui:noData><Text text="{i18n>NoActions}"/></ui:noData>
+                                    <ui:columns>
+                                        <ui:Column label="{i18n>ColPriority}" filterProperty="priority" sortProperty="priority" showFilterMenuEntry="true" showSortMenuEntry="true" width="8rem">
+                                            <ui:template><ObjectStatus text="{dashModel>priority}" state="{dashModel>priorityState}"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColIssue}" filterProperty="issue" sortProperty="issue" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>issue}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColAction}" showFilterMenuEntry="false" showSortMenuEntry="false" width="10rem">
+                                            <ui:template><Button text="{dashModel>actionText}" type="Transparent" press="onActionPress"/></ui:template>
+                                        </ui:Column>
+                                    </ui:columns>
+                                </ui:Table>
+                            </f:content>
+                        </f:Card>
 
-                    <mdct:Column id="colTaskType" propertyKey="task_type" header="{i18n>TaskType}" width="7rem">
-                        <Text id="txtTaskType" text="{path:'jobModel>task_type', formatter:'.formatter.taskTypeText'}" wrapping="false"/>
-                    </mdct:Column>
+                        <f:Card class="sapUiTinyMargin">
+                            <f:header><card:Header title="{i18n>PeriodReadiness}" subtitle="{i18n>PeriodReadinessSub}"/></f:header>
+                            <f:content>
+                                <ui:Table id="readinessTable" rows="{dashModel>/readiness}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
+                                    <ui:noData><Text text="{i18n>MgrPanelPending}"/></ui:noData>
+                                    <ui:columns>
+                                        <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColDataMon}" filterProperty="dmText" sortProperty="dmText" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><ObjectStatus text="{dashModel>dmText}" state="{dashModel>dmState}"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColConsMon}" filterProperty="cmText" sortProperty="cmText" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><ObjectStatus text="{dashModel>cmText}" state="{dashModel>cmState}"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColCanClose}" filterProperty="canText" sortProperty="canText" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><ObjectStatus text="{dashModel>canText}" state="{dashModel>canState}"/></ui:template>
+                                        </ui:Column>
+                                    </ui:columns>
+                                </ui:Table>
+                            </f:content>
+                        </f:Card>
 
-                    <mdct:Column id="colFcYear" propertyKey="fc_year" header="{i18n>FiscalYearPeriod}" width="9rem">
-                        <Text id="txtFcYear" text="{parts:[{path:'jobModel>fc_year'},{path:'jobModel>fc_period'}], formatter:'.formatter.fiscalYearPeriod'}" wrapping="false"/>
-                    </mdct:Column>
+                        <f:Card class="sapUiTinyMargin">
+                            <f:header><card:Header title="{i18n>SeriesHealth}" subtitle="{i18n>SeriesHealthSub}"/></f:header>
+                            <f:content>
+                                <ui:Table id="seriesTable" rows="{dashModel>/series}" selectionMode="None" visibleRowCount="5" enableColumnReordering="true">
+                                    <ui:noData><Text text="{i18n>MgrPanelPending}"/></ui:noData>
+                                    <ui:columns>
+                                        <ui:Column label="{i18n>ColSchedule}" filterProperty="name" sortProperty="name" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>name}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColGroup}" filterProperty="group" sortProperty="group" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>group}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColCadence}" filterProperty="cadence" sortProperty="cadence" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><Text text="{dashModel>cadence}" wrapping="false"/></ui:template>
+                                        </ui:Column>
+                                        <ui:Column label="{i18n>ColStreak}" filterProperty="streak" sortProperty="streak" showFilterMenuEntry="true" showSortMenuEntry="true">
+                                            <ui:template><ObjectStatus text="{dashModel>streak}" state="{dashModel>streakState}"/></ui:template>
+                                        </ui:Column>
+                                    </ui:columns>
+                                </ui:Table>
+                            </f:content>
+                        </f:Card>
 
-                    <mdct:Column id="colConGrp" propertyKey="con_grp" header="{i18n>ConsGroup}" width="8rem">
-                        <Text id="txtConGrp" text="{jobModel>con_grp}" wrapping="false"/>
-                    </mdct:Column>
+                    </l:Grid>
+                </VBox>
 
-                    <mdct:Column id="colSdlStart" propertyKey="sdl_startdt" header="{i18n>PlannedStart}" width="12rem">
-                        <Text id="txtSdlStart" text="{parts:[{path:'jobModel>sdl_startdt'},{path:'jobModel>sdl_starttm'}], formatter:'.formatter.formatDateTime'}"/>
-                    </mdct:Column>
-
-                    <mdct:Column id="colEnddate" propertyKey="enddate" header="{i18n>End}" width="12rem">
-                        <Text id="txtEnddate" text="{parts:[{path:'jobModel>enddate'},{path:'jobModel>endtime'}], formatter:'.formatter.formatDateTime'}"/>
-                    </mdct:Column>
-
-                    <mdct:Column id="colDuration" propertyKey="duration" header="{i18n>Duration}" width="8rem">
-                        <Text id="txtDuration" text="{jobModel>duration}"/>
-                    </mdct:Column>
-
-                    <mdct:Column id="colGenericUser" propertyKey="generic_user_id" header="{i18n>CreatedBy}" width="7rem">
-                        <Text id="txtGenericUser" text="{= ${jobModel>generic_user_id} ? ${jobModel>generic_user_id} : ${jobModel>createdby} }" wrapping="false"/>
-                    </mdct:Column>
-
-                    <mdct:Column id="colCreationDate" propertyKey="creation_date" header="{i18n>CreatedOn}" width="12rem">
-                        <Text id="txtCreationDate" text="{parts:[{path:'jobModel>creation_date'},{path:'jobModel>creation_time'}], formatter:'.formatter.formatDateTime'}"/>
-                    </mdct:Column>
-
-                </mdc:columns>
-
-            </mdc:Table>
+            </VBox>
         </f:content>
-
     </f:DynamicPage>
 </mvc:View>
