@@ -301,7 +301,7 @@
                                                     <core:Item key="W4" text="{i18n>Week4}"/>
                                                     <core:Item key="W5" text="{i18n>Week5}"/>
                                                 </items>
-                                                <layoutData><l:GridData span="L2 M3 S4"/></layoutData>
+                                                <layoutData><l:GridData span="L2 M3 S4" linebreak="true"/></layoutData>
                                             </Select>
 
                                             <!-- Weekday multi-select (weekly period) -->

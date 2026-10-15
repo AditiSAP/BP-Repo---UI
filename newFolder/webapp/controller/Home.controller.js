@@ -316,18 +316,29 @@ sap.ui.define([
         // The restore is deferred via setTimeout(0) so it runs after MDC has fully
         // completed its own Clear cycle — calling setConditions() synchronously inside
         // this handler gets overwritten by MDC's own pending binding propagation.
+        //
+        // NOTE: We read directly from the ConditionModel here (not FilterField), because
+        // MDC's Clear clears the ConditionModel first and fires filtersChanged immediately.
+        // At that point FilterField.getConditions() may still return the old value (the
+        // FilterField binding update is async and lags the ConditionModel change).
         onFiltersChanged: function () {
             if (this._bRestoringDefaults) { return; }
             const oFilterBar = this.byId("filterbar");
             if (!oFilterBar || !this._dfltDateStart) { return; }
 
-            const aDateConds = (this._readConditions(oFilterBar).dateRange) || [];
+            const oCondModel = oFilterBar.getModel("$filters");
+            const aDateConds = oCondModel
+                ? (oCondModel.getProperty("/conditions/dateRange") || [])
+                : (this._readConditions(oFilterBar).dateRange || []);
 
             if (!aDateConds.length) {
                 setTimeout(function () {
                     if (this._bRestoringDefaults) { return; }
                     // Re-check: user may have entered a date during the 0 ms gap
-                    const aCheck = (this._readConditions(oFilterBar).dateRange) || [];
+                    const oCondModelCheck = oFilterBar.getModel("$filters");
+                    const aCheck = oCondModelCheck
+                        ? (oCondModelCheck.getProperty("/conditions/dateRange") || [])
+                        : (this._readConditions(oFilterBar).dateRange || []);
                     if (aCheck.length) { return; }
                     this._bRestoringDefaults = true;
                     this._setFilterConditions(oFilterBar, {

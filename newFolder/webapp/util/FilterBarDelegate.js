@@ -15,34 +15,53 @@ sap.ui.define([
         { name: "fcPeriod",  label: "Period",      dataType: "sap.ui.model.type.String", maxConditions: 1, constraints: { maxLength: 3 } }
     ];
 
-    FilterBarDelegateImpl.fetchProperties = function (/* oFilterBar */) {
+    // Preserved references to the XML-declared FilterField instances.
+    // When a field is removed from filterItems (user hides it), it is NOT destroyed —
+    // it is kept here so re-adding (user shows it again) returns the same instance
+    // with its ValueHelp and operator configuration intact.
+    const _mOriginalFields = {};
+
+    FilterBarDelegateImpl.fetchProperties = function () {
         return Promise.resolve(_aProperties);
     };
 
-    // Standard MDC pattern (matches the official FilterbarTypes demo sample):
-    // addItem() creates a SEPARATE FilterField instance for the p13n dialog panel,
-    // identified by a stable "--filter--" ID so repeated calls return the same instance.
+    // addItem() is called by MDC's p13n Engine whenever it needs a FilterField
+    // instance for a property — during dialog initialisation AND when the user
+    // re-enables a hidden filter.
     //
-    // We do NOT return the XML-declared fields (idJobNameFilter etc.) here.
-    // A SAPUI5 element can only live in one aggregation at a time — returning a field
-    // that is already in filterItems causes MDC to move it into the dialog panel,
-    // disconnecting it from the FilterBar so any input entered in the dialog is lost.
-    //
-    // The XML fields stay permanently in filterItems (FilterBar display).
-    // The delegate-created fields live in the dialog panel context.
-    // Both sets bind to the same $filters>/conditions/<key> path, so they share state.
+    // Returning the XML-declared field (rather than a freshly created one) keeps
+    // the Engine in sync with the filterItems aggregation: it registers the SAME
+    // instance the FilterBar already has, so the Engine's active-item count matches
+    // filterItems and the "Select All" checkbox becomes operational.
     FilterBarDelegateImpl.addItem = async function (oFilterBar, sPropertyKey) {
         const sName = (sPropertyKey && typeof sPropertyKey === "object")
             ? (sPropertyKey.name || sPropertyKey.key) : sPropertyKey;
 
-        const sId = oFilterBar.getId() + "--filter--" + sName;
-
-        // Reuse a previously created instance if it still exists in the UI5 registry
-        const oCore = sap.ui.getCore ? sap.ui.getCore() : null;
-        const oExisting = oCore && typeof oCore.byId === "function" ? oCore.byId(sId) : null;
-        if (oExisting) {
-            return oExisting;
+        // 1. XML-declared field is currently in filterItems — return it and cache it.
+        const aItems = typeof oFilterBar.getFilterItems === "function"
+            ? oFilterBar.getFilterItems() : [];
+        const oInBar = aItems.find(function (oField) {
+            return typeof oField.getPropertyKey === "function"
+                && oField.getPropertyKey() === sName;
+        });
+        if (oInBar) {
+            _mOriginalFields[sName] = oInBar;
+            return oInBar;
         }
+
+        // 2. Field was previously removed (user hid it). Return the cached original
+        //    so ValueHelp wiring and custom operators are preserved on re-add.
+        const oCached = _mOriginalFields[sName];
+        if (oCached && !oCached.bIsDestroyed) {
+            return oCached;
+        }
+
+        // 3. No XML field available (destroyed or never existed). Fall back to a
+        //    plain programmatic FilterField keyed by the standard ID pattern.
+        const sId = oFilterBar.getId() + "--filter--" + sName;
+        const oCore = sap.ui.getCore ? sap.ui.getCore() : null;
+        const oPrev = oCore && typeof oCore.byId === "function" ? oCore.byId(sId) : null;
+        if (oPrev) { return oPrev; }
 
         const oProperty = _aProperties.find(function (p) { return p.name === sName; });
         if (!oProperty) { return null; }
@@ -58,12 +77,17 @@ sap.ui.define([
         });
     };
 
-    // Delegate-created fields (--filter-- ID) are destroyed on removal.
-    // XML-declared fields are left alive — they stay in the view's filterItems.
+    // XML-declared fields are NOT destroyed — they are kept in _mOriginalFields so
+    // they can be returned by addItem() if the user re-enables them, preserving
+    // ValueHelp and operator config. Only programmatically-created fallback fields
+    // (whose IDs contain "--filter--") are destroyed.
     FilterBarDelegateImpl.removeItem = async function (oFilterBar, oFilterField) {
         const sId = typeof oFilterField.getId === "function" ? oFilterField.getId() : "";
         if (sId.indexOf("--filter--") !== -1) {
             oFilterField.destroy();
+            Object.keys(_mOriginalFields).forEach(function (k) {
+                if (_mOriginalFields[k] === oFilterField) { delete _mOriginalFields[k]; }
+            });
         }
         return true;
     };
