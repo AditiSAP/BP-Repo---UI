@@ -58,14 +58,21 @@ sap.ui.define([
         _onHomeMatched: async function () {
             this._checkAuth(false);
 
-            // sap.ui.mdc.FilterBar initialises its condition model asynchronously.
-            // Wait for it before calling setConditions/getConditions, otherwise
-            // the conditions model doesn't exist yet and both calls are no-ops,
-            // leaving createFilters() with no date range → no OData request → empty table.
-            const oFilterBar = this.byId("filterbar");
-            if (oFilterBar && typeof oFilterBar.initialized === "function") {
-                try { await oFilterBar.initialized(); } catch (e) { /* ignore */ }
+            const oFilterBar   = this.byId("filterbar");
+            const oFilterbarVM = this.byId("filterbarVM");
+
+            // In FLP/BTP deployment, sap.ui.fl loads the FilterBar's saved variant
+            // from LREP asynchronously. Wait for both the FilterBar condition model
+            // AND the VariantManagement to finish initialising before setting defaults,
+            // so initializeData() has the full picture before it writes.
+            const aInits = [];
+            if (oFilterBar   && typeof oFilterBar.initialized   === "function") {
+                aInits.push(oFilterBar.initialized().catch(function () {}));
             }
+            if (oFilterbarVM && typeof oFilterbarVM.initialized === "function") {
+                aInits.push(oFilterbarVM.initialized().catch(function () {}));
+            }
+            if (aInits.length) { await Promise.all(aInits); }
 
             this.initializeData();
 
@@ -239,7 +246,14 @@ sap.ui.define([
         createFilters: function () {
             try {
                 const oFilterBar  = this.byId("filterbar");
-                const oConditions = oFilterBar.getConditions() || {};
+                // In deployed environments with sap.ui.fl active, getConditions() can
+                // return stale (last-search) conditions rather than the live UI state.
+                // The $filters model is what FilterFields actually bind to, so it
+                // always reflects the current values regardless of variant/flex state.
+                const oCondModel  = oFilterBar.getModel("$filters");
+                const oConditions = (oCondModel ? oCondModel.getProperty("/conditions") : null)
+                    || oFilterBar.getConditions()
+                    || {};
                 const aFilters    = [];
 
                 // ── Job Name ───────────────────────────────────────────
