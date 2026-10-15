@@ -15,27 +15,41 @@ sap.ui.define([
         { name: "fcPeriod",  label: "Period",      dataType: "sap.ui.model.type.String", maxConditions: 1, constraints: { maxLength: 3 } }
     ];
 
-    // Preserved references to the XML-declared FilterField instances.
+    // Preserved references to XML-declared FilterField instances.
     // When a field is removed from filterItems (user hides it), it is NOT destroyed —
-    // it is kept here so re-adding (user shows it again) returns the same instance
-    // with its ValueHelp and operator configuration intact.
+    // it is kept here so re-adding returns the same instance with ValueHelp intact.
     const _mOriginalFields = {};
 
     FilterBarDelegateImpl.fetchProperties = function () {
         return Promise.resolve(_aProperties);
     };
 
-    // addItem() is called by MDC's p13n Engine whenever it needs a FilterField
-    // instance for a property — during dialog initialisation AND when the user
-    // re-enables a hidden filter.
+    // addItem() is called by MDC's p13n Engine whenever a FilterField instance is
+    // needed — during dialog initialisation AND when the user re-enables a hidden
+    // filter.  We return the XML-declared field so the Engine registers the SAME
+    // instance already in filterItems; this keeps the active-item count consistent
+    // and enables the "Select All" checkbox.
     //
-    // Returning the XML-declared field (rather than a freshly created one) keeps
-    // the Engine in sync with the filterItems aggregation: it registers the SAME
-    // instance the FilterBar already has, so the Engine's active-item count matches
-    // filterItems and the "Select All" checkbox becomes operational.
+    // IMPORTANT: we also pin the $filters ConditionModel directly onto every
+    // returned field.  MDC moves the field from filterItems into the dialog panel
+    // aggregation while Adapt Filters is open; after the move the field is no longer
+    // a descendant of the FilterBar, so the inherited model reference is lost.
+    // A model set directly on a control survives aggregation changes, so the
+    // conditions binding keeps writing to the ConditionModel regardless of where
+    // MDC places the field.
     FilterBarDelegateImpl.addItem = async function (oFilterBar, sPropertyKey) {
         const sName = (sPropertyKey && typeof sPropertyKey === "object")
             ? (sPropertyKey.name || sPropertyKey.key) : sPropertyKey;
+
+        function _pin(oField) {
+            if (!oField) { return oField; }
+            const oCondModel = typeof oFilterBar.getModel === "function"
+                ? oFilterBar.getModel("$filters") : null;
+            if (oCondModel && typeof oField.setModel === "function") {
+                oField.setModel(oCondModel, "$filters");
+            }
+            return oField;
+        }
 
         // 1. XML-declared field is currently in filterItems — return it and cache it.
         const aItems = typeof oFilterBar.getFilterItems === "function"
@@ -46,27 +60,26 @@ sap.ui.define([
         });
         if (oInBar) {
             _mOriginalFields[sName] = oInBar;
-            return oInBar;
+            return _pin(oInBar);
         }
 
         // 2. Field was previously removed (user hid it). Return the cached original
         //    so ValueHelp wiring and custom operators are preserved on re-add.
         const oCached = _mOriginalFields[sName];
         if (oCached && !oCached.bIsDestroyed) {
-            return oCached;
+            return _pin(oCached);
         }
 
-        // 3. No XML field available (destroyed or never existed). Fall back to a
-        //    plain programmatic FilterField keyed by the standard ID pattern.
+        // 3. No XML field available — fall back to a plain programmatic FilterField.
         const sId = oFilterBar.getId() + "--filter--" + sName;
         const oCore = sap.ui.getCore ? sap.ui.getCore() : null;
         const oPrev = oCore && typeof oCore.byId === "function" ? oCore.byId(sId) : null;
-        if (oPrev) { return oPrev; }
+        if (oPrev) { return _pin(oPrev); }
 
         const oProperty = _aProperties.find(function (p) { return p.name === sName; });
         if (!oProperty) { return null; }
 
-        return new FilterField(sId, {
+        const oNew = new FilterField(sId, {
             propertyKey: sName,
             conditions: "{$filters>/conditions/" + sName + "}",
             dataType: oProperty.dataType,
@@ -75,12 +88,13 @@ sap.ui.define([
             required: !!oProperty.required,
             delegate: { name: "sap/ui/mdc/field/FieldBaseDelegate", payload: {} }
         });
+        return _pin(oNew);
     };
 
     // XML-declared fields are NOT destroyed — they are kept in _mOriginalFields so
-    // they can be returned by addItem() if the user re-enables them, preserving
-    // ValueHelp and operator config. Only programmatically-created fallback fields
-    // (whose IDs contain "--filter--") are destroyed.
+    // they can be returned by addItem() on re-add with ValueHelp config intact.
+    // Only programmatically-created fallback fields (IDs containing "--filter--")
+    // are destroyed.
     FilterBarDelegateImpl.removeItem = async function (oFilterBar, oFilterField) {
         const sId = typeof oFilterField.getId === "function" ? oFilterField.getId() : "";
         if (sId.indexOf("--filter--") !== -1) {
