@@ -142,38 +142,56 @@ sap.ui.define([
         },
 
         // ── Condition-model helpers ──────────────────────────────────────────
-        // MDC's $filters model is a ConditionModel in 1.120. setConditions() is
-        // its proper API for atomic full-replacement. setProperty() does work but
-        // can skip the model's internal change-event pipeline on some versions,
-        // leaving FilterFields stale. We try setConditions first.
+        // Both helpers use two writes per field:
+        //   1. oCondModel.setProperty("/conditions/key") — fires the specific path
+        //      binding so createFilters() reads fresh values.
+        //   2. oFilterField.setConditions()             — updates internal token
+        //      display; ConditionModel.setConditions() (atomic full-replace) does
+        //      not reliably repaint individual chips in MDC 1.120.
 
         _setFilterConditions: function (oFilterBar, mConditions) {
-            const oCondModel = oFilterBar ? oFilterBar.getModel("$filters") : null;
+            if (!oFilterBar) { return; }
+            const oCondModel = oFilterBar.getModel("$filters");
             if (!oCondModel) { return; }
-            if (typeof oCondModel.setConditions === "function") {
-                oCondModel.setConditions(mConditions);
-            } else {
-                const self = this;
-                Object.keys(mConditions).forEach(function (sKey) {
-                    oCondModel.setProperty("/conditions/" + sKey, mConditions[sKey]);
+
+            const aItems = typeof oFilterBar.getFilterItems === "function"
+                ? oFilterBar.getFilterItems() : [];
+
+            Object.keys(mConditions).forEach(function (sKey) {
+                const aConds = mConditions[sKey];
+                oCondModel.setProperty("/conditions/" + sKey, aConds);
+                const oField = aItems.find(function (f) {
+                    return typeof f.getPropertyKey === "function" && f.getPropertyKey() === sKey;
                 });
-            }
+                if (oField && typeof oField.setConditions === "function") {
+                    oField.setConditions(aConds);
+                }
+            });
         },
 
-        // Non-destructive merge: only the keys in mPartial are updated; the rest
-        // (e.g. the dateRange set by initializeData) are preserved.
+        // Non-destructive merge: only the keys in mPartial are updated.
+        // Sets each key individually via setProperty (fires per-path binding) AND
+        // calls FilterField.setConditions() directly so the token chips repaint.
         _mergeFilterConditions: function (oFilterBar, mPartial) {
-            const oCondModel = oFilterBar ? oFilterBar.getModel("$filters") : null;
+            if (!oFilterBar) { return; }
+            const oCondModel = oFilterBar.getModel("$filters");
             if (!oCondModel) { return; }
-            const mCurrent = Object.assign({}, oCondModel.getProperty("/conditions") || {});
-            const mMerged = Object.assign({}, mCurrent, mPartial);
-            if (typeof oCondModel.setConditions === "function") {
-                oCondModel.setConditions(mMerged);
-            } else {
-                Object.keys(mPartial).forEach(function (sKey) {
-                    oCondModel.setProperty("/conditions/" + sKey, mPartial[sKey]);
+
+            const aItems = typeof oFilterBar.getFilterItems === "function"
+                ? oFilterBar.getFilterItems() : [];
+
+            Object.keys(mPartial).forEach(function (sKey) {
+                const aConds = mPartial[sKey];
+                // ConditionModel path update (read by createFilters)
+                oCondModel.setProperty("/conditions/" + sKey, aConds);
+                // FilterField direct update (drives visual token display)
+                const oField = aItems.find(function (f) {
+                    return typeof f.getPropertyKey === "function" && f.getPropertyKey() === sKey;
                 });
-            }
+                if (oField && typeof oField.setConditions === "function") {
+                    oField.setConditions(aConds);
+                }
+            });
         },
 
         // Converts an MDC date condition array to concrete {oStartDate, oEndDate}.
