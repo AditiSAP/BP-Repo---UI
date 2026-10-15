@@ -11,8 +11,8 @@ sap.ui.define([
     const _createFilterField = async function (sId, oProperty) {
         return new FilterField(sId, {
             dataType:      oProperty.dataType,
-            conditions:    "{$filters>/conditions/" + oProperty.key + "}",
-            propertyKey:   oProperty.key,
+            conditions:    "{$filters>/conditions/" + oProperty.name + "}",
+            propertyKey:   oProperty.name,
             label:         oProperty.label,
             maxConditions: oProperty.maxConditions,
             delegate:      { name: "sap/ui/mdc/field/FieldBaseDelegate", payload: {} }
@@ -20,7 +20,7 @@ sap.ui.define([
     };
 
     JSONTableFilterDelegate._createFilter = async function (sPropertyKey, oFilterBar) {
-        const oProperty = JSONPropertyInfo.find(function (oPI) { return oPI.key === sPropertyKey; });
+        const oProperty = JSONPropertyInfo.find(function (oPI) { return oPI.name === sPropertyKey; });
         const sId = oFilterBar.getId() + "--filter--" + sPropertyKey;
         return Element.getElementById(sId) ?? (await _createFilterField(sId, oProperty));
     };

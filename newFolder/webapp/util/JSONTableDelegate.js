@@ -13,7 +13,7 @@ sap.ui.define([
     const JSONTableDelegate = Object.assign({}, TableDelegate);
 
     JSONTableDelegate.fetchProperties = async function () {
-        return JSONPropertyInfo.filter(function (oPI) { return oPI.key !== "$search"; });
+        return JSONPropertyInfo.filter(function (oPI) { return oPI.name !== "$search"; });
     };
 
     JSONTableDelegate.getFilterDelegate = function () {
