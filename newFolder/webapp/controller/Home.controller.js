@@ -141,57 +141,69 @@ sap.ui.define([
             }, true);
         },
 
-        // ── Condition-model helpers ──────────────────────────────────────────
-        // Both helpers use two writes per field:
-        //   1. oCondModel.setProperty("/conditions/key") — fires the specific path
-        //      binding so createFilters() reads fresh values.
-        //   2. oFilterField.setConditions()             — updates internal token
-        //      display; ConditionModel.setConditions() (atomic full-replace) does
-        //      not reliably repaint individual chips in MDC 1.120.
+        // ── Condition helpers ────────────────────────────────────────────────
+        // Standard MDC pattern (matches the FilterbarTypes demo sample):
+        //   Write → FilterField.setConditions()   (goes through MDC's own pipeline)
+        //   Read  → FilterBar.getConditions()      (aggregates all FilterField state)
+        // Never touch the ConditionModel directly: calling ConditionModel.setConditions()
+        // or setProperty() corrupts its internal state in MDC 1.120, causing
+        // FilterBar.getConditions() to throw even during normal user interaction.
 
-        _setFilterConditions: function (oFilterBar, mConditions) {
-            if (!oFilterBar) { return; }
-            const oCondModel = oFilterBar.getModel("$filters");
-            if (!oCondModel) { return; }
-
+        // Returns the FilterItems aggregation keyed by propertyKey for fast lookup.
+        _getFilterFieldMap: function (oFilterBar) {
+            const mMap = {};
             const aItems = typeof oFilterBar.getFilterItems === "function"
                 ? oFilterBar.getFilterItems() : [];
+            aItems.forEach(function (oField) {
+                const sKey = typeof oField.getPropertyKey === "function"
+                    ? oField.getPropertyKey() : null;
+                if (sKey) { mMap[sKey] = oField; }
+            });
+            return mMap;
+        },
 
+        // Set conditions on a map of { propertyKey: conditionArray }.
+        _setFilterConditions: function (oFilterBar, mConditions) {
+            if (!oFilterBar) { return; }
+            const mMap = this._getFilterFieldMap(oFilterBar);
             Object.keys(mConditions).forEach(function (sKey) {
-                const aConds = mConditions[sKey];
-                oCondModel.setProperty("/conditions/" + sKey, aConds);
-                const oField = aItems.find(function (f) {
-                    return typeof f.getPropertyKey === "function" && f.getPropertyKey() === sKey;
-                });
+                const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
-                    oField.setConditions(aConds);
+                    oField.setConditions(mConditions[sKey]);
                 }
             });
         },
 
-        // Non-destructive merge: only the keys in mPartial are updated.
-        // Sets each key individually via setProperty (fires per-path binding) AND
-        // calls FilterField.setConditions() directly so the token chips repaint.
+        // Merge: only the keys in mPartial are updated; other fields are untouched.
         _mergeFilterConditions: function (oFilterBar, mPartial) {
             if (!oFilterBar) { return; }
-            const oCondModel = oFilterBar.getModel("$filters");
-            if (!oCondModel) { return; }
-
-            const aItems = typeof oFilterBar.getFilterItems === "function"
-                ? oFilterBar.getFilterItems() : [];
-
+            const mMap = this._getFilterFieldMap(oFilterBar);
             Object.keys(mPartial).forEach(function (sKey) {
-                const aConds = mPartial[sKey];
-                // ConditionModel path update (read by createFilters)
-                oCondModel.setProperty("/conditions/" + sKey, aConds);
-                // FilterField direct update (drives visual token display)
-                const oField = aItems.find(function (f) {
-                    return typeof f.getPropertyKey === "function" && f.getPropertyKey() === sKey;
-                });
+                const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
-                    oField.setConditions(aConds);
+                    oField.setConditions(mPartial[sKey]);
                 }
             });
+        },
+
+        // Read all current conditions. FilterBar.getConditions() is the standard API
+        // (same as the demo sample). Falls back to per-FilterField reads if it throws.
+        _readConditions: function (oFilterBar) {
+            try {
+                return oFilterBar.getConditions() || {};
+            } catch (e) {
+                const oConditions = {};
+                const aItems = typeof oFilterBar.getFilterItems === "function"
+                    ? oFilterBar.getFilterItems() : [];
+                aItems.forEach(function (oField) {
+                    const sKey = typeof oField.getPropertyKey === "function"
+                        ? oField.getPropertyKey() : null;
+                    if (sKey && typeof oField.getConditions === "function") {
+                        oConditions[sKey] = oField.getConditions() || [];
+                    }
+                });
+                return oConditions;
+            }
         },
 
         // Converts an MDC date condition array to concrete {oStartDate, oEndDate}.
@@ -286,10 +298,7 @@ sap.ui.define([
             const oFilterBar = this.byId("filterbar");
             if (!oFilterBar || !this._dfltDateStart) { return; }
 
-            const oCondModel  = oFilterBar.getModel("$filters");
-            const aDateConds  = oCondModel
-                ? (oCondModel.getProperty("/conditions/dateRange") || [])
-                : ((oFilterBar.getConditions() || {}).dateRange || []);
+            const aDateConds = (this._readConditions(oFilterBar).dateRange) || [];
 
             if (!aDateConds.length) {
                 this._bRestoringDefaults = true;
@@ -395,9 +404,7 @@ sap.ui.define([
         createFilters: function () {
             try {
                 const oFilterBar = this.byId("filterbar");
-                const oCondModel = oFilterBar.getModel("$filters");
-
-                const oConditions = (oCondModel ? oCondModel.getProperty("/conditions") : oFilterBar.getConditions()) || {};
+                const oConditions = this._readConditions(oFilterBar);
 
                 const aFilters = [];
 
