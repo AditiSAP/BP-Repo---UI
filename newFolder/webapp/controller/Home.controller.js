@@ -54,6 +54,11 @@ sap.ui.define([
             } catch (oErr) {
                 // VH_Status unreadable – leave "All" so the filter still works
             }
+            // "S" (Scheduled) is not in the VH_Status domain but exists in data.
+            // Add it manually if VH_Status didn't return it.
+            if (!aItems.some(function (o) { return o.key === "S"; })) {
+                aItems.push({ key: "S", text: formatter.statusText("S") });
+            }
             this.getView().setModel(new JSONModel({ items: aItems }), "statusFilterModel");
         },
 
