@@ -1,14 +1,16 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
+    "sap/m/BusyDialog",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter",
     "com/bpcfn/jobscheduler/model/formatter",
     "sap/ui/export/library",
     "sap/ui/export/Spreadsheet"
-], function (Controller, JSONModel, MessageBox, MessageToast, Filter, FilterOperator, formatter, exportLibrary, Spreadsheet) {
+], function (Controller, JSONModel, BusyDialog, MessageBox, MessageToast, Filter, FilterOperator, Sorter, formatter, exportLibrary, Spreadsheet) {
     "use strict";
 
     const EdmType = exportLibrary.EdmType;
@@ -17,7 +19,7 @@ sap.ui.define([
         formatter: formatter,
 
         onInit: function () {
-            this.busyDialog    = new sap.m.BusyDialog();
+            this.busyDialog    = new BusyDialog();
             this.JobDetailTable = this.byId("idJobDetTable");
             this.custModel     = this.getOwnerComponent().getModel("custModel");
             this.oRouter       = this.getOwnerComponent().getRouter();
@@ -53,7 +55,7 @@ sap.ui.define([
             const aItems = [{ key: "", text: this.i18nModel.getText("StatusAll") }];
             try {
                 const oBinding = this.custModel.bindList("/VH_Status", undefined,
-                    [new sap.ui.model.Sorter("Status")]);
+                    [new Sorter("Status")]);
                 const aCtx = await oBinding.requestContexts(0, 999);
                 aCtx.forEach(function (oCtx) {
                     const sCode = oCtx.getObject().Status;
@@ -496,19 +498,19 @@ sap.ui.define([
                 const utcEndDate   = utcEnd.split("T")[0];
                 const utcEndTime   = utcEnd.split("T")[1].replace("Z", "");
 
-                aFilters.push(new sap.ui.model.Filter({
+                aFilters.push(new Filter({
                     filters: [
-                        new sap.ui.model.Filter({ filters: [
-                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.GT, utcStartDate),
-                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.LT, utcEndDate)
+                        new Filter({ filters: [
+                            new Filter("sdl_startdt", FilterOperator.GT, utcStartDate),
+                            new Filter("sdl_startdt", FilterOperator.LT, utcEndDate)
                         ], and: true }),
-                        new sap.ui.model.Filter({ filters: [
-                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcStartDate),
-                            new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.GE, utcStartTime)
+                        new Filter({ filters: [
+                            new Filter("sdl_startdt", FilterOperator.EQ, utcStartDate),
+                            new Filter("sdl_starttm", FilterOperator.GE, utcStartTime)
                         ], and: true }),
-                        new sap.ui.model.Filter({ filters: [
-                            new sap.ui.model.Filter("sdl_startdt", sap.ui.model.FilterOperator.EQ, utcEndDate),
-                            new sap.ui.model.Filter("sdl_starttm", sap.ui.model.FilterOperator.LE, utcEndTime)
+                        new Filter({ filters: [
+                            new Filter("sdl_startdt", FilterOperator.EQ, utcEndDate),
+                            new Filter("sdl_starttm", FilterOperator.LE, utcEndTime)
                         ], and: true })
                     ],
                     and: false
@@ -633,7 +635,7 @@ sap.ui.define([
 
         // ─── Manual Activity ─────────────────────────────────────────────────
         onManualActivityJob: function () {
-            const keyFilter = new sap.ui.model.Filter("guid", sap.ui.model.FilterOperator.EQ, this.selRowData.guid);
+            const keyFilter = new Filter("guid", FilterOperator.EQ, this.selRowData.guid);
             const gpItemListBinding = this.custModel.bindList("/SchedulerTask", undefined, undefined, keyFilter);
             this.busyDialog.open();
             gpItemListBinding.requestContexts()
@@ -698,12 +700,12 @@ sap.ui.define([
                 return;
             }
             const aSorters = [
-                new sap.ui.model.Sorter("creation_date", true),
-                new sap.ui.model.Sorter("creation_time", true),
-                new sap.ui.model.Sorter("sdl_startdt",   true),
-                new sap.ui.model.Sorter("sdl_starttm",   true),
-                new sap.ui.model.Sorter("jobname",       true),
-                new sap.ui.model.Sorter("createdby",     true)
+                new Sorter("creation_date", true),
+                new Sorter("creation_time", true),
+                new Sorter("sdl_startdt",   true),
+                new Sorter("sdl_starttm",   true),
+                new Sorter("jobname",       true),
+                new Sorter("createdby",     true)
             ];
             const oBinding = this.custModel.bindList(
                 "/SchedulerTask", undefined, aSorters, aFilters,
