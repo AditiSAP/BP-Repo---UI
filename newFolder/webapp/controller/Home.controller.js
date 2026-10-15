@@ -229,7 +229,9 @@ sap.ui.define([
 
         // Converts an MDC date condition array to concrete {oStartDate, oEndDate}.
         // Handles all operators exposed on the FilterField (BT, EQ, GE/GT, LE/LT,
-        // TODAY, YESTERDAY, TOMORROW, LASTDAYS, NEXTDAYS, TODAYFROMTO).
+        // TODAY, YESTERDAY, TOMORROW, LASTDAYS, NEXTDAYS, TODAYFROMTO,
+        // THISMONTH, LASTMONTH, NEXTMONTH,
+        // THISQUARTER, LASTQUARTER, NEXTQUARTER, QUARTER1–QUARTER4).
         // Falls back to dfltStart/dfltEnd when the condition array is empty or the
         // operator is unrecognised.
         _resolveDateCondition: function (aDateConds, dfltStart, dfltEnd) {
@@ -242,6 +244,18 @@ sap.ui.define([
                 const today = new Date(); today.setHours(0, 0, 0, 0);
                 const eod   = new Date(); eod.setHours(23, 59, 59, 999);
                 const DAY   = 86400000;
+
+                // Helper: last day of a calendar month (new Date(y, m+1, 0) at EOD).
+                function _monthEnd(y, m) {
+                    const d = new Date(y, m + 1, 0); d.setHours(23, 59, 59, 999); return d;
+                }
+                // Helper: start/end of a quarter index q (0-3) in year y.
+                function _quarter(y, q) {
+                    return {
+                        s: new Date(y, q * 3, 1),
+                        e: _monthEnd(y, q * 3 + 2)
+                    };
+                }
 
                 switch (oCond.operator) {
                     case "BT":
@@ -293,6 +307,48 @@ sap.ui.define([
                         oEndDate   = new Date(today.getTime() + after  * DAY); oEndDate.setHours(23, 59, 59, 999);
                         break;
                     }
+                    // ── Month operators ──────────────────────────────────────────
+                    case "THISMONTH": {
+                        const y = today.getFullYear(), m = today.getMonth();
+                        oStartDate = new Date(y, m, 1); oEndDate = _monthEnd(y, m);
+                        break;
+                    }
+                    case "LASTMONTH": {
+                        const y = today.getFullYear(), m = today.getMonth() - 1;
+                        oStartDate = new Date(y, m, 1); oEndDate = _monthEnd(y, m);
+                        break;
+                    }
+                    case "NEXTMONTH": {
+                        const y = today.getFullYear(), m = today.getMonth() + 1;
+                        oStartDate = new Date(y, m, 1); oEndDate = _monthEnd(y, m);
+                        break;
+                    }
+                    // ── Quarter operators ────────────────────────────────────────
+                    case "THISQUARTER": {
+                        const q = _quarter(today.getFullYear(), Math.floor(today.getMonth() / 3));
+                        oStartDate = q.s; oEndDate = q.e;
+                        break;
+                    }
+                    case "LASTQUARTER": {
+                        let qi = Math.floor(today.getMonth() / 3) - 1;
+                        let yr = today.getFullYear();
+                        if (qi < 0) { qi = 3; yr--; }
+                        const q = _quarter(yr, qi);
+                        oStartDate = q.s; oEndDate = q.e;
+                        break;
+                    }
+                    case "NEXTQUARTER": {
+                        let qi = Math.floor(today.getMonth() / 3) + 1;
+                        let yr = today.getFullYear();
+                        if (qi > 3) { qi = 0; yr++; }
+                        const q = _quarter(yr, qi);
+                        oStartDate = q.s; oEndDate = q.e;
+                        break;
+                    }
+                    case "QUARTER1": { const q = _quarter(today.getFullYear(), 0); oStartDate = q.s; oEndDate = q.e; break; }
+                    case "QUARTER2": { const q = _quarter(today.getFullYear(), 1); oStartDate = q.s; oEndDate = q.e; break; }
+                    case "QUARTER3": { const q = _quarter(today.getFullYear(), 2); oStartDate = q.s; oEndDate = q.e; break; }
+                    case "QUARTER4": { const q = _quarter(today.getFullYear(), 3); oStartDate = q.s; oEndDate = q.e; break; }
                     default: break;
                 }
             }
