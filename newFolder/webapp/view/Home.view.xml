@@ -206,7 +206,7 @@
                 class="sapUiSmallMarginTop">
 
                 <mdc:type>
-                    <mdct:ResponsiveTableType id="idJobDetTableType" showDetailsButton="true"/>
+                    <mdct:GridTableType id="idJobDetTableType"/>
                 </mdc:type>
 
                 <mdc:variant>
