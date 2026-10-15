@@ -20,6 +20,26 @@ sap.ui.define([
         return JSONTableFilterDelegate;
     };
 
+    // Force Group P13n mode to always be supported.
+    // The base TableDelegate.getSupportedFeatures only adds "Group" when
+    // oTable._isOfType(TableType.ResponsiveTable) returns true, which can fail
+    // in certain UI5 versions even when <mdct:ResponsiveTableType> is declared.
+    JSONTableDelegate.getSupportedFeatures = function (oTable) {
+        const oBase = typeof TableDelegate.getSupportedFeatures === "function"
+            ? TableDelegate.getSupportedFeatures.call(this, oTable)
+            : { p13nModes: ["Column", "Sort", "Filter"], "export": true };
+
+        const aModes = (oBase && Array.isArray(oBase.p13nModes))
+            ? oBase.p13nModes.slice()
+            : ["Column", "Sort", "Filter"];
+
+        if (!aModes.includes("Group")) {
+            aModes.push("Group");
+        }
+
+        return Object.assign({}, oBase, { p13nModes: aModes });
+    };
+
     // Creates a fresh column instance for a given property key.
     // Called by addItem whenever MDC needs to (re-)add a column.
     function _createColumn(sId, sKey) {
