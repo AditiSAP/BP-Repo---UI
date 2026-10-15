@@ -165,9 +165,7 @@ sap.ui.define([
         _mergeFilterConditions: function (oFilterBar, mPartial) {
             const oCondModel = oFilterBar ? oFilterBar.getModel("$filters") : null;
             if (!oCondModel) { return; }
-            const mCurrent = typeof oCondModel.getConditions === "function"
-                ? Object.assign({}, oCondModel.getConditions())
-                : (oCondModel.getProperty("/conditions") || {});
+            const mCurrent = Object.assign({}, oCondModel.getProperty("/conditions") || {});
             const mMerged = Object.assign({}, mCurrent, mPartial);
             if (typeof oCondModel.setConditions === "function") {
                 oCondModel.setConditions(mMerged);
@@ -381,16 +379,7 @@ sap.ui.define([
                 const oFilterBar = this.byId("filterbar");
                 const oCondModel = oFilterBar.getModel("$filters");
 
-                // getConditions() is the public API. Fall back to reading the
-                // ConditionModel directly if getConditions() returns nothing useful
-                // (can happen on some 1.120 patch levels before the first search).
-                let oConditions = oFilterBar.getConditions() || {};
-                const bEmpty = !oConditions || !Object.keys(oConditions).some(function (k) {
-                    return oConditions[k] && oConditions[k].length;
-                });
-                if (bEmpty && oCondModel) {
-                    oConditions = oCondModel.getProperty("/conditions") || {};
-                }
+                const oConditions = (oCondModel ? oCondModel.getProperty("/conditions") : oFilterBar.getConditions()) || {};
 
                 const aFilters = [];
 
