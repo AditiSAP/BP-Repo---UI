@@ -40,6 +40,49 @@ sap.ui.define([
         return Object.assign({}, oBase, { p13nModes: aModes });
     };
 
+    // Same _isOfType guard exists in getGroupSorter — bypass it so the group
+    // sorter is actually returned and applied by updateBindingInfo.
+    JSONTableDelegate.getGroupSorter = function (oTable) {
+        const oBaseSorter = typeof TableDelegate.getGroupSorter === "function"
+            ? TableDelegate.getGroupSorter.call(this, oTable)
+            : undefined;
+        if (oBaseSorter) {
+            return oBaseSorter;
+        }
+
+        // Base returned undefined: _isOfType check failed. Build the sorter manually.
+        const oPropertyHelper = typeof oTable.getPropertyHelper === "function"
+            ? oTable.getPropertyHelper() : null;
+        const aGrouped = typeof oTable._getGroupedProperties === "function"
+            ? oTable._getGroupedProperties() : [];
+        const oGroupLevel = aGrouped && aGrouped[0];
+
+        if (!oGroupLevel || !oPropertyHelper) {
+            return undefined;
+        }
+
+        const sKey = oGroupLevel.key || oGroupLevel.name;
+        const oGroupedProp = oPropertyHelper.getProperty(sKey);
+        if (!oGroupedProp) {
+            return undefined;
+        }
+
+        if (!oTable._mFormatGroupHeaderInfo || oTable._mFormatGroupHeaderInfo.propertyKey !== sKey) {
+            oTable._mFormatGroupHeaderInfo = {
+                propertyKey: sKey,
+                formatter: (function (oCtx) {
+                    return this.formatGroupHeader(oTable, oCtx, sKey);
+                }).bind(this)
+            };
+        }
+
+        return new Sorter(
+            oGroupedProp.path || sKey,
+            false,
+            oTable._mFormatGroupHeaderInfo.formatter
+        );
+    };
+
     // Creates a fresh column instance for a given property key.
     // Called by addItem whenever MDC needs to (re-)add a column.
     function _createColumn(sId, sKey) {
