@@ -304,13 +304,13 @@
                                                 <layoutData><l:GridData span="L2 M3 S4" linebreak="true" indent="L4 M4 S0"/></layoutData>
                                             </Select>
 
-                                            <!-- Weekday single-select (monthly + certain weekday) -->
-                                            <Select id="monthWeekdaySelectionddlb"
+                                            <!-- Weekday multi-select (monthly + certain weekday) -->
+                                            <MultiComboBox id="monthWeekdaySelectionddlb"
                                                 visible="{schdMod>/MonthWeekdayVisible}"
-                                                selectedKey="{schdMod>/MonthWeekDay}"
+                                                selectedKeys="{schdMod>/MonthWeekDays}"
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"
                                                 width="100%"
-                                                change="onMonthWeekdayChange">
+                                                selectionFinish="onMonthWeekdaySelectionFinish">
                                                 <items>
                                                     <core:Item key="D1" text="{i18n>Monday}"/>
                                                     <core:Item key="D2" text="{i18n>Tuesday}"/>
@@ -321,7 +321,7 @@
                                                     <core:Item key="D7" text="{i18n>Sunday}"/>
                                                 </items>
                                                 <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
-                                            </Select>
+                                            </MultiComboBox>
 
                                             <!-- Weekday multi-select (weekly period) -->
                                             <MultiComboBox id="weeksDaySelectionddlb"

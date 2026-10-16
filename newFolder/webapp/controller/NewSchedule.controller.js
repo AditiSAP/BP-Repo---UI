@@ -140,7 +140,7 @@ sap.ui.define([
 				MonthsDayType: "D",
 				MonthsDaysType: "D",
 				WeekNumber: "W1",
-				MonthWeekDay: "D1",
+				MonthWeekDays: [],
 				WeekDays: [],
 				MonthOnlyWorkdaysInd: false,
 				StartRestrictionCode: "A",
@@ -1207,9 +1207,11 @@ sap.ui.define([
 			this.getView().getModel("schdMod").setProperty("/WeekNumber",
 				oEvent.getParameter("selectedItem").getKey());
 		},
-		onMonthWeekdayChange: function (oEvent) {
-			this.getView().getModel("schdMod").setProperty("/MonthWeekDay",
-				oEvent.getParameter("selectedItem").getKey());
+		onMonthWeekdaySelectionFinish: function (oEvent) {
+			var aKeys = oEvent.getParameter("selectedItems").map(function (oItem) {
+				return oItem.getKey();
+			});
+			this.getView().getModel("schdMod").setProperty("/MonthWeekDays", aKeys);
 		},
 		onWeeksDaySelectionFinish: function (oEvent) {
 			var aKeys = oEvent.getParameter("selectedItems").map(function (oItem) {
@@ -1255,7 +1257,7 @@ sap.ui.define([
 			oMod.setProperty("/MonthsDayType", "D");
 			oMod.setProperty("/MonthsDaysType", "D");
 			oMod.setProperty("/WeekNumber", "W1");
-			oMod.setProperty("/MonthWeekDay", "D1");
+			oMod.setProperty("/MonthWeekDays", []);
 			oMod.setProperty("/WeekDays", []);
 			oMod.setProperty("/MonthOnlyWorkdaysInd", false);
 			oMod.setProperty("/StartRestrictionCode", "A");
