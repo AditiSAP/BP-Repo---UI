@@ -225,7 +225,7 @@
                 class="sapUiSmallMarginTop">
 
                 <mdc:type>
-                    <mdct:GridTableType id="idJobDetTableType"/>
+                    <mdct:ResponsiveTableType id="idJobDetTableType" growingMode="Scroll"/>
                 </mdc:type>
 
                 <mdc:variant>

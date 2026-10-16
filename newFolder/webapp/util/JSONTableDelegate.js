@@ -20,10 +20,9 @@ sap.ui.define([
         return JSONTableFilterDelegate;
     };
 
-    // Force Group P13n mode to always be supported.
-    // The base TableDelegate.getSupportedFeatures only adds "Group" when
-    // oTable._isOfType(TableType.ResponsiveTable) returns true, which can fail
-    // in certain UI5 versions even when <mdct:ResponsiveTableType> is declared.
+    // Ensure Group is always listed as supported.  The base TableDelegate already
+    // does this for ResponsiveTable, but we keep the override as a defensive guard
+    // in case the table type check fails in edge-case environments.
     JSONTableDelegate.getSupportedFeatures = function (oTable) {
         const oBase = typeof TableDelegate.getSupportedFeatures === "function"
             ? TableDelegate.getSupportedFeatures.call(this, oTable)
@@ -40,8 +39,8 @@ sap.ui.define([
         return Object.assign({}, oBase, { p13nModes: aModes });
     };
 
-    // Same _isOfType guard exists in getGroupSorter — bypass it so the group
-    // sorter is actually returned and applied by updateBindingInfo.
+    // Same defensive guard for getGroupSorter: ensures a sorter is always
+    // returned even if the base implementation's type check somehow fails.
     JSONTableDelegate.getGroupSorter = function (oTable) {
         const oBaseSorter = typeof TableDelegate.getGroupSorter === "function"
             ? TableDelegate.getGroupSorter.call(this, oTable)

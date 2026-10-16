@@ -35,31 +35,43 @@ sap.ui.define([
             this._loadStatusFilter();
         },
 
-        /**
-         * Build the status filter list: "All" first, then the domain values.
-         * Same logic as the original; result exposed as statusFilterModel.
-         */
         _loadStatusFilter: async function () {
-            const aItems = [];
+            // ── synchronous part ─────────────────────────────────────────────────
+            // Set the model immediately with all known status codes so the MDC
+            // ValueHelp Dialog container registers the key-space on its very first
+            // lazy-initialization.  Without this, the first F4 selection is silently
+            // dropped because the table binding has no items when MDC sets up the
+            // internal condition handler (race with the async OData call below).
+            const aItems = ["I", "C", "E", "F", "H", "B", "X", "S"].map(function (sCode) {
+                return { key: sCode, text: formatter.statusText(sCode) };
+            });
+            this.getView().setModel(new JSONModel({ items: aItems }), "statusFilterModel");
+
+            // ── async part ───────────────────────────────────────────────────────
+            // Refresh from backend; add any additional codes not in the static list.
             try {
                 const oBinding = this.custModel.bindList("/VH_Status", undefined,
                     [new Sorter("Status")]);
                 const aCtx = await oBinding.requestContexts(0, 999);
+                let bChanged = false;
                 aCtx.forEach(function (oCtx) {
                     const sCode = oCtx.getObject().Status;
-                    if (sCode) {
+                    if (sCode && !aItems.some(function (o) { return o.key === sCode; })) {
                         aItems.push({ key: sCode, text: formatter.statusText(sCode) });
+                        bChanged = true;
                     }
                 });
+                // "S" (Scheduled) is not in the VH_Status domain; ensure it stays.
+                if (!aItems.some(function (o) { return o.key === "S"; })) {
+                    aItems.push({ key: "S", text: formatter.statusText("S") });
+                    bChanged = true;
+                }
+                if (bChanged) {
+                    this.getView().setModel(new JSONModel({ items: aItems }), "statusFilterModel");
+                }
             } catch (oErr) {
-                // VH_Status unreadable – leave "All" so the filter still works
+                // Backend unreachable — static model set above remains in effect.
             }
-            // "S" (Scheduled) is not in the VH_Status domain but exists in data.
-            // Add it manually if VH_Status didn't return it.
-            if (!aItems.some(function (o) { return o.key === "S"; })) {
-                aItems.push({ key: "S", text: formatter.statusText("S") });
-            }
-            this.getView().setModel(new JSONModel({ items: aItems }), "statusFilterModel");
         },
 
         _onHomeMatched: async function () {
