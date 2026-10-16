@@ -40,7 +40,7 @@ sap.ui.define([
          * Same logic as the original; result exposed as statusFilterModel.
          */
         _loadStatusFilter: async function () {
-            const aItems = [{ key: "", text: this.i18nModel.getText("StatusAll") }];
+            const aItems = [];
             try {
                 const oBinding = this.custModel.bindList("/VH_Status", undefined,
                     [new Sorter("Status")]);
