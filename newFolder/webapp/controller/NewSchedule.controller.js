@@ -140,6 +140,7 @@ sap.ui.define([
 				MonthsDayType: "D",
 				MonthsDaysType: "D",
 				WeekNumber: "W1",
+				MonthWeekDay: "D1",
 				WeekDays: [],
 				MonthOnlyWorkdaysInd: false,
 				StartRestrictionCode: "A",
@@ -153,6 +154,7 @@ sap.ui.define([
 				MonthsNegDayNrVisible: false,
 				MonthsDaysTypeVisible: false,
 				MonthWeekCodeVisible: false,
+				MonthWeekdayVisible: false,
 				WeeksDaySelectionVisible: false
 			});
 		},
@@ -1167,14 +1169,17 @@ sap.ui.define([
 			var sBeginEnd = oMod.getProperty("/BeginEndMonthSelection") || "B";
 			var bBegin = sBeginEnd === "B";
 			var bEnd = sBeginEnd === "E";
+			var bCW = sBeginEnd === "CW";
 			oMod.setProperty("/OnFieldVisible", bShowOn);
 			// Monthly begin: specific day nr + day type
 			oMod.setProperty("/MonthsDayNrVisible", bMonthly && bBegin);
 			oMod.setProperty("/MonthsDayTypeVisible", bMonthly && bBegin);
-			// Monthly end: negative day nr + days type + week code
+			// Monthly end: negative day nr + days type
 			oMod.setProperty("/MonthsNegDayNrVisible", bMonthly && bEnd);
 			oMod.setProperty("/MonthsDaysTypeVisible", bMonthly && bEnd);
-			oMod.setProperty("/MonthWeekCodeVisible", bMonthly && bEnd);
+			// Monthly certain weekday: week ordinal (First–Last) + weekday
+			oMod.setProperty("/MonthWeekCodeVisible", bMonthly && bCW);
+			oMod.setProperty("/MonthWeekdayVisible", bMonthly && bCW);
 			// Weekly: weekday multi-select
 			oMod.setProperty("/WeeksDaySelectionVisible", bWeekly);
 		},
@@ -1200,6 +1205,10 @@ sap.ui.define([
 		},
 		onWeekNumberChange: function (oEvent) {
 			this.getView().getModel("schdMod").setProperty("/WeekNumber",
+				oEvent.getParameter("selectedItem").getKey());
+		},
+		onMonthWeekdayChange: function (oEvent) {
+			this.getView().getModel("schdMod").setProperty("/MonthWeekDay",
 				oEvent.getParameter("selectedItem").getKey());
 		},
 		onWeeksDaySelectionFinish: function (oEvent) {
@@ -1246,6 +1255,7 @@ sap.ui.define([
 			oMod.setProperty("/MonthsDayType", "D");
 			oMod.setProperty("/MonthsDaysType", "D");
 			oMod.setProperty("/WeekNumber", "W1");
+			oMod.setProperty("/MonthWeekDay", "D1");
 			oMod.setProperty("/WeekDays", []);
 			oMod.setProperty("/MonthOnlyWorkdaysInd", false);
 			oMod.setProperty("/StartRestrictionCode", "A");

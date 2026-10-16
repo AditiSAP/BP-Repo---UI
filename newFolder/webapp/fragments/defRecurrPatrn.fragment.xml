@@ -287,7 +287,7 @@
                                                 <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
-                                            <!-- Week number within month (W1-W5) -->
+                                            <!-- Week number within month (First–Last) — certain weekday only -->
                                             <Select id="scheduleMonthWeekCodeddlb"
                                                 visible="{schdMod>/MonthWeekCodeVisible}"
                                                 selectedKey="{schdMod>/WeekNumber}"
@@ -302,6 +302,25 @@
                                                     <core:Item key="W5" text="{i18n>Week5}"/>
                                                 </items>
                                                 <layoutData><l:GridData span="L2 M3 S4" linebreak="true"/></layoutData>
+                                            </Select>
+
+                                            <!-- Weekday single-select (monthly + certain weekday) -->
+                                            <Select id="monthWeekdaySelectionddlb"
+                                                visible="{schdMod>/MonthWeekdayVisible}"
+                                                selectedKey="{schdMod>/MonthWeekDay}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%"
+                                                change="onMonthWeekdayChange">
+                                                <items>
+                                                    <core:Item key="D1" text="{i18n>Monday}"/>
+                                                    <core:Item key="D2" text="{i18n>Tuesday}"/>
+                                                    <core:Item key="D3" text="{i18n>Wednesday}"/>
+                                                    <core:Item key="D4" text="{i18n>Thursday}"/>
+                                                    <core:Item key="D5" text="{i18n>Friday}"/>
+                                                    <core:Item key="D6" text="{i18n>Saturday}"/>
+                                                    <core:Item key="D7" text="{i18n>Sunday}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L3 M4 S8"/></layoutData>
                                             </Select>
 
                                             <!-- Weekday multi-select (weekly period) -->
