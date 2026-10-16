@@ -67,7 +67,7 @@
 
                     <!-- 70 / 30 split: left = KPI tiles + timeline, right = on-hold -->
                     <HBox class="grsSplit" width="100%" wrap="Wrap" renderType="Bare">
-                            <VBox class="grsLeft" width="70%">
+                            <VBox class="grsLeft" width="60%">
 
                                 <!-- KPI tiles (back from the donut). Compact,
                                      no wasted gaps: a tight tile row, not a
@@ -109,7 +109,7 @@
                                 </HBox>
 
                                 <!-- Timeline -->
-                                <f:Card class="grsCard grsScrollCard">
+                                <f:Card class="grsCard grsScrollCard" width="100%">
                                     <f:header>
                                         <card:Header title="{i18n>TodaysRuns}" subtitle="{i18n>TodaysRunsSub}"/>
                                     </f:header>
@@ -156,8 +156,8 @@
                                 </f:Card>
                             </VBox>
                             <!-- right 30%: on-hold units -->
-                            <VBox class="grsRight" width="30%">
-                                <f:Card class="grsCard grsScrollCard">
+                            <VBox class="grsRight" width="40%"  >
+                                <f:Card class="grsCard grsScrollCard" height="38rem">
                                     <f:header>
                                         <card:Header title="{i18n>OnHoldUnits}" subtitle="{i18n>OnHoldUnitsSub}"/>
                                     </f:header>
