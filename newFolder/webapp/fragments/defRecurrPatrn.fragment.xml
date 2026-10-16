@@ -153,9 +153,9 @@
                                         </f:fields>
                                     </f:FormElement>
 
-                                    <!-- On (weekday / month selectors — visible for W and MO periods) -->
+                                    <!-- On (monthly selectors — visible for MO only) -->
                                     <f:FormElement label="{i18n>On}"
-                                        visible="{path:'schdMod>/prd_days', formatter:'.formatter.showOnField'}">
+                                        visible="{path:'schdMod>/prd_days', formatter:'.formatter.showOnMonths'}">
                                         <f:fields>
 
                                             <!-- Beginning / End / Certain Weekday — monthly only -->
@@ -307,6 +307,32 @@
                                             <!-- Weekday multi-select (weekly period) -->
                                             <MultiComboBox id="weeksDaySelectionddlb"
                                                 visible="{schdMod>/WeeksDaySelectionVisible}"
+                                                selectionFinish="onWeeksDaySelectionFinish"
+                                                selectedKeys="{schdMod>/WeekDays}"
+                                                enabled="{schdMod>/RecurrenceSetIndicator}"
+                                                width="100%">
+                                                <items>
+                                                    <core:Item key="D1" text="{i18n>Monday}"/>
+                                                    <core:Item key="D2" text="{i18n>Tuesday}"/>
+                                                    <core:Item key="D3" text="{i18n>Wednesday}"/>
+                                                    <core:Item key="D4" text="{i18n>Thursday}"/>
+                                                    <core:Item key="D5" text="{i18n>Friday}"/>
+                                                    <core:Item key="D6" text="{i18n>Saturday}"/>
+                                                    <core:Item key="D7" text="{i18n>Sunday}"/>
+                                                </items>
+                                                <layoutData><l:GridData span="L6 M8 S8"/></layoutData>
+                                            </MultiComboBox>
+
+                                        </f:fields>
+                                    </f:FormElement>
+
+                                    <!-- On (weekday selector — visible for W only, separate FormElement
+                                         avoids grid-span bleed from the hidden monthly controls above) -->
+                                    <f:FormElement label="{i18n>On}"
+                                        visible="{path:'schdMod>/prd_days', formatter:'.formatter.showOnWeekly'}">
+                                        <f:fields>
+
+                                            <MultiComboBox id="weeksDaySelectionddlbW"
                                                 selectionFinish="onWeeksDaySelectionFinish"
                                                 selectedKeys="{schdMod>/WeekDays}"
                                                 enabled="{schdMod>/RecurrenceSetIndicator}"

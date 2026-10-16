@@ -1145,6 +1145,18 @@ sap.ui.define([
 				oMod.setProperty("/SchEndTime", "");
 				oMod.setProperty("/end_date_time", "");
 				this._updateOnFieldVisibility("");
+			} else {
+				// The pattern Select visually defaults to "MI" but the model
+				// starts empty; seed it now so everyEndFieldVisible returns true
+				// and the End row appears immediately without a manual re-select.
+				if (!oMod.getProperty("/prd_days")) {
+					oMod.setProperty("/prd_days", "MI");
+				}
+				// Likewise, default end type to "DATE" so the End date/time
+				// pickers are visible immediately (byEndByVisible needs DATE + prd_days).
+				if (!oMod.getProperty("/end_type_c")) {
+					oMod.setProperty("/end_type_c", "DATE");
+				}
 			}
 		},
 		_updateOnFieldVisibility: function (sPrdDays) {

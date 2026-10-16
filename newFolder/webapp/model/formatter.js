@@ -117,6 +117,9 @@ sap.ui.define([
         showOnMonths: function (sPrdDays) {
             return sPrdDays === "MO";
         },
+        showOnWeekly: function (sPrdDays) {
+            return sPrdDays === "W";
+        },
         runEndVisible: function (runEnd, visible) {
             const runEndVisible = runEnd ?? false;
             const tVisible = visible ?? false;
