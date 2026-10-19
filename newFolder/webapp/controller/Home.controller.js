@@ -687,9 +687,9 @@ sap.ui.define([
             // fall back to the table's own getSelectedContexts() API in case
             // the param comes back undefined/empty in certain MDC Table builds.
             var aContexts = oEvent.getParameter("bindingContexts");
-            if ((!aContexts || !aContexts.length) &&
+            if ((!aContexts || !aContexts.length || !aContexts[0]) &&
                     typeof this.JobDetailTable.getSelectedContexts === "function") {
-                aContexts = this.JobDetailTable.getSelectedContexts();
+                aContexts = this.JobDetailTable.getSelectedContexts().filter(Boolean);
             }
             if (aContexts && aContexts.length > 0) {
                 this.selJobRowData = aContexts[0].getObject();
@@ -717,12 +717,8 @@ sap.ui.define([
          * The bindingContext parameter replaces the original RowAction getBindingContext call.
          */
         onJobDetails: function (oEvent) {
-            let oContext = oEvent.getParameter("bindingContext");
-            if (!oContext && typeof this.JobDetailTable.getSelectedContexts === "function") {
-                const aCtx = this.JobDetailTable.getSelectedContexts();
-                oContext = aCtx && aCtx[0];
-            }
-            const selRow   = oContext && oContext.getObject();
+            const oContext = oEvent.getParameter("bindingContext");
+            const selRow   = oContext ? oContext.getObject() : this.selJobRowData;
             if (!selRow) { return; }
             this.oRouter.navTo("JobDetail", {
                 jobId:       selRow.guid,
