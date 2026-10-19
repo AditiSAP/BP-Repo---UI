@@ -178,6 +178,10 @@ sap.ui.define([
             if (!sDate || !sTime) {
                 return "";
             }
+            // Guard zero-filled SAP DATS/TIMS values ("00000000", "0000-00-00", "000000", "00:00:00")
+            if (String(sDate).replace(/[-0]/g, "") === "" || String(sTime).replace(/[:0]/g, "") === "") {
+                return "";
+            }
             // Combine date and time into ISO format
             const sISODateTime = `${sDate}T${sTime}Z`;
             // Create UI5 Date instance

@@ -195,6 +195,9 @@ sap.ui.define([
             return aData[0]._Tasks;
         },
         convertTimeZone: function (schTimeZone, modelName, property, selTime) {
+            if (!selTime || !selTime.includes(", ")) {
+                return Promise.resolve();
+            }
             var parts = selTime.split(", ");
             var dateParts = parts[0].split(".");
             var timeParts = parts[1].split(":");
