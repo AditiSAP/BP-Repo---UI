@@ -683,14 +683,25 @@ sap.ui.define([
          * Replaces the original sap.ui.table rowSelectionChange handler.
          */
         onJobSelected: function (oEvent) {
-            // MDC Table selectionChange: try bindingContexts param first;
-            // fall back to the table's own getSelectedContexts() API in case
-            // the param comes back undefined/empty in certain MDC Table builds.
             var aContexts = oEvent.getParameter("bindingContexts");
-            if ((!aContexts || !aContexts.length || !aContexts[0]) &&
-                    typeof this.JobDetailTable.getSelectedContexts === "function") {
-                aContexts = this.JobDetailTable.getSelectedContexts().filter(Boolean);
+            if (aContexts) { aContexts = aContexts.filter(Boolean); }
+
+            if (!aContexts || !aContexts.length) {
+                if (typeof this.JobDetailTable.getSelectedContexts === "function") {
+                    aContexts = this.JobDetailTable.getSelectedContexts().filter(Boolean);
+                }
             }
+
+            // Final fallback: inner sap.m.Table with explicit model name (1.120+ named-model safe)
+            if (!aContexts || !aContexts.length) {
+                var oInner = this.JobDetailTable._oTable;
+                if (oInner && typeof oInner.getSelectedItems === "function") {
+                    aContexts = oInner.getSelectedItems()
+                        .map(function (oItem) { return oItem.getBindingContext("jobModel"); })
+                        .filter(Boolean);
+                }
+            }
+
             if (aContexts && aContexts.length > 0) {
                 this.selJobRowData = aContexts[0].getObject();
                 this.selRowData    = this.selJobRowData;
@@ -717,8 +728,25 @@ sap.ui.define([
          * The bindingContext parameter replaces the original RowAction getBindingContext call.
          */
         onJobDetails: function (oEvent) {
-            const oContext = oEvent.getParameter("bindingContext");
-            const selRow   = oContext ? oContext.getObject() : this.selJobRowData;
+            var oContext = oEvent.getParameter("bindingContext");
+
+            // MDC fires bindingContext correctly in 1.120+ for named models;
+            // older builds return undefined — fall back through the chain.
+            if (!oContext) {
+                if (typeof this.JobDetailTable.getSelectedContexts === "function") {
+                    var aCtx = this.JobDetailTable.getSelectedContexts().filter(Boolean);
+                    oContext = aCtx[0];
+                }
+            }
+            if (!oContext) {
+                var oInner = this.JobDetailTable._oTable;
+                if (oInner && typeof oInner.getSelectedItems === "function") {
+                    var oItem = oInner.getSelectedItems()[0];
+                    oContext = oItem && oItem.getBindingContext("jobModel");
+                }
+            }
+
+            var selRow = oContext ? oContext.getObject() : this.selJobRowData;
             if (!selRow) { return; }
             this.oRouter.navTo("JobDetail", {
                 jobId:       selRow.guid,
