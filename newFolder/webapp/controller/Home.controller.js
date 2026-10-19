@@ -127,7 +127,9 @@ sap.ui.define([
         },
 
         initializeData: function () {
-            this.JobDetailTable.clearSelection();
+            if (typeof this.JobDetailTable.clearSelection === "function") {
+                this.JobDetailTable.clearSelection();
+            }
 
             // Default window: 30 days back, 10 days forward.
             const stDate  = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -715,8 +717,13 @@ sap.ui.define([
          * The bindingContext parameter replaces the original RowAction getBindingContext call.
          */
         onJobDetails: function (oEvent) {
-            const oContext = oEvent.getParameter("bindingContext");
-            const selRow   = oContext.getObject();
+            let oContext = oEvent.getParameter("bindingContext");
+            if (!oContext && typeof this.JobDetailTable.getSelectedContexts === "function") {
+                const aCtx = this.JobDetailTable.getSelectedContexts();
+                oContext = aCtx && aCtx[0];
+            }
+            const selRow   = oContext && oContext.getObject();
+            if (!selRow) { return; }
             this.oRouter.navTo("JobDetail", {
                 jobId:       selRow.guid,
                 jobRecCount: selRow.job_rec_count
