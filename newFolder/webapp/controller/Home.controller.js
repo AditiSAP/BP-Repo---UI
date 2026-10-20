@@ -30,6 +30,25 @@ sap.ui.define([
             this.jobModel.setSizeLimit(99999);
             this.getView().setModel(this.jobModel, "jobModel");
 
+            // Cache the binding context of every pressed row on the inner
+            // sap.m.Table's itemPress event.  MDC fires its own rowPress via
+            // Promise.resolve().then() in 1.120, so _oActiveItem is already
+            // cleared by the time onJobDetails runs.  itemPress on the inner
+            // table fires synchronously — before that microtask deferral —
+            // giving us a reliable context on every click, including the first.
+            if (typeof this.JobDetailTable.initialized === "function") {
+                this.JobDetailTable.initialized().then(function () {
+                    var oInner = this.JobDetailTable && this.JobDetailTable._oTable;
+                    if (oInner && typeof oInner.attachItemPress === "function") {
+                        oInner.attachItemPress(function (oItemEvent) {
+                            var oItem = oItemEvent.getParameter("listItem");
+                            this._oPressedRowContext = oItem
+                                ? oItem.getBindingContext("jobModel") : null;
+                        }.bind(this));
+                    }
+                }.bind(this)).catch(function () {});
+            }
+
             // statusFilterModel feeds the Status ValueHelp popup in the same
             // way it fed the original MultiComboBox.
             this._loadStatusFilter();
@@ -788,6 +807,14 @@ sap.ui.define([
          */
         onJobDetails: function (oEvent) {
             var oContext = oEvent.getParameter("bindingContext");
+
+            // Primary fallback: context cached synchronously by the inner
+            // sap.m.Table itemPress listener set up in onInit.  Reliable on
+            // every click including the first because it fires before MDC's
+            // own deferred rowPress handler clears _oActiveItem.
+            if (!oContext) {
+                oContext = this._oPressedRowContext || null;
+            }
 
             if (!oContext) {
                 // sap.m.ListBase sets _oActiveItem synchronously before firing itemPress.
