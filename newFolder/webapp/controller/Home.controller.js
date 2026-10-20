@@ -235,10 +235,25 @@ sap.ui.define([
                     oConditions[sKey] = oField.getConditions() || [];
                 }
             });
+
+            // Merge ConditionModel values as fallback for any key that the FilterField
+            // instances show as empty — covers Adapt Filters dialog input where the
+            // user enters values inside the dialog (those go to the ConditionModel via
+            // the $filters binding) but _pin may not have transferred them back to the
+            // FilterField instance before onRefreshData runs.
+            try {
+                const oModelConds = oFilterBar.getConditions() || {};
+                Object.keys(oModelConds).forEach(function (sKey) {
+                    if ((!oConditions[sKey] || !oConditions[sKey].length) &&
+                            oModelConds[sKey] && oModelConds[sKey].length) {
+                        oConditions[sKey] = oModelConds[sKey];
+                    }
+                });
+            } catch (e) { /* ConditionModel unavailable or corrupted — field values suffice */ }
+
             if (aItems.length) {
                 return oConditions;
             }
-            // Fallback: filterItems not yet populated (early init race), use FilterBar API
             try {
                 return oFilterBar.getConditions() || {};
             } catch (e) {

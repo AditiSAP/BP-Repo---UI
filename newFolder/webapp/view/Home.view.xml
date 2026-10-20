@@ -14,10 +14,10 @@
 
             <!-- Job Name value help: typeahead suggestions + full F4 dialog with search -->
             <mdc:ValueHelp id="jobNameVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                delegate="{name:'com/bpcfn/jobscheduler/util/VHDelegate', payload:{filterField:'Jobname'}}">
                 <mdc:typeahead>
                     <mdcvh:Popover id="jobNameVHPopover">
-                        <mdcvc:MTable id="jobNameVHMTableP" keyPath="Jobname" descriptionPath="Jobname" filterFields="*">
+                        <mdcvc:MTable id="jobNameVHMTableP" keyPath="Jobname" descriptionPath="Jobname" isSearchSupported="true">
                             <Table id="jobNameVHTableP" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
                                 <columns>
                                     <Column id="jobNameVHColP"><Label id="jobNameVHLabelP" text="{i18n>JobName}"/></Column>
@@ -33,7 +33,7 @@
                 </mdc:typeahead>
                 <mdc:dialog>
                     <mdcvh:Dialog id="jobNameVHDialog" title="{i18n>JobName}">
-                        <mdcvc:MTable id="jobNameVHMTableD" keyPath="Jobname" descriptionPath="Jobname" filterFields="*">
+                        <mdcvc:MTable id="jobNameVHMTableD" keyPath="Jobname" descriptionPath="Jobname" isSearchSupported="true">
                             <Table id="jobNameVHTableD" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
                                 <columns>
                                     <Column id="jobNameVHColD"><Label id="jobNameVHLabelD" text="{i18n>JobName}"/></Column>
@@ -52,10 +52,10 @@
 
             <!-- Created By value help: typeahead suggestions + full F4 dialog with search -->
             <mdc:ValueHelp id="createdByVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                delegate="{name:'com/bpcfn/jobscheduler/util/VHDelegate', payload:{filterField:'Bname'}}">
                 <mdc:typeahead>
                     <mdcvh:Popover id="createdByVHPopover">
-                        <mdcvc:MTable id="createdByVHMTableP" keyPath="Bname" descriptionPath="Bname" filterFields="Bname">
+                        <mdcvc:MTable id="createdByVHMTableP" keyPath="Bname" descriptionPath="Bname" isSearchSupported="true">
                             <Table id="createdByVHTableP" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
                                 <columns>
                                     <Column id="createdByVHColP"><Label id="createdByVHLabelP" text="{i18n>CreatedBy}"/></Column>
@@ -71,7 +71,7 @@
                 </mdc:typeahead>
                 <mdc:dialog>
                     <mdcvh:Dialog id="createdByVHDialog" title="{i18n>CreatedBy}">
-                        <mdcvc:MTable id="createdByVHMTableD" keyPath="Bname" descriptionPath="Bname" filterFields="Bname">
+                        <mdcvc:MTable id="createdByVHMTableD" keyPath="Bname" descriptionPath="Bname" isSearchSupported="true">
                             <Table id="createdByVHTableD" items="{path:'custModel>/VH_GenericUser', length:99999}" mode="SingleSelectMaster">
                                 <columns>
                                     <Column id="createdByVHColD"><Label id="createdByVHLabelD" text="{i18n>CreatedBy}"/></Column>
@@ -90,10 +90,10 @@
 
             <!-- Status value help: typeahead popover + full F4 dialog (multi-select) -->
             <mdc:ValueHelp id="statusVH"
-                delegate="{name:'sap/ui/mdc/ValueHelpDelegate', payload:{}}">
+                delegate="{name:'com/bpcfn/jobscheduler/util/VHDelegate', payload:{filterField:'text'}}">
                 <mdc:typeahead>
                     <mdcvh:Popover id="statusVHPopover">
-                        <mdcvc:MTable id="statusVHMTableP" keyPath="key" descriptionPath="text" filterFields="text">
+                        <mdcvc:MTable id="statusVHMTableP" keyPath="key" descriptionPath="text" isSearchSupported="true">
                             <Table id="statusVHTableP" items="{statusFilterModel>/items}" mode="MultiSelect">
                                 <columns>
                                     <Column id="statusVHColP"><Label id="statusVHLabelP" text="{i18n>Status}"/></Column>
@@ -109,7 +109,7 @@
                 </mdc:typeahead>
                 <mdc:dialog>
                     <mdcvh:Dialog id="statusVHDialog" title="{i18n>Status}">
-                        <mdcvc:MTable id="statusVHMTableD" keyPath="key" descriptionPath="text" filterFields="text">
+                        <mdcvc:MTable id="statusVHMTableD" keyPath="key" descriptionPath="text" isSearchSupported="true">
                             <Table id="statusVHTableD" items="{statusFilterModel>/items}" mode="MultiSelect">
                                 <columns>
                                     <Column id="statusVHColD"><Label id="statusVHLabelD" text="{i18n>Status}"/></Column>

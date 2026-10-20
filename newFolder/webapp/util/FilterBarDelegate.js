@@ -43,10 +43,21 @@ sap.ui.define([
 
         function _pin(oField) {
             if (!oField) { return oField; }
-            const oCondModel = typeof oFilterBar.getModel === "function"
-                ? oFilterBar.getModel("$filters") : null;
-            if (oCondModel && typeof oField.setModel === "function") {
-                oField.setModel(oCondModel, "$filters");
+            function doPin() {
+                var oCondModel = typeof oFilterBar.getModel === "function"
+                    ? oFilterBar.getModel("$filters") : null;
+                if (oCondModel && typeof oField.setModel === "function" && !oField.bIsDestroyed) {
+                    oField.setModel(oCondModel, "$filters");
+                }
+            }
+            doPin();
+            // Race guard: addItem() may be called during XML-view parsing before the
+            // FilterBar's onInit() has set the ConditionModel.  If the model is still
+            // absent, re-pin once the FilterBar signals it is ready.  This ensures the
+            // $filters binding on the field survives being moved into the dialog panel.
+            if (typeof oFilterBar.initialized === "function"
+                    && !(oFilterBar.getModel && oFilterBar.getModel("$filters"))) {
+                oFilterBar.initialized().then(doPin).catch(function () {});
             }
             return oField;
         }
@@ -97,6 +108,20 @@ sap.ui.define([
     // are destroyed.
     FilterBarDelegateImpl.removeItem = async function (oFilterBar, oFilterField) {
         const sId = typeof oFilterField.getId === "function" ? oFilterField.getId() : "";
+
+        // Always cache XML-declared fields on removal.  In MDC 1.120 the P13n Engine
+        // may NOT call addItem() during dialog init (it only reads fetchProperties()),
+        // so _mOriginalFields might be empty the first time the user hides a filter.
+        // Caching here ensures the Reset button and subsequent re-adds return the same
+        // field instance — with ValueHelp, custom operators, and conditions intact.
+        if (sId.indexOf("--filter--") === -1) {
+            const sKey = typeof oFilterField.getPropertyKey === "function"
+                ? oFilterField.getPropertyKey() : null;
+            if (sKey) {
+                _mOriginalFields[sKey] = oFilterField;
+            }
+        }
+
         if (sId.indexOf("--filter--") !== -1) {
             oFilterField.destroy();
             Object.keys(_mOriginalFields).forEach(function (k) {

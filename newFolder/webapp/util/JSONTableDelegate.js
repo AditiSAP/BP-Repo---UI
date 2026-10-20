@@ -240,7 +240,10 @@ sap.ui.define([
 
     JSONTableDelegate.updateBindingInfo = function (oTable, oBindingInfo) {
         TableDelegate.updateBindingInfo.call(JSONTableDelegate, oTable, oBindingInfo);
-        oBindingInfo.path = oTable.getPayload().bindingPath;
+        var sBindingPath = oTable.getPayload().bindingPath; // "jobModel>/results"
+        var aParts = sBindingPath.split(">");
+        oBindingInfo.model = aParts[0];          // "jobModel"
+        oBindingInfo.path  = aParts[1] || aParts[0]; // "/results"
         // Apply default sort only when no P13n-driven sorters are present.
         if (!oBindingInfo.sorter || !oBindingInfo.sorter.length) {
             oBindingInfo.sorter = [
