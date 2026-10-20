@@ -182,18 +182,27 @@ sap.ui.define([
         },
 
         // Set conditions on a map of { propertyKey: conditionArray }.
-        // Writes to BOTH the ConditionModel (so MDC's own required-field validation on
-        // the Go button sees the values) AND the FilterField (so the token displays).
-        // FilterField.setConditions() alone only updates the field's local property;
-        // MDC's Go-button validation reads the ConditionModel ($filters), which is
-        // one-way bound (model→field) and is NOT updated by setConditions() alone.
+        // Writes to BOTH the ConditionModel AND the FilterField so that:
+        //  - Go-button required-field validation (reads ConditionModel) passes
+        //  - Filter tokens display immediately (FilterField.setConditions is synchronous)
+        //
+        // IMPORTANT: use removeAllConditions() + addCondition() instead of
+        // setProperty() or setConditions() on the ConditionModel.  setProperty()
+        // bypasses the ConditionModel's internal change-tracking and corrupts its
+        // state, causing FilterBar.getConditions() to throw for the rest of the
+        // session — which also breaks the Adapt Filters dialog condition read-back.
         _setFilterConditions: function (oFilterBar, mConditions) {
             if (!oFilterBar) { return; }
             const mMap = this._getFilterFieldMap(oFilterBar);
             const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mConditions).forEach(function (sKey) {
                 if (oCondModel) {
-                    try { oCondModel.setProperty("/conditions/" + sKey, mConditions[sKey]); } catch (e) {}
+                    try {
+                        oCondModel.removeAllConditions(sKey);
+                        (mConditions[sKey] || []).forEach(function (oCond) {
+                            oCondModel.addCondition(sKey, oCond);
+                        });
+                    } catch (e) {}
                 }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
@@ -209,7 +218,12 @@ sap.ui.define([
             const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mPartial).forEach(function (sKey) {
                 if (oCondModel) {
-                    try { oCondModel.setProperty("/conditions/" + sKey, mPartial[sKey]); } catch (e) {}
+                    try {
+                        oCondModel.removeAllConditions(sKey);
+                        (mPartial[sKey] || []).forEach(function (oCond) {
+                            oCondModel.addCondition(sKey, oCond);
+                        });
+                    } catch (e) {}
                 }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
@@ -745,8 +759,18 @@ sap.ui.define([
         onJobDetails: function (oEvent) {
             var oContext = oEvent.getParameter("bindingContext");
 
-            // MDC fires bindingContext correctly in 1.120+ for named models;
-            // older builds return undefined — fall back through the chain.
+            if (!oContext) {
+                // sap.m.ListBase sets _oActiveItem synchronously before firing itemPress.
+                // MDC fires rowPress synchronously from that same handler, so _oActiveItem
+                // is still the pressed item when onJobDetails runs — it is cleared only
+                // after all itemPress listeners return.  This works on the FIRST click
+                // (no prior selection needed) and is independent of event ordering.
+                var oInner = this.JobDetailTable._oTable;
+                var oActive = oInner && oInner._oActiveItem;
+                if (oActive) {
+                    oContext = oActive.getBindingContext("jobModel");
+                }
+            }
             if (!oContext) {
                 if (typeof this.JobDetailTable.getSelectedContexts === "function") {
                     var aCtx = this.JobDetailTable.getSelectedContexts().filter(Boolean);
@@ -754,9 +778,9 @@ sap.ui.define([
                 }
             }
             if (!oContext) {
-                var oInner = this.JobDetailTable._oTable;
-                if (oInner && typeof oInner.getSelectedItems === "function") {
-                    var oItem = oInner.getSelectedItems()[0];
+                var oInner2 = this.JobDetailTable._oTable;
+                if (oInner2 && typeof oInner2.getSelectedItems === "function") {
+                    var oItem = oInner2.getSelectedItems()[0];
                     oContext = oItem && oItem.getBindingContext("jobModel");
                 }
             }
