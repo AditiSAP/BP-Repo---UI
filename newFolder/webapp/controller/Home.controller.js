@@ -151,6 +151,23 @@ sap.ui.define([
                 fcPeriod:  []
             });
 
+            // Pin the $filters ConditionModel directly onto every FilterField so the
+            // conditions binding ({$filters>/conditions/...}) keeps working even when
+            // MDC moves a field out of the FilterBar aggregation tree into the Adapt
+            // Filters dialog panel (model inheritance breaks on aggregation change;
+            // a directly-set model reference survives the move).
+            const oFilterBar = this.byId("filterbar");
+            if (oFilterBar) {
+                const oCondModel = oFilterBar.getModel("$filters");
+                if (oCondModel) {
+                    (oFilterBar.getFilterItems ? oFilterBar.getFilterItems() : []).forEach(function (oField) {
+                        if (typeof oField.setModel === "function") {
+                            oField.setModel(oCondModel, "$filters");
+                        }
+                    });
+                }
+            }
+
             this.getView().getModel("jobModel").setData({
                 "CheckAuth":              false,
                 "CreateEnabled":          false,

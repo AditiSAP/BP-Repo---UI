@@ -150,6 +150,7 @@
                         <mdc:FilterField
                             id="idJobNameFilter"
                             propertyKey="jobname"
+                            conditions="{$filters>/conditions/jobname}"
                             label="{i18n>JobName}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
@@ -160,6 +161,7 @@
                         <mdc:FilterField
                             id="idDateFilter"
                             propertyKey="dateRange"
+                            conditions="{$filters>/conditions/dateRange}"
                             label="{i18n>Date}"
                             dataType="sap.ui.model.type.Date"
                             maxConditions="1"
@@ -171,6 +173,7 @@
                         <mdc:FilterField
                             id="idCreatedByFilter"
                             propertyKey="createdby"
+                            conditions="{$filters>/conditions/createdby}"
                             label="{i18n>CreatedBy}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
@@ -181,6 +184,7 @@
                         <mdc:FilterField
                             id="idStatusFilter"
                             propertyKey="status"
+                            conditions="{$filters>/conditions/status}"
                             label="{i18n>Status}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="-1"
@@ -191,6 +195,7 @@
                         <mdc:FilterField
                             id="idFcYearFilter"
                             propertyKey="fcYear"
+                            conditions="{$filters>/conditions/fcYear}"
                             label="{i18n>FiscalYear}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
@@ -201,6 +206,7 @@
                         <mdc:FilterField
                             id="idFcPeriodFilter"
                             propertyKey="fcPeriod"
+                            conditions="{$filters>/conditions/fcPeriod}"
                             label="{i18n>Period}"
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
