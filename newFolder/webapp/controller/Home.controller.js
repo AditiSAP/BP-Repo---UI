@@ -197,12 +197,20 @@ sap.ui.define([
             const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mConditions).forEach(function (sKey) {
                 if (oCondModel) {
+                    // Prefer the safe ConditionModel API (no internal-state corruption).
+                    // Fall back to setProperty when removeAllConditions is not available
+                    // (older patch levels of MDC 1.120).
+                    var bSet = false;
                     try {
                         oCondModel.removeAllConditions(sKey);
                         (mConditions[sKey] || []).forEach(function (oCond) {
                             oCondModel.addCondition(sKey, oCond);
                         });
+                        bSet = true;
                     } catch (e) {}
+                    if (!bSet) {
+                        try { oCondModel.setProperty("/conditions/" + sKey, mConditions[sKey] || []); } catch (e2) {}
+                    }
                 }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {
@@ -218,12 +226,17 @@ sap.ui.define([
             const oCondModel = oFilterBar.getModel("$filters");
             Object.keys(mPartial).forEach(function (sKey) {
                 if (oCondModel) {
+                    var bSet = false;
                     try {
                         oCondModel.removeAllConditions(sKey);
                         (mPartial[sKey] || []).forEach(function (oCond) {
                             oCondModel.addCondition(sKey, oCond);
                         });
+                        bSet = true;
                     } catch (e) {}
+                    if (!bSet) {
+                        try { oCondModel.setProperty("/conditions/" + sKey, mPartial[sKey] || []); } catch (e2) {}
+                    }
                 }
                 const oField = mMap[sKey];
                 if (oField && typeof oField.setConditions === "function") {

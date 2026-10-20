@@ -106,6 +106,67 @@ sap.ui.define([
     // they can be returned by addItem() on re-add with ValueHelp config intact.
     // Only programmatically-created fallback fields (IDs containing "--filter--")
     // are destroyed.
+    // getCurrentState is called by MDC's P13n Engine to snapshot the FilterBar
+    // before the Adapt Filters dialog opens.  The Engine uses this snapshot
+    // (items + filter) to compute a diff when the user closes the dialog and
+    // then passes the new state to applyState.  Without this override the Engine
+    // cannot see the custom conditions we set programmatically (KPI drill-down,
+    // initializeData) because they may not be in the ConditionModel yet.
+    FilterBarDelegateImpl.getCurrentState = function (oFilterBar, oState) {
+        const result = oState || {};
+        const aItems = [];
+        const mFilter = {};
+        (oFilterBar.getFilterItems ? oFilterBar.getFilterItems() : []).forEach(function (oField) {
+            const sKey = typeof oField.getPropertyKey === "function" ? oField.getPropertyKey() : null;
+            if (sKey) {
+                aItems.push({ name: sKey });
+                const aConds = typeof oField.getConditions === "function"
+                    ? (oField.getConditions() || []) : [];
+                if (aConds.length) {
+                    mFilter[sKey] = aConds;
+                }
+            }
+        });
+        result.items  = aItems;
+        result.filter = mFilter;
+        return result;
+    };
+
+    // applyState is called by the P13n Engine after the user clicks GO in the
+    // Adapt Filters dialog.  The Engine passes the collected state, which
+    // includes conditions the user entered (possibly on shadow-copy fields that
+    // are NOT the same instances as in filterItems).
+    //
+    // The base FilterBarDelegate.applyState updates only the ConditionModel.
+    // We additionally call FilterField.setConditions() on the filterItems
+    // instances so that _readConditions() can pick them up synchronously in
+    // onRefreshData, and so that the filter tokens appear in the main bar.
+    FilterBarDelegateImpl.applyState = async function (oFilterBar, oState, bReplace) {
+        if (typeof FilterBarDelegate.applyState === "function") {
+            try {
+                await FilterBarDelegate.applyState.call(
+                    FilterBarDelegateImpl, oFilterBar, oState, bReplace);
+            } catch (e) {}
+        }
+
+        const mFilter = (oState && oState.filter) || {};
+        if (!Object.keys(mFilter).length) { return; }
+
+        const mMap = {};
+        (oFilterBar.getFilterItems ? oFilterBar.getFilterItems() : []).forEach(function (oField) {
+            const sKey = typeof oField.getPropertyKey === "function"
+                ? oField.getPropertyKey() : null;
+            if (sKey) { mMap[sKey] = oField; }
+        });
+
+        Object.keys(mFilter).forEach(function (sKey) {
+            const oField = mMap[sKey];
+            if (oField && typeof oField.setConditions === "function") {
+                oField.setConditions(mFilter[sKey]);
+            }
+        });
+    };
+
     FilterBarDelegateImpl.removeItem = async function (oFilterBar, oFilterField) {
         const sId = typeof oFilterField.getId === "function" ? oFilterField.getId() : "";
 
