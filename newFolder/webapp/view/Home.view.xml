@@ -18,7 +18,7 @@
                 <mdc:typeahead>
                     <mdcvh:Popover id="jobNameVHPopover">
                         <mdcvc:MTable id="jobNameVHMTableP" keyPath="Jobname" descriptionPath="Jobname" isSearchSupported="true">
-                            <Table id="jobNameVHTableP" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectMaster">
+                            <Table id="jobNameVHTableP" items="{path:'custModel>/VH_Job', length:99999}" mode="SingleSelectLeft">
                                 <columns>
                                     <Column id="jobNameVHColP"><Label id="jobNameVHLabelP" text="{i18n>JobName}"/></Column>
                                 </columns>
@@ -224,7 +224,7 @@
                 delegate="{name:'com/bpcfn/jobscheduler/util/JSONTableDelegate', payload:{bindingPath:'jobModel>/results'}}"
                 selectionMode="Single"
                 selectionChange=".onJobSelected"
-                rowPress=".onJobDetails"
+                rowPress="onJobDetails"
                 header="{jobModel>/JobDetailsTitle}"
                 p13nMode="Column,Sort,Group,Filter"
                 enableAutoColumnWidth="true"
