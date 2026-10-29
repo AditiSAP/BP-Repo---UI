@@ -601,6 +601,11 @@ sap.ui.define([
 
                 const aFilters = [];
 
+                // ++MOD-016r: never show cancelled schedules. Cancel flags the
+                // record status = 'X' (the row is kept in the table, not
+                // deleted); exclude it so the list and export ignore them.
+                aFilters.push(new Filter("status", FilterOperator.NE, "X"));
+
                 // ── Job Name ───────────────────────────────────────────
                 const aJobConds = oConditions.jobname || [];
                 if (aJobConds.length && aJobConds[0].values && aJobConds[0].values[0]) {
@@ -787,7 +792,7 @@ sap.ui.define([
                 this.getView().getModel("jobModel")
                     .setProperty("/ManualActivityEnabled", sRowStatus === "C");
                 this.getView().getModel("jobModel")
-                    .setProperty("/CancelEnabled", sRowStatus === "S");
+                    .setProperty("/CancelEnabled", sRowStatus === "S" || sRowStatus === "I");  // ++MOD-017 allow cancel of in-progress
                 this.getView().getModel("jobModel")
                     .setProperty("/CopyEnabled", true);
                 this._checkAuth(true);
