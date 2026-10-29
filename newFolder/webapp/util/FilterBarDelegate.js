@@ -8,6 +8,7 @@ sap.ui.define([
 
     const _aProperties = [
         { name: "jobname",   label: "Job Name",    dataType: "sap.ui.model.type.String", maxConditions: 1 },
+        { name: "version",   label: "Version",     dataType: "sap.ui.model.type.String", maxConditions: 1 },
         { name: "dateRange", label: "Date",        dataType: "sap.ui.model.type.Date",   maxConditions: 1, required: true },
         { name: "createdby", label: "Created By",  dataType: "sap.ui.model.type.String", maxConditions: 1 },
         { name: "status",    label: "Status",      dataType: "sap.ui.model.type.String", maxConditions: -1 },

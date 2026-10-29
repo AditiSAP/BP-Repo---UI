@@ -616,6 +616,16 @@ sap.ui.define([
                     }
                 }
 
+                // ── Version ────────────────────────────────────────────
+                const aVersionConds = oConditions.version || [];
+                if (aVersionConds.length && aVersionConds[0].values && aVersionConds[0].values[0]) {
+                    const sVersion = String(aVersionConds[0].values[0]).trim();
+                    if (sVersion) {
+                        aFilters.push(new Filter("version",
+                            aVersionConds[0].operator === "EQ" ? FilterOperator.EQ : FilterOperator.Contains, sVersion));
+                    }
+                }
+
                 // ── Created By ─────────────────────────────────────────
                 const aCreatorConds = oConditions.createdby || [];
                 if (aCreatorConds.length && aCreatorConds[0].values && aCreatorConds[0].values[0]) {

@@ -191,6 +191,16 @@
                             valueHelp="statusVH"/>
 
                         <mdc:FilterField
+                            id="idVersionFilter"
+                            propertyKey="version"
+                            conditions="{$filters>/conditions/version}"
+                            label="{i18n>Version}"
+                            dataType="sap.ui.model.type.String"
+                            maxConditions="1"
+                            operators="EQ,Contains"
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
+
+                        <mdc:FilterField
                             id="idFcYearFilter"
                             propertyKey="fcYear"
                             conditions="{$filters>/conditions/fcYear}"
