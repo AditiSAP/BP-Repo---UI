@@ -86,6 +86,51 @@
                 </mdc:dialog>
             </mdc:ValueHelp>
 
+            <!-- Version value help: typeahead suggestions + full F4 dialog with search -->
+            <mdc:ValueHelp id="versionVH"
+                delegate="{name:'com/bpcfn/jobscheduler/util/VHDelegate', payload:{filterField:'Version'}}">
+                <mdc:typeahead>
+                    <mdcvh:Popover id="versionVHPopover">
+                        <mdcvc:MTable id="versionVHMTableP" keyPath="Version" descriptionPath="VersionName" isSearchSupported="true">
+                            <Table id="versionVHTableP" items="{path:'custModel>/VH_Version', length:99999}" mode="SingleSelectLeft">
+                                <columns>
+                                    <Column id="versionVHColP1" width="30%"><Label id="versionVHLabelP1" text="{i18n>Version}"/></Column>
+                                    <Column id="versionVHColP2" width="70%"><Label id="versionVHLabelP2" text="{i18n>desc}"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="versionVHItemP" type="Active">
+                                        <cells>
+                                            <Text id="versionVHTxtP1" text="{custModel>Version}"/>
+                                            <Text id="versionVHTxtP2" text="{custModel>VersionName}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Popover>
+                </mdc:typeahead>
+                <mdc:dialog>
+                    <mdcvh:Dialog id="versionVHDialog" title="{i18n>Version}">
+                        <mdcvc:MTable id="versionVHMTableD" keyPath="Version" descriptionPath="VersionName" isSearchSupported="true">
+                            <Table id="versionVHTableD" items="{path:'custModel>/VH_Version', length:99999}" mode="SingleSelectMaster">
+                                <columns>
+                                    <Column id="versionVHColD1" width="30%"><Label id="versionVHLabelD1" text="{i18n>Version}"/></Column>
+                                    <Column id="versionVHColD2" width="70%"><Label id="versionVHLabelD2" text="{i18n>desc}"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="versionVHItemD" type="Active">
+                                        <cells>
+                                            <Text id="versionVHTxtD1" text="{custModel>Version}"/>
+                                            <Text id="versionVHTxtD2" text="{custModel>VersionName}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </mdcvc:MTable>
+                    </mdcvh:Dialog>
+                </mdc:dialog>
+            </mdc:ValueHelp>
+
             <!-- Status value help: typeahead popover + full F4 dialog (multi-select) -->
             <mdc:ValueHelp id="statusVH"
                 delegate="{name:'com/bpcfn/jobscheduler/util/VHDelegate', payload:{filterField:'text'}}">
@@ -198,7 +243,8 @@
                             dataType="sap.ui.model.type.String"
                             maxConditions="1"
                             operators="EQ,Contains"
-                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"/>
+                            delegate="{name: 'sap/ui/mdc/field/FieldBaseDelegate', payload: {}}"
+                            valueHelp="versionVH"/>
 
                         <mdc:FilterField
                             id="idFcYearFilter"
