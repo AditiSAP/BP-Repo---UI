@@ -45,7 +45,6 @@
                                 </items>
                             </Table>
                         </mdcvc:MTable>
-                        <mdcvc:Conditions id="jobNameVHConditions"/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
@@ -83,7 +82,6 @@
                                 </items>
                             </Table>
                         </mdcvc:MTable>
-                        <mdcvc:Conditions id="createdByVHConditions"/>
                     </mdcvh:Dialog>
                 </mdc:dialog>
             </mdc:ValueHelp>
